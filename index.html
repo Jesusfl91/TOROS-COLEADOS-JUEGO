@@ -3,7 +3,6 @@ import { mnemonicToPrivateKey } from 'ton-crypto';
 import admin from 'firebase-admin';
 
 // Inicializamos Firebase Admin (Solo se inicializa una vez)
-// Requiere la variable de entorno FIREBASE_SERVICE_ACCOUNT_KEY con las credenciales de Firebase
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY))
@@ -20,15 +19,14 @@ export default async function handler(req, res) {
 
     const { userId } = req.body;
     
-    // Configuración del juego (puedes ajustar estos valores)
-    const TASA_CONVERSION = 1000; // Ej: 1000 puntos = 1 TON
+    // Configuración del juego
+    const TASA_CONVERSION = 1000; // 1000 puntos = 1 TON
     const PUNTOS_MINIMOS = 100;
 
     try {
         const userRef = db.collection('usuarios').doc(userId);
 
-        // PASO 1 y 4: Transacción Atómica de Firebase para Seguridad de Doble Gasto
-        // Esto asegura que leamos y restemos los puntos de forma segura antes de pagar.
+        // PASO 1: Transacción Atómica de Firebase para evitar Doble Gasto
         const txResult = await db.runTransaction(async (transaction) => {
             const doc = await transaction.get(userRef);
             if (!doc.exists) throw new Error('Usuario no encontrado en los registros.');
@@ -43,31 +41,30 @@ export default async function handler(req, res) {
             // Calcular el monto en TON a enviar
             const montoTon = (puntosActuales / TASA_CONVERSION).toString();
 
-            // Restamos los puntos INMEDIATAMENTE ANTES de interactuar con la blockchain
+            // Restamos los puntos en Firebase INMEDIATAMENTE
             transaction.update(userRef, {
-                puntos_acumulados: 0 // Vaciamos la bóveda (o puedes restar un monto específico)
+                puntos_acumulados: 0
             });
 
             return { walletUsuario, montoTon, puntosDeducidos: puntosActuales };
         });
 
-        // PASO 2: Inicializar cliente TON y firmar transacción segura
-        // Se conecta a la mainnet de TON
+        // PASO 2: Inicializar cliente TON
         const client = new TonClient({
             endpoint: 'https://toncenter.com/api/v2/jsonRPC',
-            apiKey: process.env.TONCENTER_API_KEY // Recomendado para evitar límites de API
+            apiKey: process.env.TONCENTER_API_KEY
         });
 
-        // Obtener las 24 palabras desde las Variables de Entorno (¡Nunca hardcodeadas!)
+        // Obtener la Semilla desde la Variable de Entorno
         const mnemonic = process.env.SEMILLA_MANGA;
         if (!mnemonic) throw new Error('Error interno: Billetera de la manga no configurada.');
         
-        // Generar llaves y abrir el contrato de la Wallet de la Manga (V4)
+        // Generar llaves y abrir el contrato V4
         const keyPair = await mnemonicToPrivateKey(mnemonic.split(' '));
         const walletManga = WalletContractV4.create({ workchain: 0, publicKey: keyPair.publicKey });
         const contract = client.open(walletManga);
 
-        // Verificar el secuenciador actual de la wallet para firmar el mensaje
+        // Verificar el secuenciador actual
         const seqno = await contract.getSeqno();
 
         // Enviar la transferencia de TON
@@ -78,13 +75,13 @@ export default async function handler(req, res) {
                 internal({
                     to: txResult.walletUsuario,
                     value: txResult.montoTon,
-                    body: 'Pago de Coleada - Recompensa del Juego', // Memo de la transacción
+                    body: 'Pago de Coleada - Recompensa del Juego',
                     bounce: false,
                 })
             ]
         });
 
-        // Respuesta exitosa al frontend
+        // Respuesta exitosa
         return res.status(200).json({ 
             success: true, 
             message: 'Pago enviado con éxito', 
@@ -93,9 +90,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Error procesando el pago en el cajero:', error);
-        
-        // PASO 3: Manejo de fallos en el pago
-        // (Nota: En un sistema robusto, si la TX falla después de restar puntos, se deberían reembolsar aquí usando otra transacción a Firebase)
         
         return res.status(500).json({ 
             error: 'Error en el cajero, contacta al Juez de Mesa.',
