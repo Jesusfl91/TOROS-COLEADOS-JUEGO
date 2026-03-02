@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toros Coleados: Campeonato de Stars</title>
+    <!-- CDN Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:ital,wght@0,800;1,900&display=swap');
+
+        :root {
+            /* Paleta Venezuela Dark */
+            --tg-bg: #090e17; 
+            --tg-surface: #131c31; 
+            --tg-border: #233154; 
+            
+            --vzla-yellow: #FFCC00;
+            --vzla-blue: #00247D;
+            --vzla-red: #CF142B;
+
+            --tg-primary: var(--vzla-yellow);
+            --tg-text: #ffffff;
+            --tg-text-sec: #94a3b8;
+            
+            /* Manga (Tierra) */
+            --manga-bg: #2b1d14; 
+            --talanquera: #1a110b; 
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--tg-bg);
+            color: var(--tg-text);
+            overflow: hidden;
+            touch-action: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-display {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Utilidades UI */
+        .tg-card {
+            background-color: var(--tg-surface);
+            border: 1px solid var(--tg-border);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        .tg-input {
+            background-color: var(--tg-bg);
+            border: 1px solid var(--tg-border);
+            color: var(--tg-text);
+            border-radius: 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .tg-input:focus {
+            outline: none;
+            border-color: var(--tg-primary);
+            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+        }
+
+        .tg-btn-primary {
+            background-color: var(--tg-primary);
+            color: #000000;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.1s active, filter 0.2s;
+        }
+        .tg-btn-primary:active { transform: scale(0.97); }
+        .tg-btn-primary:hover { filter: brightness(1.1); }
+
+        .tg-btn-secondary {
+            background-color: var(--vzla-blue);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #1a3c9e;
+            transition: transform 0.1s active, background-color 0.2s;
+        }
+        .tg-btn-secondary:active { transform: scale(0.97); }
+        .tg-btn-secondary:hover { background-color: #0033a0; }
+
+        .tg-btn-danger {
+            background-color: var(--vzla-red);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.1s active;
+        }
+        .tg-btn-danger:active { transform: scale(0.97); }
+
+        /* Estética de la Manga */
+        .manga-track {
+            background-color: var(--manga-bg);
+            background-image: radial-gradient(#1c110a 15%, transparent 16%), radial-gradient(#1c110a 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .talanquera {
+            background-color: var(--talanquera);
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.4) 40px, rgba(0,0,0,0.4) 45px);
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+
+        /* Animaciones */
+        @keyframes gallop {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(-2deg); }
+        }
+        @keyframes run-bull {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px) rotate(2deg); }
+        }
+        .anim-gallop { animation: gallop 0.4s infinite; }
+        .anim-bull { animation: run-bull 0.5s infinite; }
+
+        @keyframes scroll-dirt {
+            from { background-position: 0 0, 10px 10px; }
+            to { background-position: -40px 0, -30px 10px; }
+        }
+        .manga-scrolling { animation: scroll-dirt 0.3s linear infinite; }
+
+        @keyframes campanilla-fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            30% { transform: translateY(-40px) rotate(-180deg); } 
+            60% { transform: translateY(-10px) rotate(-270deg); }
+            100% { transform: translateY(30px) rotate(-360deg); opacity: 0.8; filter: grayscale(40%) brightness(70%); }
+        }
+        @keyframes costado-fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(-45deg); }
+            100% { transform: translateY(30px) rotate(-90deg); opacity: 0.8; filter: grayscale(40%) brightness(70%); }
+        }
+        @keyframes nulo-escape {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(200px); opacity: 0; }
+        }
+
+        .action-filo { animation: campanilla-fall 1s forwards; }
+        .action-costado { animation: costado-fall 0.8s forwards; }
+        .action-nulo { animation: nulo-escape 1s forwards; }
+
+        .hit-zone {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60px;
+            border-radius: 50px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--tg-border); border-radius: 10px; }
+
+        /* Scrollbar para el Pergamino de Reglas */
+        .custom-scrollbar-light::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar-light::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
+
+        .custom-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex justify-center items-center bg-[var(--tg-bg)]">
+
+    <!-- Main Container -->
+    <div id="app" class="w-full max-w-md h-full bg-[var(--tg-bg)] text-white relative overflow-hidden flex flex-col sm:border sm:border-[var(--tg-border)] sm:rounded-[2rem] shadow-2xl">
+        
+        <!-- Franja Tricolor Vzla -->
+        <div class="h-1.5 w-full flex shrink-0">
+            <div class="flex-1 bg-[var(--vzla-yellow)]"></div>
+            <div class="flex-1 bg-[var(--vzla-blue)]"></div>
+            <div class="flex-1 bg-[var(--vzla-red)]"></div>
+        </div>
+
+        <!-- Header / Stats -->
+        <header id="app-header" class="bg-[var(--tg-surface)]/90 backdrop-blur-md p-4 flex justify-between items-center z-20 border-b border-[var(--tg-border)]">
+            <div class="flex flex-col ml-1">
+                <span class="text-[10px] uppercase tracking-wider text-[var(--tg-primary)] font-bold">Jugador</span>
+                <span id="ui-nickname" class="font-bold font-display truncate w-24 text-base tracking-tight">Coleador</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-[var(--tg-bg)] px-3 py-1.5 rounded-lg border border-[var(--tg-border)]">
+                    <i class="fa-solid fa-star text-[var(--tg-primary)] text-sm"></i>
+                    <span id="ui-stars" class="font-bold text-sm ml-1.5">1000</span>
+                </div>
+                <button onclick="donateDev()" class="bg-[var(--tg-bg)] hover:bg-[var(--tg-border)] text-white w-9 h-9 flex items-center justify-center rounded-full transition-transform active:scale-95 border border-[var(--tg-border)]">
+                    <i class="fa-solid fa-gift text-[var(--vzla-red)] text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Screens Container -->
+        <main class="flex-1 relative overflow-y-auto custom-scrollbar bg-[var(--tg-bg)]">
+            
+            <!-- 0. TERMS AND CONDITIONS (REGLAMENTO) -->
+            <section id="screen-reglamento" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-50">
+                <div class="w-full bg-[#fdf6e3] text-[#271c19] p-6 sm:p-8 rounded shadow-[0_0_30px_rgba(0,0,0,0.8)] border-4 border-[#8b5a2b] bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] relative">
+                    <h2 class="font-display font-black text-2xl text-center mb-4 text-[#5c3a21] border-b-2 border-[#8b5a2b] pb-2">Reglamento de la Manga</h2>
+                    
+                    <div class="space-y-4 text-sm font-medium leading-relaxed max-h-[50vh] overflow-y-auto pr-3 custom-scrollbar-light">
+                        <p>¡Bienvenido, Coleador! Antes de apretar la cincha y salir al coso, debe aceptar las reglas de nuestra Federación Virtual:</p>
+                        <ul class="list-disc pl-5 space-y-3">
+                            <li><b>Habilidad y Destreza:</b> Usted reconoce que este es un juego de habilidad técnica (Power-Timing). El resultado depende de su precisión al marcar la campanilla. El sistema de Juez Digital es inapelable.</li>
+                            <li><b>Derecho de Manga (Comisión):</b> Por cada inscripción en el modo Duelo de 4 Jinetes, la casa retiene un <span id="reg-com-val" class="font-bold text-red-700">15%</span> en concepto de mantenimiento de la manga, servicios del locutor y plataforma tecnológica. El resto del pote se reparte automáticamente entre los ganadores.</li>
+                            <li><b>Conexión y Relinchos:</b> No nos hacemos responsables si a su caballo "se le va el aliento" (falla de internet, luz o lag del teléfono) en pleno turno. Una vez pagada la inscripción con Telegram Stars, no hay devoluciones por fallas ajenas a nuestra manga.</li>
+                            <li><b>Juego Responsable:</b> Esto es pa' divertirse sanamente. Solo se permite la entrada a mayores de 18 años. Juegue con gallardía y no comprometa plata que necesite para el mercado.</li>
+                        </ul>
+                        <p class="text-center font-bold text-[#8b5a2b] mt-6 text-base border-t border-[#8b5a2b] pt-4">Aceptación:<br>Al darle al botón de abajo, usted jura por su honor de coleador que ha leído y acepta estos términos.</p>
+                    </div>
+
+                    <button onclick="acceptTerms()" class="mt-6 w-full bg-[#8b5a2b] hover:bg-[#5c3a21] text-[#fdf6e3] p-4 font-bold text-lg rounded shadow-lg transition-transform active:scale-95 border-2 border-[#3e2723]">
+                        ¡Acepto, Suéltenme el Toro! 🐂
+                    </button>
+                </div>
+            </section>
+
+            <!-- 1. START MENU -->
+            <section id="screen-menu" class="relative w-full min-h-full hidden flex-col items-center pt-12 pb-10 px-5 bg-[radial-gradient(ellipse_at_top,_var(--tg-surface)_0%,_var(--tg-bg)_100%)]">
+                
+                <button onclick="requestAdminAccess()" class="absolute top-4 right-4 text-white opacity-20 hover:opacity-100 transition p-2 z-50">
+                    <i class="fa-solid fa-lock"></i>
+                </button>
+
+                <div class="text-center mb-8 mt-2">
+                    <h1 class="font-display font-black text-5xl leading-none text-white tracking-tighter mb-2">
+                        TOROS<br><span class="text-[var(--tg-primary)]">COLEADOS</span>
+                    </h1>
+                    <!-- 8 Estrellas -->
+                    <div class="flex justify-center gap-1.5 text-white mt-3 opacity-90 drop-shadow-md">
+                        <i class="fa-solid fa-star text-[10px]"></i>
+                        <i class="fa-solid fa-star text-[12px] -translate-y-1"></i>
+                        <i class="fa-solid fa-star text-[14px] -translate-y-2"></i>
+                        <i class="fa-solid fa-star text-[16px] -translate-y-3"></i>
+                        <i class="fa-solid fa-star text-[16px] -translate-y-3"></i>
+                        <i class="fa-solid fa-star text-[14px] -translate-y-2"></i>
+                        <i class="fa-solid fa-star text-[12px] -translate-y-1"></i>
+                        <i class="fa-solid fa-star text-[10px]"></i>
+                    </div>
+                </div>
+
+                <div class="w-full tg-card p-5 mb-8 border-t-2 border-t-[var(--vzla-blue)]">
+                    <label class="block text-xs font-semibold text-[var(--tg-text-sec)] mb-2 text-center uppercase tracking-wider">Apodo del Coleador</label>
+                    <input type="text" id="input-nickname" placeholder="Ej. El Centauro" class="w-full p-4 tg-input text-center font-bold text-lg" onchange="saveNickname()">
+                </div>
+
+                <div class="w-full space-y-3 mt-auto">
+                    <button onclick="nav('career')" class="w-full tg-btn-primary p-4 flex items-center justify-center gap-3 text-lg shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                        <i class="fa-solid fa-horse-head"></i> Gira Nacional
+                    </button>
+                    <button onclick="nav('multiplayer')" class="w-full tg-btn-secondary p-4 flex items-center justify-center gap-3 text-lg">
+                        <i class="fa-solid fa-users text-[var(--tg-primary)]"></i> Duelo Online
+                    </button>
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="nav('ranking')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
+                            <i class="fa-solid fa-trophy text-[var(--tg-primary)] text-xl"></i> 
+                            <span class="font-semibold">Ranking</span>
+                        </button>
+                        <button onclick="openWallet()" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
+                            <i class="fa-solid fa-wallet text-green-400 text-xl"></i> 
+                            <span class="font-semibold">Billetera</span>
+                        </button>
+                    </div>
+                    <button onclick="nav('instructions')" class="w-full bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex justify-center items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95 mt-3">
+                        <i class="fa-solid fa-book-open text-blue-400 text-lg"></i> 
+                        <span class="font-semibold">¿Cómo Jugar?</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 1.2 INSTRUCTIONS SCREEN -->
+            <section id="screen-instructions" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Instrucciones</h2>
+                </div>
+                
+                <div class="tg-card p-6 mb-6 text-sm text-[var(--tg-text-sec)] space-y-4">
+                    <p><strong class="text-white">Objetivo:</strong> Tienes 4 turnos por manga. Tu caballo galopará hacia el toro. Presiona <b class="text-white">"COLEAR"</b> cuando estés sobre las zonas de acierto.</p>
+                    
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div>
+                            <strong class="text-green-400">Filo de Lomo (20 Pts)</strong>
+                        </div>
+                        <p class="text-xs">Acierta en la zona verde estrecha del centro. El toro da una voltereta completa en el aire.</p>
+                    </div>
+
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-3 h-3 rounded-full bg-[var(--tg-primary)] shadow-[0_0_10px_var(--tg-primary)]"></div>
+                            <strong class="text-[var(--tg-primary)]">Costado (10 Pts)</strong>
+                        </div>
+                        <p class="text-xs">Acierta en la zona amarilla exterior. El toro cae de lado, sumando menos puntos.</p>
+                    </div>
+
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-3 h-3 rounded-full bg-[var(--vzla-red)]"></div>
+                            <strong class="text-[var(--vzla-red)]">Nulo (0 Pts)</strong>
+                        </div>
+                        <p class="text-xs">Se produce si presionas muy pronto, muy tarde, o si dejas pasar al toro sin halar.</p>
+                    </div>
+
+                    <h3 class="text-white font-bold mt-4 border-b border-[var(--tg-border)] pb-2 pt-2">Tus Atributos</h3>
+                    <ul class="list-disc pl-4 text-xs space-y-2">
+                        <li><strong class="text-[var(--vzla-red)]">Fuerza:</strong> Amplía tu zona verde (Filo de Lomo).</li>
+                        <li><strong class="text-[var(--vzla-blue)]">Velocidad:</strong> Tu caballo correrá más rápido (exige reflejos más rápidos).</li>
+                        <li><strong class="text-green-500">Estabilidad:</strong> Amplía tu zona amarilla (Costado).</li>
+                    </ul>
+                    <p class="text-xs italic mt-2 border-t border-[var(--tg-border)] pt-2 text-gray-500">Nota: Los toros de nivel superior reducen el margen de error debido a su mayor peso y bravura.</p>
+                </div>
+
+                <button onclick="nav('menu')" class="mt-auto w-full tg-btn-primary p-4 text-lg font-bold shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                    ¡Entendido!
+                </button>
+            </section>
+
+            <!-- 1.5. WALLET / BILLETERA SCREEN -->
+            <section id="screen-wallet" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-8">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Tus Fondos</h2>
+                </div>
+                
+                <div class="tg-card p-8 mb-6 text-center border-t-2 border-t-green-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-green-500/10 blur-3xl rounded-full"></div>
+                    <p class="text-[var(--tg-text-sec)] font-semibold text-xs uppercase tracking-widest mb-2 relative z-10">Balance Disponible</p>
+                    <div class="text-5xl font-display font-black text-white mb-2 flex items-center justify-center gap-2 relative z-10">
+                        <span id="wallet-balance">1000</span> <i class="fa-solid fa-star text-3xl text-[var(--tg-primary)]"></i>
+                    </div>
+                    <p class="text-xs text-[var(--tg-text-sec)] relative z-10">Usa tus Stars para inscribirte en los Duelos Online.</p>
+                </div>
+
+                <div class="space-y-3 mt-auto">
+                    <button onclick="withdrawFromWallet()" class="w-full tg-btn-primary p-4 flex items-center justify-center gap-3 text-lg">
+                        <i class="fa-solid fa-arrow-down"></i> Retirar a Telegram
+                    </button>
+                    <button onclick="depositToWallet()" class="w-full tg-btn-secondary p-4 flex items-center justify-center gap-3 text-lg">
+                        <i class="fa-solid fa-plus text-[var(--tg-primary)]"></i> Comprar Stars
+                    </button>
+                </div>
+            </section>
+
+            <!-- 2. CAREER MODE -->
+            <section id="screen-career" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-8">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Gira Nacional</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group" onclick="prepGame('career', 1)">
+                        <div>
+                            <span class="text-[var(--tg-primary)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 1</span>
+                            <h3 id="ui-manga-1" class="font-bold text-lg text-white">Toros en mi Pueblo</h3>
+                            <p class="text-xs text-[var(--tg-text-sec)] mt-1">Toros Novillos • Básica</p>
+                        </div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors">
+                            <i class="fa-solid fa-play text-sm"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-blue)]" onclick="prepGame('career', 2)">
+                        <div>
+                            <span class="text-[var(--vzla-blue)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 2</span>
+                            <h3 id="ui-manga-2" class="font-bold text-lg text-white">Copa en Maracay</h3>
+                            <p class="text-xs text-[var(--tg-text-sec)] mt-1">Toro Cebú • Media</p>
+                        </div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors">
+                            <i class="fa-solid fa-play text-sm"></i>
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-red)]" onclick="prepGame('career', 3)">
+                        <div>
+                            <span class="text-[var(--vzla-red)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Final</span>
+                            <h3 id="ui-manga-3" class="font-bold text-lg text-white">Camp. Barquisimeto</h3>
+                            <p class="text-xs text-[var(--tg-text-sec)] mt-1">Padrote Rebelde • Extrema</p>
+                        </div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors">
+                            <i class="fa-solid fa-play text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MULTIPLAYER SETUP -->
+            <section id="screen-multiplayer" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Duelo Online</h2>
+                </div>
+                
+                <div class="tg-card p-6 mb-6 border-t-2 border-t-[var(--vzla-blue)]">
+                    <h3 class="font-bold text-lg text-center mb-5 text-white">Bolsa de Recompensas</h3>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3">
+                            <span class="text-[var(--tg-text-sec)]">Inscripción:</span>
+                            <span class="font-semibold text-white"><span id="mp-fee">100</span> <i class="fa-solid fa-star text-[var(--tg-primary)] text-xs"></i></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3">
+                            <span class="text-[var(--tg-text-sec)]">Recaudado (4x):</span>
+                            <span class="font-semibold text-white"><span id="mp-total">400</span> <i class="fa-solid fa-star text-[var(--tg-primary)] text-xs"></i></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3 text-[var(--vzla-red)]">
+                            <span>Fee de la Manga (<span id="mp-com-perc">10</span>%):</span>
+                            <span>-<span id="mp-com-val">40</span></span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="font-bold text-green-400 uppercase tracking-wide text-xs">Pote Neto a Repartir:</span>
+                            <span class="font-bold text-green-400 text-xl"><span id="mp-pool">360</span> <i class="fa-solid fa-star text-[var(--tg-primary)] text-sm"></i></span>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]">
+                                <span class="block font-bold text-[var(--tg-primary)]">1ro (70%)</span>
+                                <span id="mp-1st" class="text-white font-bold">252</span>
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]">
+                                <span class="block font-bold text-gray-300">2do (20%)</span>
+                                <span id="mp-2nd" class="text-white font-bold">72</span>
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]">
+                                <span class="block font-bold text-orange-400">3ro (10%)</span>
+                                <span id="mp-3rd" class="text-white font-bold">36</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="initiatePayment()" class="mt-auto w-full tg-btn-primary p-4 text-lg flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                    <i class="fa-solid fa-star text-black"></i> Pagar y Buscar Partida
+                </button>
+            </section>
+
+            <!-- 3.5 MATCHMAKING LOBBY -->
+            <section id="screen-lobby" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-30">
+                
+                <button onclick="cancelLobby()" class="absolute top-6 left-5 text-[var(--vzla-red)] hover:text-white font-bold text-sm tracking-widest uppercase transition-colors"><i class="fa-solid fa-arrow-left"></i> Salir de la Sala</button>
+
+                <div class="w-full tg-card p-6 border-[var(--tg-primary)]/30 shadow-[0_0_30px_rgba(255,204,0,0.05)] mt-10">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-3 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full mb-3 animate-pulse">
+                            <i class="fa-solid fa-satellite-dish text-[var(--vzla-blue)] text-xl"></i>
+                        </div>
+                        <h2 class="font-display text-xl text-white tracking-tight">Sala de Espera</h2>
+                        <p class="text-xs text-[var(--tg-text-sec)] mt-1">Conectado al Servidor Global</p>
+                    </div>
+                    
+                    <div id="lobby-slots" class="space-y-3 text-sm mb-6">
+                        <!-- Slots sincronizados con Firebase -->
+                    </div>
+
+                    <div class="bg-[var(--tg-bg)] rounded-xl p-4 text-center border border-[var(--tg-border)]">
+                        <p class="text-[var(--tg-text-sec)] text-[10px] mb-1 uppercase tracking-widest font-semibold">Coleadores Listos</p>
+                        <div class="flex justify-center items-baseline gap-1">
+                            <span id="lobby-count" class="text-4xl font-display font-bold text-[var(--tg-primary)]">1</span>
+                            <span class="text-[var(--tg-text-sec)] text-sm">/ 4</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ESTABLO Y CORRAL (PRE-MATCH) -->
+            <section id="screen-establo" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5 z-10">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav(game.mode === 'career' ? 'career' : 'multiplayer')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Preparación</h2>
+                </div>
+                
+                <div class="tg-card p-6 my-auto border-t-2 border-t-[var(--tg-primary)]">
+                    
+                    <div class="flex justify-between items-center mb-6 border-b border-[var(--tg-border)] pb-6">
+                        <button onclick="changeHorse(-1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-left text-sm text-[var(--tg-primary)]"></i></button>
+                        <div class="text-center flex flex-col items-center px-2">
+                            <div id="est-horse-emoji" class="text-6xl mb-2 drop-shadow-md"></div>
+                            <h4 id="est-horse-name" class="font-bold text-white text-lg tracking-tight">Criollo Llanero</h4>
+                        </div>
+                        <button onclick="changeHorse(1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-right text-sm text-[var(--tg-primary)]"></i></button>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-[10px] font-semibold text-[var(--tg-text-sec)] mb-2 uppercase tracking-wider text-center">Bautiza a tu montura</label>
+                        <input type="text" id="input-horsename" placeholder="Ej. Marlboro" class="w-full p-3 tg-input text-center font-semibold text-base" onchange="saveHorseName()">
+                    </div>
+
+                    <div class="space-y-4 text-xs font-semibold">
+                        <div class="flex items-center gap-3">
+                            <span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Fuerza</span>
+                            <div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]">
+                                <div id="est-bar-fue" class="h-full bg-[var(--vzla-red)] transition-all duration-500 w-[50%]"></div>
+                            </div>
+                            <span id="est-val-fue" class="w-4 text-right text-white">5</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Veloc.</span>
+                            <div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]">
+                                <div id="est-bar-vel" class="h-full bg-[var(--vzla-blue)] transition-all duration-500 w-[70%]"></div>
+                            </div>
+                            <span id="est-val-vel" class="w-4 text-right text-white">7</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Estabil.</span>
+                            <div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]">
+                                <div id="est-bar-est" class="h-full bg-green-500 transition-all duration-500 w-[90%]"></div>
+                            </div>
+                            <span id="est-val-est" class="w-4 text-right text-white">9</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="mt-6 w-full tg-btn-primary p-4 text-lg flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                    A la Manga <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <!-- 5. SECRET ADMIN PANEL (PUERTA TRASERA) -->
+            <section id="screen-secret-admin" class="relative w-full min-h-full hidden flex-col pt-8 pb-16 px-5 z-[60]">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight text-[var(--tg-primary)]">Modo Máster</h2>
+                </div>
+                
+                <div class="space-y-5">
+                    
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-blue)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Economía</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Inscripción (Stars):</label>
+                                <input type="number" id="sec-fee" class="w-full p-3 tg-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">% Comisión Casa:</label>
+                                <input type="number" id="sec-com" min="0" max="100" class="w-full p-3 tg-input">
+                            </div>
+                        </div>
+                        <button onclick="calculateCorteDeCaja()" class="w-full mt-4 bg-[var(--vzla-blue)] hover:bg-[#0033a0] text-white p-3 rounded-xl font-bold transition active:scale-95 flex items-center justify-center gap-2 border border-[#1a3c9e]">
+                            <i class="fa-solid fa-cash-register"></i> Hacer Corte de Caja
+                        </button>
+                    </div>
+
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-yellow)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-map-location mr-1"></i> Torneos</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="sec-m1" class="w-full p-3 tg-input" placeholder="Manga 1">
+                            <input type="text" id="sec-m2" class="w-full p-3 tg-input" placeholder="Manga 2">
+                            <input type="text" id="sec-m3" class="w-full p-3 tg-input" placeholder="Manga 3">
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-red)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-horse mr-1"></i> Clases</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="sec-h1" class="w-full p-3 tg-input" placeholder="Clase 1">
+                            <input type="text" id="sec-h2" class="w-full p-3 tg-input" placeholder="Clase 2">
+                            <input type="text" id="sec-h3" class="w-full p-3 tg-input" placeholder="Clase 3">
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 border-[var(--vzla-red)]/30">
+                        <h3 class="font-semibold text-sm text-red-500 mb-3 uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> Seguridad</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Contraseña Maestra:</label>
+                                <input type="text" id="sec-pwd" class="w-full p-3 tg-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Palabra de Recuperación:</label>
+                                <input type="text" id="sec-rec" class="w-full p-3 tg-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 border-[var(--vzla-blue)]/30">
+                        <h3 class="font-semibold text-sm text-purple-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-palette mr-1"></i> Mods Gráficos</h3>
+                        <p class="text-xs text-[var(--tg-text-sec)] mb-4">Sube archivos .PNG para reemplazar Emojis.</p>
+                        
+                        <div class="space-y-3 text-xs">
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Montura 1:</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customHorseImg0')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Montura 2:</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customHorseImg1')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Montura 3:</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customHorseImg2')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Toro Único:</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customBullImg')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Suelo (Arena):</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customBgImg')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                        </div>
+                        <button onclick="clearMods()" class="mt-4 w-full py-2 rounded-lg text-xs font-semibold text-[var(--vzla-red)] bg-[var(--vzla-red)]/10 hover:bg-[var(--vzla-red)]/20 transition">Limpiar Gráficos</button>
+                    </div>
+
+                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg mt-4">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </section>
+
+            <!-- 6. RANKING SCREEN -->
+            <section id="screen-ranking" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Top Coleadores</h2>
+                </div>
+                
+                <div class="tg-card overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-[var(--tg-bg)] text-[var(--tg-text-sec)] border-b border-[var(--tg-border)]">
+                            <tr>
+                                <th class="p-3 text-center w-12">#</th>
+                                <th class="p-3">Nombre</th>
+                                <th class="p-3 text-right">Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body" class="divide-y divide-[var(--tg-border)]">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 7. GAME SCREEN (LA MANGA) -->
+            <section id="screen-game" class="absolute inset-0 hidden flex flex-col bg-gradient-to-b from-[#1a110b] to-[var(--tg-bg)]">
+                
+                <!-- HUD Top -->
+                <div class="h-16 bg-[var(--tg-surface)]/90 backdrop-blur-md border-b border-[var(--tg-border)] p-3 flex items-center justify-between z-10">
+                    <button onclick="quitGame()" class="text-[var(--vzla-red)] p-2 hover:bg-[var(--tg-border)] rounded-full transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                    <p id="locutor-text" class="text-xs font-semibold text-[var(--tg-primary)] italic text-center mx-2 line-clamp-2">
+                        "¡Atención, se abre el toril!"
+                    </p>
+                    <div class="text-right flex flex-col items-end">
+                        <span class="text-[10px] text-[var(--tg-text-sec)] font-semibold uppercase">Turno <span id="hud-turn" class="text-white">1/4</span></span>
+                        <span class="font-bold text-sm text-green-400"><span id="hud-score">0</span> Pts</span>
+                    </div>
+                </div>
+
+                <!-- Manga View -->
+                <div class="flex-1 relative flex flex-col justify-between overflow-hidden">
+                    <div class="h-6 talanquera w-full relative z-0 opacity-80"></div> 
+                    
+                    <div id="manga-bg" class="flex-1 manga-track relative overflow-hidden">
+                        
+                        <!-- Indicadores de Zona -->
+                        <div id="zone-costado" class="hit-zone border-[var(--tg-primary)]/40 bg-[var(--tg-primary)]/10" title="Costado"></div>
+                        <div id="zone-filo" class="hit-zone border-green-500/60 bg-green-500/20 z-0" title="Filo de Lomo"></div>
+
+                        <!-- Entities -->
+                        <div id="game-entities" class="absolute inset-0 w-full h-full">
+                            <div id="pos-bull" class="absolute top-[52%] left-[55%] transform -translate-y-1/2 z-10">
+                                <div id="ent-bull" class="text-5xl anim-bull drop-shadow-lg flex items-center justify-center"></div>
+                            </div>
+                            
+                            <div id="pos-horse" class="absolute top-1/2 left-[-20%] transform -translate-y-1/2 z-20">
+                                <div id="ent-horse" class="text-6xl anim-gallop drop-shadow-lg flex items-center justify-center"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="dust" class="absolute top-[60%] left-[55%] transform -translate-x-1/2 translate-y-4 w-32 h-12 bg-white/10 blur-xl rounded-full animate-pulse hidden z-0"></div>
+                    </div>
+
+                    <div class="h-8 talanquera w-full relative z-0 flex items-center justify-center opacity-80">
+                        <span class="text-[#000] text-[10px] font-bold tracking-[0.3em] opacity-40">ZONA PÚBLICO</span>
+                    </div> 
+                </div>
+
+                <!-- Controls Bottom -->
+                <div class="h-32 bg-[var(--tg-surface)] border-t border-[var(--tg-border)] p-5 flex flex-col justify-center items-center gap-3 relative z-10">
+                    <button id="btn-colear" class="w-full tg-btn-primary py-4 font-display font-black text-xl tracking-wide shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                        COLEAR
+                    </button>
+                </div>
+            </section>
+
+            <!-- 8. OVERLAYS -->
+            <div id="overlay-result" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-50 backdrop-blur-md">
+                <div class="w-full tg-card p-6 text-center border-t-4 border-t-[var(--tg-primary)] shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+                    
+                    <h2 id="res-title" class="font-display font-black text-3xl mb-2 text-white">Misión</h2>
+                    <p id="res-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Calculando...</p>
+                    
+                    <div id="res-mp-details" class="hidden mb-6 text-left bg-[var(--tg-bg)] rounded-xl p-4 border border-[var(--tg-border)] text-sm">
+                        <!-- Populated -->
+                    </div>
+
+                    <button id="btn-result-action" onclick="closeResult()" class="w-full tg-btn-primary p-4 text-base">
+                        Continuar
+                    </button>
+                </div>
+            </div>
+
+            <!-- 9. CUSTOM MODAL -->
+            <div id="custom-modal" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-[100] backdrop-blur-md">
+                <div class="tg-card w-full p-6 text-center shadow-2xl border-t-4 border-t-[var(--vzla-blue)]">
+                    <h2 id="modal-title" class="font-bold text-xl text-white mb-2">Atención</h2>
+                    <p id="modal-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Contenido</p>
+                    
+                    <input type="text" id="modal-input" class="w-full p-3 tg-input text-center font-semibold mb-6 hidden">
+
+                    <div id="modal-buttons" class="flex gap-3 justify-center w-full">
+                        <!-- Buttons -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Módulo Principal JS: Listo para Vercel y Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, remove, get, onDisconnect, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // CREDENCIALES DE FIREBASE (Aportadas por el usuario)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
+            authDomain: "toros-coleados-pro.firebaseapp.com",
+            databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
+            projectId: "toros-coleados-pro",
+            storageBucket: "toros-coleados-pro.firebasestorage.app",
+            messagingSenderId: "563546037351",
+            appId: "1:563546037351:web:6903515e92f03f14a388c2",
+            measurementId: "G-5Q86F19DPJ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- INICIALIZACIÓN OFICIAL TELEGRAM MINI APP ---
+        const tg = window.Telegram?.WebApp || null;
+        let tgUser = null;
+
+        if(tg) { 
+            tg.ready(); 
+            tg.expand(); // Expande la app a pantalla completa
+            tgUser = tg.initDataUnsafe?.user; // Extrae datos del usuario de Telegram
+        }
+
+        // Identificador único para el Multiplayer (Prioriza el ID de Telegram)
+        let playerId = tgUser ? tgUser.id.toString() : localStorage.getItem('tc_pid');
+        if (!playerId) {
+            playerId = crypto.randomUUID();
+            localStorage.setItem('tc_pid', playerId);
+        }
+
+        const HORSES = [
+            { id: 'criollo', name: 'Criollo Llanero', emoji: '🐎', fuerza: 5, velocidad: 7, estabilidad: 9 },
+            { id: 'milla', name: 'Cuarto de Milla', emoji: '🏇', fuerza: 8, velocidad: 9, estabilidad: 6 },
+            { id: 'pinto', name: 'Pinto Americano', emoji: '🐴', fuerza: 7, velocidad: 8, estabilidad: 8 }
+        ];
+
+        const BULLS = [
+            { id: 'novillo', name: 'Novillo', emoji: '🐄', bravura: 4, peso: 350 },
+            { id: 'cebu', name: 'Toro Cebú', emoji: '🐂', bravura: 7, peso: 500 },
+            { id: 'padrote', name: 'Padrote Rebelde', emoji: '🐃', bravura: 9, peso: 650 }
+        ];
+
+        let state = {
+            // Toma el nombre de Telegram directamente si existe, si no, busca en local o usa por defecto
+            nickname: tgUser ? tgUser.first_name : (localStorage.getItem('tc_nickname') || 'Coleador'),
+            stars: parseInt(localStorage.getItem('tc_stars')) || 1000,
+            horseIndex: parseInt(localStorage.getItem('tc_horse')) || 0,
+            horseName: localStorage.getItem('tc_horseName') || '',
+            
+            customHorseImg0: localStorage.getItem('tc_mod_horse_0') || null,
+            customHorseImg1: localStorage.getItem('tc_mod_horse_1') || null,
+            customHorseImg2: localStorage.getItem('tc_mod_horse_2') || null,
+            customBullImg: localStorage.getItem('tc_mod_bull') || null,
+            customBgImg: localStorage.getItem('tc_mod_bg') || null,
+            mangaNames: JSON.parse(localStorage.getItem('tc_mangaNames')) || ["Toros en mi Pueblo", "Copa en Maracay", "Campeonato Barquisimeto"],
+            horseNames: JSON.parse(localStorage.getItem('tc_horseNames')) || ["Criollo Llanero", "Cuarto de Milla", "Pinto Americano"],
+            
+            admin: {
+                fee: parseInt(localStorage.getItem('tc_fee')) || 100,
+                com: parseInt(localStorage.getItem('tc_com')) || 10,
+                password: localStorage.getItem('tc_admin_pwd') || 'ADMIN123',
+                recovery: localStorage.getItem('tc_admin_rec') || 'COLEO'
+            },
+            ranking: JSON.parse(localStorage.getItem('tc_ranking')) || [
+                { nombre: 'El Centauro', puntos: 1500 },
+                { nombre: 'Mano e Plomo', puntos: 1200 },
+                { nombre: 'Toro Viejo', puntos: 900 }
+            ]
+        };
+
+        if(state.horseIndex < 0 || state.horseIndex >= HORSES.length) state.horseIndex = 0;
+
+        let game = {
+            active: false, mode: 'career', level: 1, horsePos: -20, horseSpeed: 0.5,
+            animFrame: null, mpData: null, currentTurn: 1, maxTurns: 4, matchScore: 0, filoCount: 0,
+            zones: { fMin: 0, fMax: 0, cMin: 0, cMax: 0 }
+        };
+
+        let lobbyListener = null;
+
+        const phrases = {
+            start: ["¡Atención, se abre el toril!", "¡Salió el toro, apriete coleador!", "¡Cuidado en la manga!"],
+            filo: ["¡Filo de Lomo perfecto!", "¡Qué ejecución impecable!", "¡Limpiecito ese filo!"],
+            costado: ["¡Cayó de costado!", "¡Recortó el toro sumando!", "¡Buena caída, suma puntos!"],
+            nulo: ["¡Nulo, se le fue!", "¡Pasó de largo el jinete!", "¡Falló en la zona!"]
+        };
+
+        function init() {
+            HORSES[0].name = state.horseNames[0];
+            HORSES[1].name = state.horseNames[1];
+            HORSES[2].name = state.horseNames[2];
+
+            document.getElementById('input-nickname').value = state.nickname;
+            if(document.getElementById('input-horsename')) document.getElementById('input-horsename').value = state.horseName;
+            
+            document.getElementById('ui-manga-1').innerText = state.mangaNames[0];
+            document.getElementById('ui-manga-2').innerText = state.mangaNames[1];
+            document.getElementById('ui-manga-3').innerText = state.mangaNames[2];
+
+            // Configurar el porcentaje de comisión en el reglamento
+            if(document.getElementById('reg-com-val')) {
+                document.getElementById('reg-com-val').innerText = state.admin.com + '%';
+            }
+
+            updateHeader();
+            renderRanking();
+
+            // Lógica de Reglamento / Términos y Condiciones
+            if(localStorage.getItem('reglamentoAceptado') !== 'true') {
+                document.getElementById('app-header').classList.add('hidden');
+                nav('reglamento');
+            } else {
+                document.getElementById('app-header').classList.remove('hidden');
+                nav('menu');
+            }
+        }
+
+        function acceptTerms() {
+            localStorage.setItem('reglamentoAceptado', 'true');
+            document.getElementById('app-header').classList.remove('hidden');
+            nav('menu');
+        }
+
+        function saveData() {
+            localStorage.setItem('tc_nickname', state.nickname);
+            localStorage.setItem('tc_stars', state.stars);
+            localStorage.setItem('tc_horse', state.horseIndex);
+            localStorage.setItem('tc_horseName', state.horseName);
+            localStorage.setItem('tc_fee', state.admin.fee);
+            localStorage.setItem('tc_com', state.admin.com);
+            localStorage.setItem('tc_admin_pwd', state.admin.password);
+            localStorage.setItem('tc_admin_rec', state.admin.recovery);
+            localStorage.setItem('tc_mangaNames', JSON.stringify(state.mangaNames));
+            localStorage.setItem('tc_horseNames', JSON.stringify(state.horseNames));
+            localStorage.setItem('tc_ranking', JSON.stringify(state.ranking));
+            
+            if(state.customHorseImg0) localStorage.setItem('tc_mod_horse_0', state.customHorseImg0); else localStorage.removeItem('tc_mod_horse_0');
+            if(state.customHorseImg1) localStorage.setItem('tc_mod_horse_1', state.customHorseImg1); else localStorage.removeItem('tc_mod_horse_1');
+            if(state.customHorseImg2) localStorage.setItem('tc_mod_horse_2', state.customHorseImg2); else localStorage.removeItem('tc_mod_horse_2');
+            if(state.customBullImg) localStorage.setItem('tc_mod_bull', state.customBullImg); else localStorage.removeItem('tc_mod_bull');
+            if(state.customBgImg) localStorage.setItem('tc_mod_bg', state.customBgImg); else localStorage.removeItem('tc_mod_bg');
+
+            updateHeader();
+        }
+
+        function updateHeader() {
+            document.getElementById('ui-nickname').innerText = state.nickname;
+            document.getElementById('ui-stars').innerText = state.stars;
+        }
+
+        function saveNickname() {
+            const val = document.getElementById('input-nickname').value.trim();
+            if(val) { state.nickname = val; saveData(); }
+        }
+
+        function saveHorseName() {
+            state.horseName = document.getElementById('input-horsename').value.trim();
+            saveData();
+        }
+
+        function nav(screenId) {
+            document.querySelectorAll('main > section').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+            const targetScreen = document.getElementById('screen-' + screenId);
+            targetScreen.classList.remove('hidden');
+            targetScreen.classList.add('flex');
+            document.querySelector('main').scrollTop = 0;
+            if(screenId === 'multiplayer') updateMpSetup();
+            if(screenId === 'ranking') renderRanking();
+        }
+
+        function prepGame(mode, level) {
+            game.mode = mode;
+            game.level = level;
+            updateEstabloUI();
+            nav('establo');
+        }
+
+        function getRenderedEntity(type, index) {
+            if (type === 'horse') {
+                const customImg = state['customHorseImg' + index];
+                if (customImg) return `<img src="${customImg}" class="custom-img" style="transform: scaleX(-1);">`;
+                return `<div style="transform: scaleX(-1); display: inline-block;">${HORSES[index].emoji}</div>`;
+            } else if (type === 'bull') {
+                if (state.customBullImg) return `<img src="${state.customBullImg}" class="custom-img" style="transform: scaleX(-1);">`;
+                return `<div style="transform: scaleX(-1); display: inline-block;">${BULLS[index].emoji}</div>`;
+            }
+        }
+
+        function updateEstabloUI() {
+            const horse = HORSES[state.horseIndex];
+            document.getElementById('est-horse-emoji').innerHTML = getRenderedEntity('horse', state.horseIndex);
+            document.getElementById('est-horse-name').innerText = horse.name;
+            document.getElementById('input-horsename').value = state.horseName;
+            
+            document.getElementById('est-bar-fue').style.width = (horse.fuerza * 10) + '%';
+            document.getElementById('est-val-fue').innerText = horse.fuerza;
+            document.getElementById('est-bar-vel').style.width = (horse.velocidad * 10) + '%';
+            document.getElementById('est-val-vel').innerText = horse.velocidad;
+            document.getElementById('est-bar-est').style.width = (horse.estabilidad * 10) + '%';
+            document.getElementById('est-val-est').innerText = horse.estabilidad;
+        }
+
+        function changeHorse(dir) {
+            state.horseIndex += dir;
+            if(state.horseIndex < 0) state.horseIndex = HORSES.length - 1;
+            if(state.horseIndex >= HORSES.length) state.horseIndex = 0;
+            saveData();
+            updateEstabloUI();
+        }
+
+        // ====== FIREBASE MATCHMAKING & TELEGRAM PAYMENTS ======
+
+        async function initiatePayment() {
+            if(state.stars < state.admin.fee) {
+                showCustomAlert("Fondos Insuficientes", "No tienes suficientes Stars para la inscripción.");
+                return;
+            }
+            
+            showCustomConfirm(
+                "Inscripción", 
+                `¿Pagar <b>${state.admin.fee} Stars</b> para entrar al Duelo Online?`, 
+                async () => {
+                    // Flujo Oficial de Pago con Telegram WebApp
+                    if (tg && tg.openInvoice) {
+                        showProcessing("Abriendo pasarela de Telegram...");
+                        
+                        // NOTA: Esta URL debe ser generada por tu backend (bot) usando 'createInvoiceLink'
+                        const invoiceUrl = "https://t.me/$TU_INVOICE_URL_GENERADA_AQUI"; 
+
+                        try {
+                            tg.openInvoice(invoiceUrl, (status) => {
+                                closeProcessing();
+                                if (status === 'paid') {
+                                    // El usuario pagó con éxito a través de Telegram
+                                    connectToLobbyAfterPayment();
+                                } else if (status === 'cancelled') {
+                                    showCustomAlert("Cancelado", "Has cancelado la transacción.");
+                                } else {
+                                    showCustomAlert("Error", "Estado de pago desconocido: " + status);
+                                }
+                            });
+                        } catch (e) {
+                            // Fallback por si la URL es inválida en fase de pruebas
+                            closeProcessing();
+                            console.warn("openInvoice falló (falta URL real). Usando simulación.");
+                            connectToLobbyAfterPayment();
+                        }
+                    } else {
+                        // Fallback (Simulación) si se juega desde un navegador web normal
+                        showProcessing("Procesando pago simulado... <br><i class='fa-solid fa-circle-notch fa-spin text-3xl mt-4 text-[var(--tg-primary)]'></i>");
+                        setTimeout(() => {
+                            closeProcessing();
+                            connectToLobbyAfterPayment();
+                        }, 1500);
+                    }
+                }
+            );
+        }
+
+        async function connectToLobbyAfterPayment() {
+            showProcessing("Conectando al servidor global... <br><i class='fa-solid fa-circle-notch fa-spin text-3xl mt-4 text-[var(--tg-primary)]'></i>");
+            
+            // Conexión y creación de la sala en Firebase
+            const roomRef = ref(db, 'salas/manga_principal');
+            
+            try {
+                const snapshot = await get(roomRef);
+                const roomData = snapshot.val();
+                
+                let totalFee = state.admin.fee * 4;
+                let poteCalculado = totalFee - (totalFee * state.admin.com / 100);
+
+                if (!roomData || roomData.estado === 'terminado') {
+                    // Crear nueva sala
+                    await set(roomRef, {
+                        estado: 'esperando',
+                        pote: poteCalculado,
+                        jugadores: {
+                            [playerId]: { nombre: state.nickname, status: 'LISTO', score: -1 }
+                        }
+                    });
+                } else {
+                    // Unirse a sala existente si hay espacio
+                    if(Object.keys(roomData.jugadores || {}).length >= 4) {
+                        closeProcessing();
+                        showCustomAlert("Sala Llena", "La manga principal está llena. Intenta de nuevo en unos segundos.");
+                        return;
+                    }
+                    await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), {
+                        nombre: state.nickname,
+                        status: 'LISTO',
+                        score: -1
+                    });
+                }
+                
+                // Configurar desconexión segura
+                onDisconnect(ref(db, `salas/manga_principal/jugadores/${playerId}`)).remove();
+
+                // Pago descontado internamente
+                state.stars -= state.admin.fee;
+                saveData();
+
+                closeProcessing();
+                openLobby();
+
+            } catch (error) {
+                console.error(error);
+                closeProcessing();
+                showCustomAlert("Error de Conexión", "No se pudo conectar con el servidor global (Firebase).");
+            }
+        }
+
+        function openLobby() {
+            nav('lobby');
+            const roomRef = ref(db, 'salas/manga_principal');
+
+            // Escuchar cambios en la sala
+            lobbyListener = onValue(roomRef, (snapshot) => {
+                const data = snapshot.val();
+                if(!data) return;
+
+                const playersList = Object.values(data.jugadores || {});
+                renderLobby(playersList);
+
+                // Lógica de inicio cuando se llenan los 4 cupos
+                if(data.estado === 'esperando' && playersList.length === 4) {
+                    // Solo el host (jugador 1) cambia el estado a jugando para evitar múltiples escrituras
+                    const pKeys = Object.keys(data.jugadores);
+                    if(pKeys[0] === playerId) {
+                        update(roomRef, { estado: 'jugando' });
+                    }
+                }
+
+                // Disparador de inicio de juego
+                if(data.estado === 'jugando' && game.mode !== 'multiplayer-active') {
+                    game.mode = 'multiplayer-active'; // Flag preventivo
+                    game.mpData = { dbPlayers: data.jugadores, myPote: data.pote };
+                    setTimeout(() => prepGame('multiplayer', 2), 1000); // Toro Cebú (Nivel 2 estándar PvP)
+                }
+
+                // Disparador de Resultados (Todos terminaron)
+                if(data.estado === 'terminado' && game.mode === 'multiplayer-waiting') {
+                    showFinalMultiplayerResults(data);
+                }
+            });
+        }
+
+        function renderLobby(players) {
+            const container = document.getElementById('lobby-slots');
+            container.innerHTML = '';
+            
+            for(let i = 0; i < 4; i++) {
+                const p = players[i];
+                if(p) {
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                            <span class="font-semibold text-white"><i class="fa-solid fa-user text-[var(--tg-primary)] mr-2 text-xs"></i>${p.nombre}</span>
+                            <span class="text-green-400 text-[10px] uppercase font-bold"><i class="fa-solid fa-check"></i> ${p.status}</span>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[var(--tg-surface)] p-3 rounded-lg border border-[var(--tg-border)] border-dashed">
+                            <span class="text-[var(--tg-text-sec)]"><i class="fa-solid fa-clock text-xs mr-2"></i>Esperando</span>
+                            <i class="fa-solid fa-circle-notch fa-spin text-gray-600 text-xs"></i>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('lobby-timer').innerText = "Iniciando"; // Ocultamos el tiempo
+            document.getElementById('lobby-count').innerText = players.length;
+        }
+
+        async function cancelLobby() {
+            showProcessing("Cancelando...");
+            await remove(ref(db, `salas/manga_principal/jugadores/${playerId}`));
+            state.stars += state.admin.fee; // Devolución
+            saveData();
+            game.mode = 'career'; // Reset flag
+            if(lobbyListener) lobbyListener(); // Unsubscribe
+            closeProcessing();
+            nav('menu');
+        }
+
+        // ====== FIN LÓGICA FIREBASE ======
+
+        function startGame() {
+            game.currentTurn = 1;
+            game.matchScore = 0;
+            game.filoCount = 0;
+            startTurn();
+        }
+
+        function applyCustomBackground() {
+            const bgElement = document.getElementById('manga-bg');
+            if (state.customBgImg) {
+                bgElement.style.backgroundImage = `url(${state.customBgImg})`;
+                bgElement.style.backgroundSize = 'cover';
+                bgElement.style.backgroundPosition = 'center';
+                bgElement.classList.remove('manga-track', 'manga-scrolling');
+            } else {
+                bgElement.style.backgroundImage = '';
+                bgElement.style.backgroundSize = '';
+                bgElement.classList.add('manga-track', 'manga-scrolling');
+            }
+        }
+
+        function startTurn() {
+            game.active = true;
+            game.horsePos = -20;
+            const horse = HORSES[state.horseIndex];
+            const bull = BULLS[game.level - 1];
+
+            game.horseSpeed = (game.level * 0.3) + (horse.velocidad * 0.1); 
+            let filoSize = Math.max(1.5, 3 + (horse.fuerza * 0.5) - (bull.bravura * 0.4)); 
+            let costadoSize = Math.max(filoSize + 1, 6 + (horse.estabilidad * 0.5) - (bull.peso / 100)); 
+
+            game.zones = { fMin: 45 - filoSize, fMax: 45 + filoSize, cMin: 45 - costadoSize, cMax: 45 + costadoSize };
+
+            document.getElementById('zone-filo').style.left = game.zones.fMin + '%';
+            document.getElementById('zone-filo').style.width = (filoSize * 2) + '%';
+            document.getElementById('zone-costado').style.left = game.zones.cMin + '%';
+            document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
+
+            document.getElementById('ent-horse').innerHTML = getRenderedEntity('horse', state.horseIndex);
+            document.getElementById('ent-bull').innerHTML = getRenderedEntity('bull', game.level - 1);
+            applyCustomBackground();
+
+            document.getElementById('hud-turn').innerText = `${game.currentTurn}/${game.maxTurns}`;
+            document.getElementById('hud-score').innerText = game.matchScore;
+            
+            const btn = document.getElementById('btn-colear');
+            btn.disabled = false;
+            btn.innerText = "COLEAR";
+            
+            document.getElementById('pos-horse').style.transition = 'none'; document.getElementById('pos-horse').style.left = '-20%';
+            document.getElementById('pos-bull').style.transition = 'none'; document.getElementById('pos-bull').style.left = '55%'; 
+            
+            document.getElementById('ent-horse').className = 'text-6xl anim-gallop drop-shadow-lg flex items-center justify-center';
+            document.getElementById('ent-bull').className = 'text-5xl anim-bull drop-shadow-lg flex items-center justify-center';
+            document.getElementById('dust').classList.add('hidden');
+
+            setLocutor(phrases.start[Math.floor(Math.random() * phrases.start.length)]);
+
+            if(game.currentTurn === 1) nav('game');
+            setTimeout(() => { if(game.active) gameLoop(); }, 500);
+        }
+
+        function gameLoop() {
+            if(!game.active) return;
+            game.horsePos += game.horseSpeed;
+            document.getElementById('pos-horse').style.left = game.horsePos + '%';
+
+            if(game.horsePos > 80) { game.active = false; evaluarColeada(true); return; }
+            game.animFrame = requestAnimationFrame(gameLoop);
+        }
+
+        function btnColearAction() {
+            if(!game.active) return;
+            game.active = false;
+            cancelAnimationFrame(game.animFrame);
+            evaluarColeada(false);
+        }
+        document.getElementById('btn-colear').addEventListener('click', btnColearAction);
+
+        function evaluarColeada(pasoDeLargo) {
+            document.getElementById('btn-colear').disabled = true;
+            document.getElementById('btn-colear').innerText = "Ejecutando...";
+
+            let score = 0, resType = 'nulo', p = game.horsePos;
+            if(!pasoDeLargo) {
+                if(p >= game.zones.fMin && p <= game.zones.fMax) { score = 20; resType = 'filo'; } 
+                else if (p >= game.zones.cMin && p <= game.zones.cMax) { score = 10; resType = 'costado'; }
+            }
+            setTimeout(() => executeResult(resType, score), 100);
+        }
+
+        function executeResult(type, score) {
+            const bull = document.getElementById('ent-bull');
+            const posHorse = document.getElementById('pos-horse');
+            const posBull = document.getElementById('pos-bull');
+            
+            document.getElementById('manga-bg').classList.remove('manga-scrolling');
+            bull.classList.remove('anim-bull');
+            bull.classList.add('action-' + type);
+
+            posHorse.style.transition = 'left 1.5s ease-out'; posHorse.style.left = '120%';
+
+            if(type === 'filo' || type === 'costado') {
+                document.getElementById('dust').classList.remove('hidden');
+                setTimeout(() => document.getElementById('dust').classList.add('hidden'), 1000);
+            } else {
+                posBull.style.transition = 'left 1.2s ease-in'; posBull.style.left = '120%';
+            }
+
+            setLocutor(phrases[type][Math.floor(Math.random() * phrases[type].length)]);
+
+            setTimeout(() => {
+                game.matchScore += score;
+                if(type === 'filo') game.filoCount++;
+                
+                if (game.currentTurn < game.maxTurns) {
+                    showTurnResult(type, score);
+                } else {
+                    if(game.mode === 'career') {
+                        showCareerResult();
+                    } else {
+                        // Es multiplayer
+                        processFirebaseTurn();
+                    }
+                }
+            }, 1500);
+        }
+
+        function setLocutor(txt) { document.getElementById('locutor-text').innerText = `"${txt}"`; }
+
+        function showTurnResult(type, score) {
+            document.getElementById('res-title').innerText = score > 0 ? "Buen Movimiento" : "Fallaste";
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${score>0?'text-white':'text-[var(--vzla-red)]'}`;
+            document.getElementById('res-desc').innerHTML = `Lograste <b>${type.toUpperCase()}</b> (+${score} Pts).<br><br><span class="text-xs text-[var(--tg-text-sec)] uppercase tracking-widest">Suma: <span class="text-white text-base">${game.matchScore} Pts</span></span>`;
+            document.getElementById('res-mp-details').classList.add('hidden');
+            
+            const btn = document.getElementById('btn-result-action');
+            btn.innerText = "Siguiente Turno";
+            btn.className = "w-full tg-btn-primary p-4";
+            btn.onclick = () => {
+                document.getElementById('overlay-result').classList.add('hidden');
+                document.getElementById('overlay-result').classList.remove('flex');
+                game.currentTurn++;
+                startTurn();
+            };
+            document.getElementById('overlay-result').classList.remove('hidden');
+            document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        function showCareerResult() {
+            updatePlayerRanking(game.matchScore);
+            let clasifica = (game.filoCount >= 3 && game.level < 3);
+            let campeon = (game.filoCount >= 3 && game.level === 3);
+
+            document.getElementById('res-title').innerText = clasifica ? "Clasificado" : (campeon ? "¡Campeón!" : "Manga Terminada");
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${campeon ? 'text-[var(--tg-primary)]' : (clasifica ? 'text-white' : 'text-[var(--vzla-red)]')}`;
+            
+            let desc = `Total: <b class="text-white">${game.matchScore} Pts</b>.<br>Filos: <b class="text-white">${game.filoCount}</b>.`;
+            desc += `<br><br><span class="text-xs ${clasifica || campeon ? 'text-green-400' : 'text-[var(--tg-text-sec)]'}">${campeon ? 'Has dominado el circuito.' : (clasifica ? 'Avanzas al siguiente nivel.' : 'Necesitas 3 Filos para pasar.')}</span>`;
+
+            document.getElementById('res-desc').innerHTML = desc;
+            document.getElementById('res-mp-details').classList.add('hidden');
+            
+            const btn = document.getElementById('btn-result-action');
+            if(clasifica) {
+                btn.innerText = "Siguiente Etapa";
+                btn.className = "w-full tg-btn-primary p-4";
+                btn.onclick = () => {
+                    document.getElementById('overlay-result').classList.add('hidden');
+                    document.getElementById('overlay-result').classList.remove('flex');
+                    prepGame('career', game.level + 1); 
+                };
+            } else {
+                btn.innerText = "Finalizar";
+                btn.className = "w-full tg-btn-secondary p-4";
+                btn.onclick = closeResult;
+            }
+            document.getElementById('overlay-result').classList.remove('hidden');
+            document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        // Subir score y esperar a los demás en Firebase
+        async function processFirebaseTurn() {
+            game.mode = 'multiplayer-waiting';
+            showProcessing("Esperando resultados del resto de coleadores...<br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
+            
+            await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), { score: game.matchScore });
+            
+            // Evaluamos si todos terminaron
+            const snapshot = await get(ref(db, 'salas/manga_principal/jugadores'));
+            const players = snapshot.val();
+            let allFinished = true;
+            for(let key in players) {
+                if(players[key].score < 0) allFinished = false;
+            }
+
+            if(allFinished) {
+                // Calcular resultados globales y financieros (Solo se ejecuta cuando el último jugador termina)
+                const playersList = Object.keys(players).map(k => ({ id: k, nombre: players[k].nombre, score: players[k].score }));
+                
+                // Desempate aleatorio para evitar problemas
+                let sorted = playersList.sort((a,b) => b.score === a.score ? Math.random() - 0.5 : b.score - a.score);
+
+                // Finanzas: Cálculos
+                const totalFee = state.admin.fee * 4;
+                const comisionDev = totalFee * (state.admin.com / 100);
+                const poteNeto = totalFee - comisionDev;
+
+                const premios = [
+                    Math.floor(poteNeto * 0.70), // 1ro
+                    Math.floor(poteNeto * 0.20), // 2do
+                    Math.floor(poteNeto * 0.10), // 3ro
+                    0                            // 4to
+                ];
+
+                // Libro Contable: Crear registro
+                const historialRecord = {
+                    timestamp: Date.now(),
+                    fecha: new Date().toLocaleString(),
+                    economia: {
+                        total_inscripciones: totalFee,
+                        comision_desarrollador: comisionDev,
+                        pote_repartido: poteNeto
+                    },
+                    jugadores: {}
+                };
+
+                let resultadosDB = {};
+
+                // Asignar premios y posiciones
+                sorted.forEach((p, idx) => {
+                    historialRecord.jugadores[p.id] = { nombre: p.nombre, score: p.score, premio: premios[idx], posicion: idx + 1 };
+                    resultadosDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 };
+                });
+
+                // Registrar en la rama /historial_pagos/
+                await push(ref(db, 'historial_pagos'), historialRecord);
+
+                // Actualizar la sala a terminado e inyectar el arreglo de resultados.
+                await update(ref(db, 'salas/manga_principal'), { estado: 'terminado', resultados: resultadosDB });
+            }
+        }
+
+        // Callback Global cuando la DB dice "terminado"
+        function showFinalMultiplayerResults(data) {
+            closeProcessing();
+            game.mode = 'career'; // Reset flag
+
+            const resultados = data.resultados || {};
+            // Extraer y ordenar para mostrar en la interfaz
+            const playersList = Object.values(resultados).sort((a, b) => a.posicion - b.posicion);
+
+            let myPrize = 0;
+            let isUserWinner = false;
+            
+            let html = `<div class="font-bold text-center mb-3 text-[var(--tg-text-sec)] text-xs">REPARTO OFICIAL</div>`;
+            
+            playersList.forEach((p) => {
+                let isMe = (p.id === playerId);
+                if(isMe && p.premio > 0) {
+                    myPrize = p.premio;
+                    isUserWinner = true;
+                }
+                
+                let badge = p.posicion === 1 ? '<i class="fa-solid fa-trophy text-[var(--tg-primary)]"></i>' : `${p.posicion}.`;
+                let styleRow = isMe ? 'text-white font-bold bg-[var(--tg-primary)]/10 px-2 rounded' : 'text-gray-400';
+
+                html += `
+                    <div class="flex justify-between items-center text-xs py-2 my-1 border-b border-[var(--tg-border)] last:border-0 ${styleRow}">
+                        <span>${badge} ${p.nombre} (${p.score}pts)</span>
+                        <span class="${p.premio > 0 ? 'text-green-400 font-bold' : ''}">${p.premio > 0 ? '+'+p.premio : '0'}</span>
+                    </div>
+                `;
+            });
+
+            updatePlayerRanking(game.matchScore);
+            saveData();
+
+            document.getElementById('res-title').innerText = isUserWinner ? "¡Cobraste Premio!" : "Derrota";
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${isUserWinner ? 'text-green-400' : 'text-[var(--vzla-red)]'}`;
+            document.getElementById('res-desc').innerHTML = isUserWinner ? `Lograste entrar en el cuadro de cobro de la Manga.` : "No lograste sumar para llevarte un premio.";
+            
+            document.getElementById('res-mp-details').innerHTML = html;
+            document.getElementById('res-mp-details').classList.remove('hidden');
+
+            const btn = document.getElementById('btn-result-action');
+            if(isUserWinner) {
+                btn.innerHTML = `<i class="fa-solid fa-wallet"></i> Guardar (${myPrize})`;
+                btn.className = "w-full tg-btn-primary p-4";
+                btn.onclick = () => {
+                    state.stars += myPrize;
+                    saveData();
+                    showCustomAlert("¡Botín Asegurado!", `Se guardaron <b>${myPrize} Stars</b> en tu billetera.`, () => closeResult());
+                };
+            } else {
+                btn.innerText = "Salir al Menú";
+                btn.className = "w-full tg-btn-secondary p-4";
+                btn.onclick = closeResult;
+            }
+            document.getElementById('overlay-result').classList.remove('hidden');
+            document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        // --- WALLET LOGIC ---
+        function openWallet() {
+            document.getElementById('wallet-balance').innerText = state.stars;
+            nav('wallet');
+        }
+
+        function withdrawFromWallet() {
+            if (state.stars <= 0) return showCustomAlert("Sin Fondos", "No tienes Stars acumuladas.");
+            showCustomConfirm("Retirar a Telegram", `¿Enviar <b>${state.stars} Stars</b> a tu cuenta?`, () => {
+                showProcessing("Conectando con Wallet... <br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
+                setTimeout(() => {
+                    closeProcessing();
+                    const amount = state.stars;
+                    state.stars = 0; saveData();
+                    document.getElementById('wallet-balance').innerText = state.stars;
+                    showCustomAlert("¡Completado!", `Se enviaron <b>${amount} Stars</b>.`);
+                }, 1500);
+            });
+        }
+
+        function depositToWallet() {
+            showCustomConfirm("Comprar Stars", "¿Comprar <b>1000 Stars</b> mediante Telegram?", () => {
+                showProcessing("Aprobando pago... <br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
+                setTimeout(() => {
+                    closeProcessing();
+                    state.stars += 1000; saveData();
+                    document.getElementById('wallet-balance').innerText = state.stars;
+                    showCustomAlert("¡Aprobado!", "Se añadieron <b>1000 Stars</b>.");
+                }, 1500);
+            });
+        }
+
+        function closeResult() {
+            document.getElementById('overlay-result').classList.add('hidden');
+            document.getElementById('overlay-result').classList.remove('flex');
+            if(lobbyListener) lobbyListener(); // Limpiar socket DB
+            nav('menu');
+        }
+
+        async function quitGame() {
+            showCustomConfirm("Abandonar", "¿Seguro que deseas salir? Perderás el progreso y la inscripción.", async () => {
+                game.active = false; cancelAnimationFrame(game.animFrame); 
+                if(game.mode.includes('multiplayer')) {
+                    // Limpiarse de la sala
+                    await remove(ref(db, `salas/manga_principal/jugadores/${playerId}`));
+                }
+                nav('menu');
+            });
+        }
+
+        // --- FUNCIONES EXPUESTAS AL SCOPE GLOBAL (PARA HTML ONCLICK) ---
+        window.nav = nav;
+        window.saveNickname = saveNickname;
+        window.saveHorseName = saveHorseName;
+        window.prepGame = prepGame;
+        window.changeHorse = changeHorse;
+        window.startGame = startGame;
+        window.initiatePayment = initiatePayment;
+        window.cancelLobby = cancelLobby;
+        window.quitGame = quitGame;
+        window.closeResult = closeResult;
+        window.openWallet = openWallet;
+        window.withdrawFromWallet = withdrawFromWallet;
+        window.depositToWallet = depositToWallet;
+        window.acceptTerms = acceptTerms;
+        
+        // --- CORTE DE CAJA (NUEVO) ---
+        window.calculateCorteDeCaja = async function() {
+            showProcessing("Calculando ganancias... <br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
+            try {
+                const snapshot = await get(ref(db, 'historial_pagos'));
+                const records = snapshot.val();
+                
+                let gananciasHoy = 0;
+                let gananciasTotales = 0;
+                
+                if (records) {
+                    const now = new Date();
+                    // Inicio del día actual a las 00:00:00
+                    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+                    Object.values(records).forEach(record => {
+                        const comision = record.economia?.comision_desarrollador || 0;
+                        gananciasTotales += comision;
+                        
+                        // Si el timestamp del registro es mayor o igual al inicio de hoy
+                        if (record.timestamp >= startOfDay) {
+                            gananciasHoy += comision;
+                        }
+                    });
+                }
+                
+                closeProcessing();
+                showCustomAlert(
+                    "Corte de Caja", 
+                    `<div class="text-left space-y-3 mt-4 bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-border)]">
+                        <div class="flex justify-between border-b border-[var(--tg-border)] pb-3">
+                            <span class="text-[var(--tg-text-sec)] text-sm font-semibold">Ganancias de Hoy:</span>
+                            <span class="font-bold text-green-400 text-lg">+${gananciasHoy} <i class="fa-solid fa-star text-[var(--tg-primary)] text-sm"></i></span>
+                        </div>
+                        <div class="flex justify-between pt-1">
+                            <span class="text-[var(--tg-text-sec)] text-sm font-semibold">Total Histórico:</span>
+                            <span class="font-bold text-white text-lg">+${gananciasTotales} <i class="fa-solid fa-star text-[var(--tg-primary)] text-sm"></i></span>
+                        </div>
+                    </div>`
+                );
+            } catch (error) {
+                console.error(error);
+                closeProcessing();
+                showCustomAlert("Error", "No se pudo acceder a la base de datos de Firebase.");
+            }
+        };
+
+        window.requestAdminAccess = function() {
+            showLoginPrompt((pwd) => {
+                if (pwd === state.admin.password) openSecretAdmin();
+                else showCustomAlert("Error", "Contraseña incorrecta.");
+            }, () => {
+                showCustomPrompt("Recuperación", `Palabra secreta:`, (ans) => {
+                    if(ans.trim().toUpperCase() === state.admin.recovery.toUpperCase()) {
+                        state.admin.password = "ADMIN123"; saveData();
+                        showCustomAlert("Restablecida", "La clave vuelve a ser <b>ADMIN123</b>.");
+                    } else showCustomAlert("Error", "Palabra incorrecta.");
+                });
+            });
+        };
+
+        window.handleFileUpload = function(event, stateKey) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                state[stateKey] = e.target.result; 
+                let statusNode = event.target.parentElement.querySelector('.upload-status');
+                if(!statusNode) {
+                    statusNode = document.createElement('span');
+                    statusNode.className = 'upload-status text-green-400 text-[10px] font-bold block mt-1';
+                    event.target.parentElement.appendChild(statusNode);
+                }
+                statusNode.innerHTML = '<i class="fa-solid fa-check"></i> Cargada en memoria';
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearMods = function() {
+            showCustomConfirm("Limpiar Gráficos", "¿Borrar todos los mods visuales?", () => {
+                state.customHorseImg0 = null; state.customHorseImg1 = null; state.customHorseImg2 = null;
+                state.customBullImg = null; state.customBgImg = null; saveData();
+                document.querySelectorAll('.upload-status').forEach(el => el.remove());
+                showCustomAlert("Listo", "Se restauraron los Emojis por defecto.", () => { init(); nav('menu'); });
+            });
+        };
+
+        window.saveAdminSettings = function() {
+            state.admin.fee = parseInt(document.getElementById('sec-fee').value) || 100;
+            state.admin.com = parseInt(document.getElementById('sec-com').value) || 10;
+            state.admin.password = document.getElementById('sec-pwd').value || "ADMIN123";
+            state.admin.recovery = document.getElementById('sec-rec').value || "COLEO";
+            state.mangaNames[0] = document.getElementById('sec-m1').value || "Toros en mi Pueblo";
+            state.mangaNames[1] = document.getElementById('sec-m2').value || "Copa en Maracay";
+            state.mangaNames[2] = document.getElementById('sec-m3').value || "Campeonato Barquisimeto";
+            state.horseNames[0] = document.getElementById('sec-h1').value || "Criollo Llanero";
+            state.horseNames[1] = document.getElementById('sec-h2').value || "Cuarto de Milla";
+            state.horseNames[2] = document.getElementById('sec-h3').value || "Pinto Americano";
+            try {
+                saveData(); init(); nav('menu');
+                showCustomAlert("Guardado", "Ajustes aplicados correctamente.");
+            } catch (error) {
+                showCustomAlert("Error de Almacenamiento", "¡Imágenes muy pesadas! Recórtalas o usa archivos de menor tamaño.");
+            }
+        };
+
+        window.donateDev = function() { 
+            showCustomConfirm("Donar", "¿Enviar donación de 50 Stars?", () => {
+                if(state.stars >= 50) { state.stars -= 50; saveData(); showCustomAlert("¡Gracias!", "Apoyo recibido 🤠"); } 
+                else showCustomAlert("Error", "Fondos insuficientes.");
+            });
+        };
+
+        function openSecretAdmin() {
+            document.getElementById('sec-fee').value = state.admin.fee;
+            document.getElementById('sec-com').value = state.admin.com;
+            document.getElementById('sec-m1').value = state.mangaNames[0];
+            document.getElementById('sec-m2').value = state.mangaNames[1];
+            document.getElementById('sec-m3').value = state.mangaNames[2];
+            document.getElementById('sec-h1').value = state.horseNames[0];
+            document.getElementById('sec-h2').value = state.horseNames[1];
+            document.getElementById('sec-h3').value = state.horseNames[2];
+            document.getElementById('sec-pwd').value = state.admin.password;
+            document.getElementById('sec-rec').value = state.admin.recovery;
+            nav('secret-admin');
+        }
+
+        function updateMpSetup() {
+            const total = state.admin.fee * 4;
+            const comVal = (total * state.admin.com) / 100;
+            const pool = total - comVal;
+            
+            if(document.getElementById('mp-fee')) document.getElementById('mp-fee').innerText = state.admin.fee;
+            if(document.getElementById('mp-total')) document.getElementById('mp-total').innerText = total;
+            if(document.getElementById('mp-com-perc')) document.getElementById('mp-com-perc').innerText = state.admin.com;
+            if(document.getElementById('mp-com-val')) document.getElementById('mp-com-val').innerText = comVal;
+            if(document.getElementById('mp-pool')) document.getElementById('mp-pool').innerText = pool;
+            
+            // Actualización del Reparto 70/20/10
+            if(document.getElementById('mp-1st')) document.getElementById('mp-1st').innerText = Math.floor(pool * 0.70);
+            if(document.getElementById('mp-2nd')) document.getElementById('mp-2nd').innerText = Math.floor(pool * 0.20);
+            if(document.getElementById('mp-3rd')) document.getElementById('mp-3rd').innerText = Math.floor(pool * 0.10);
+        }
+
+        function showProcessing(msg) {
+            document.getElementById('modal-title').innerText = "Procesando";
+            document.getElementById('modal-desc').innerHTML = msg;
+            document.getElementById('modal-input').classList.add('hidden');
+            document.getElementById('modal-buttons').innerHTML = ''; 
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
+        }
+
+        function closeProcessing() {
+            document.getElementById('custom-modal').classList.add('hidden');
+            document.getElementById('custom-modal').classList.remove('flex');
+        }
+
+        function showCustomAlert(title, msg, onConfirm) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerHTML = msg;
+            document.getElementById('modal-input').classList.add('hidden');
+            document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-ok" class="w-full tg-btn-primary p-3">Aceptar</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex');
+            document.getElementById('modal-btn-ok').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onConfirm) onConfirm();
+            };
+        }
+
+        function showCustomConfirm(title, msg, onConfirm, onCancel) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerHTML = msg;
+            document.getElementById('modal-input').classList.add('hidden');
+            document.getElementById('modal-buttons').innerHTML = `
+                <button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button>
+                <button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Confirmar</button>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex');
+            document.getElementById('modal-btn-cancel').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onCancel) onCancel();
+            };
+            document.getElementById('modal-btn-yes').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onConfirm) onConfirm();
+            };
+        }
+
+        function showCustomPrompt(title, msg, onConfirm) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerHTML = msg;
+            const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'text';
+            document.getElementById('modal-buttons').innerHTML = `
+                <button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button>
+                <button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Aceptar</button>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex');
+            document.getElementById('modal-btn-cancel').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+            };
+            document.getElementById('modal-btn-yes').onclick = () => {
+                const val = inputEl.value;
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onConfirm) onConfirm(val);
+            };
+        }
+
+        function showLoginPrompt(onConfirm, onRecover) {
+            document.getElementById('modal-title').innerText = "Modo Master";
+            document.getElementById('modal-desc').innerHTML = "Clave requerida:";
+            const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'password';
+            document.getElementById('modal-buttons').innerHTML = `
+                <div class="flex flex-col w-full gap-3">
+                    <div class="flex gap-3">
+                        <button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Atrás</button>
+                        <button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Entrar</button>
+                    </div>
+                    <button id="modal-btn-recover" class="text-xs text-[var(--tg-primary)] mt-2 font-semibold">¿Olvidaste tu contraseña?</button>
+                </div>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex');
+            document.getElementById('modal-btn-cancel').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+            };
+            document.getElementById('modal-btn-yes').onclick = () => {
+                const val = inputEl.value;
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onConfirm) onConfirm(val);
+            };
+            document.getElementById('modal-btn-recover').onclick = () => {
+                document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex');
+                if(onRecover) onRecover();
+            };
+        }
+
+        function renderRanking() {
+            state.ranking.sort((a,b) => b.puntos - a.puntos);
+            const tbody = document.getElementById('ranking-body'); tbody.innerHTML = '';
+            state.ranking.forEach((r, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3 text-center font-bold ${idx===0?'text-[var(--tg-primary)]':''}">${idx+1}</td>
+                        <td class="p-3 font-semibold">${r.nombre === state.nickname ? `<span class="text-[var(--tg-primary)]">${r.nombre}</span>` : r.nombre}</td>
+                        <td class="p-3 text-right text-[var(--tg-text-sec)]">${r.puntos}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updatePlayerRanking(pts) {
+            let found = state.ranking.find(r => r.nombre === state.nickname);
+            if(found) found.puntos += pts; else state.ranking.push({ nombre: state.nickname, puntos: pts });
+            saveData();
+        }
+
+        init();
+    </script>
+</body>
+</html>
