@@ -109,7 +109,12 @@
                 <h1 class="font-display font-black text-3xl leading-none text-white tracking-tighter mb-1">
                     TOROS<br><span class="text-[var(--tg-primary)]">COLEADOS</span>
                 </h1>
-                <p class="text-xs text-gray-300 font-semibold tracking-widest mt-2">CARGANDO LA MANGA...</p>
+                <p id="splash-text" class="text-xs text-gray-300 font-semibold tracking-widest mt-2 text-center">CARGANDO LA MANGA...</p>
+                <div id="splash-error" class="hidden mt-2 p-2 bg-red-900/50 rounded border border-red-500 text-xs text-red-200">
+                    <p class="font-bold">Error de Autenticación de Firebase</p>
+                    <p>Asegúrate de haber habilitado "Anónimo" en Firebase Console -> Authentication -> Sign-in method.</p>
+                    <button onclick="window.processSplashScreen()" class="mt-2 bg-white text-black px-3 py-1 rounded font-bold cursor-pointer">Continuar de todos modos</button>
+                </div>
             </div>
         </section>
 
@@ -128,11 +133,11 @@
             </div>
             <div class="flex items-center gap-2">
                 <!-- Dual Currency Display -->
-                <button onclick="nav('boveda')" class="flex flex-col items-end gap-0.5 bg-slate-800/80 border border-slate-600 px-3 py-1 rounded-xl active:scale-95 shadow-sm text-right">
+                <button onclick="nav('boveda')" class="flex flex-col items-end gap-0.5 bg-slate-800/80 border border-slate-600 px-3 py-1 rounded-xl active:scale-95 shadow-sm text-right cursor-pointer">
                     <span class="text-[10px] font-bold text-orange-400 flex items-center justify-end gap-1"><span id="header-cc">0</span> <i class="fa-solid fa-coins"></i></span>
                     <span class="text-[10px] font-bold text-yellow-400 flex items-center justify-end gap-1"><span id="header-oro">0</span> <i class="fa-solid fa-cubes"></i></span>
                 </button>
-                <button onclick="openWallet()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--ton-blue)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:bg-[var(--tg-border)] transition active:scale-95 shrink-0">
+                <button onclick="openWallet()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--ton-blue)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:bg-[var(--tg-border)] transition active:scale-95 shrink-0 cursor-pointer">
                     <i class="fa-solid fa-wallet text-lg"></i>
                 </button>
             </div>
@@ -152,7 +157,7 @@
                             <li><b>Ranking Global:</b> Tu puntuación se sincroniza en tiempo real con todos los demás jugadores de la manga.</li>
                         </ul>
                     </div>
-                    <button onclick="acceptTerms()" class="mt-6 w-full bg-[#8b5a2b] hover:bg-[#5c3a21] text-[#fdf6e3] p-4 font-bold text-lg rounded shadow-lg transition-transform active:scale-95 border-2 border-[#3e2723]">
+                    <button onclick="acceptTerms()" class="mt-6 w-full bg-[#8b5a2b] hover:bg-[#5c3a21] text-[#fdf6e3] p-4 font-bold text-lg rounded shadow-lg transition-transform active:scale-95 border-2 border-[#3e2723] cursor-pointer">
                         ¡Acepto, Suéltenme el Toro! 🐂
                     </button>
                 </div>
@@ -251,7 +256,7 @@
                         </button>
                         <button onclick="nav('galeria')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-3 text-[10px] flex flex-col items-center justify-center gap-1 hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
                             <i class="fa-solid fa-images text-purple-400 text-base"></i> 
-                            <span class="font-semibold uppercase">Galería</span>
+                            <span class="font-semibold uppercase">Marketplace</span>
                         </button>
                         <button onclick="nav('instructions')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-3 text-[10px] flex flex-col items-center justify-center gap-1 hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
                             <i class="fa-solid fa-book-open text-[var(--vzla-blue)] text-base"></i> 
@@ -261,18 +266,25 @@
                 </div>
             </section>
 
-            <!-- LA GALERIA -->
+            <!-- LA GALERIA (MARKETPLACE) -->
             <section id="screen-galeria" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
-                <div class="flex items-center mb-6">
+                <div class="flex items-center mb-4">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-2xl ml-2 tracking-tight">La Galería</h2>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">NFT Market</h2>
                 </div>
                 
-                <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] p-4 rounded-xl mb-6 text-center text-sm text-gray-400 shadow-inner">
-                    Tus ahorros: <b class="text-orange-400 text-xl ml-1" id="galeria-cc">0</b> <i class="fa-solid fa-coins text-orange-400"></i>
+                <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] p-3 rounded-xl mb-4 text-center text-sm text-gray-400 shadow-inner flex justify-between items-center px-4">
+                    <span class="text-xs uppercase tracking-widest font-bold">Billetera:</span>
+                    <div><b class="text-orange-400 text-lg ml-1" id="galeria-cc">0</b> <i class="fa-solid fa-coins text-orange-400"></i></div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4" id="gallery-container">
+                <!-- TABS DEL MERCADO -->
+                <div class="flex bg-[var(--tg-surface)] p-1 rounded-xl mb-4 border border-[var(--tg-border)] relative z-10">
+                    <button onclick="setGalleryTab('market')" id="btn-tab-market" class="flex-1 py-2 text-xs font-bold rounded-lg bg-[var(--tg-primary)] text-black shadow-md transition-all cursor-pointer">A la venta</button>
+                    <button onclick="setGalleryTab('mine')" id="btn-tab-mine" class="flex-1 py-2 text-xs font-bold rounded-lg text-[var(--tg-text-sec)] hover:bg-[var(--tg-border)] transition-all cursor-pointer">Mis Tarjetas</button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pb-8" id="gallery-container">
                     <!-- JS Injects Cards Here -->
                 </div>
             </section>
@@ -391,6 +403,8 @@
                         <p class="text-xs text-[var(--tg-text-sec)] mt-1">Sincronizando con los rivales...</p>
                     </div>
 
+                    <div id="lobby-apuesta-info" class="hidden text-xs text-center mb-4 bg-black/40 rounded-xl p-3 border border-[var(--vzla-yellow)]/30 shadow-inner"></div>
+
                     <div id="lobby-private-info" class="hidden mb-6 bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-primary)]/50 text-center shadow-inner">
                         <p class="text-[10px] font-bold text-[var(--tg-text-sec)] uppercase tracking-widest mb-1">Código de Invitación:</p>
                         <p id="lobby-room-code" class="text-3xl font-black text-[var(--tg-primary)] tracking-widest mb-3 drop-shadow-md">----</p>
@@ -443,6 +457,29 @@
                         <h3 class="font-semibold text-sm text-yellow-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer mr-1"></i> Retiros de Oro</h3>
                         <div id="admin-retiros-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2">
                             <p class="text-xs text-[var(--tg-text-sec)] text-center">Cargando retiros...</p>
+                        </div>
+                    </div>
+
+                    <!-- NUEVO: CAMPO PARA GESTIÓN DE TARJETAS NFT -->
+                    <div class="tg-card p-5 border-t-4 border-t-pink-500">
+                        <h3 class="font-semibold text-sm text-pink-400 mb-2 uppercase tracking-wider"><i class="fa-solid fa-store mr-1"></i> Creador de Tarjetas NFT</h3>
+                        <p class="text-[10px] text-[var(--tg-text-sec)] mb-4 leading-tight">Sube una imagen para la tarjeta. Recomendado: <b>300x450 px (Formato Vertical)</b>. Se comprimirá automáticamente a JPEG ultraligero.</p>
+                        
+                        <div class="space-y-3 mb-4 bg-[var(--tg-bg)] p-3 rounded-xl border border-[var(--tg-border)]">
+                            <input type="text" id="admin-card-name" placeholder="Nombre (Ej: Coleador Dorado)" class="w-full p-2.5 tg-input text-sm">
+                            <input type="number" id="admin-card-price" placeholder="Precio en $ColeoCoins (Ej: 2000)" class="w-full p-2.5 tg-input text-sm">
+                            
+                            <label class="block text-[10px] font-bold text-[var(--tg-text-sec)] uppercase tracking-wider mt-2 mb-1">Diseño de la Tarjeta (Imagen)</label>
+                            <input type="file" accept="image/*" id="admin-card-file" class="w-full text-xs text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-[var(--tg-primary)] file:text-black hover:file:bg-yellow-500 cursor-pointer bg-[var(--tg-surface)] rounded-lg">
+                            
+                            <button onclick="window.addCustomCard()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 rounded-lg mt-2 active:scale-95 transition shadow-md cursor-pointer text-sm">
+                                <i class="fa-solid fa-plus"></i> Añadir Tarjeta al Mercado
+                            </button>
+                        </div>
+
+                        <h4 class="text-xs font-bold text-white mb-2 border-b border-[var(--tg-border)] pb-1">Tarjetas Activas en el Juego</h4>
+                        <div id="admin-cards-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-2">
+                            <!-- Injected active cards -->
                         </div>
                     </div>
 
@@ -502,7 +539,7 @@
                         <button onclick="clearMods()" class="mt-4 w-full py-3 bg-red-900/40 text-red-400 font-bold rounded-xl border border-red-900 cursor-pointer">RESETEAR GRÁFICOS PARA TODOS</button>
                     </div>
 
-                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg cursor-pointer">Sincronizar a Todos</button>
+                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg cursor-pointer shadow-[0_0_15px_rgba(255,204,0,0.3)]">Sincronizar Todo a la DB</button>
                     <button onclick="nav('menu')" class="w-full tg-btn-secondary p-4 text-lg cursor-pointer">Cerrar Panel</button>
                 </div>
             </section>
@@ -555,6 +592,17 @@
             </section>
         </main>
         
+        <!-- VISUALIZADOR DE TARJETAS (NUEVO) -->
+        <div id="card-viewer-modal" class="absolute inset-0 bg-black/95 hidden flex-col items-center justify-center p-5 z-[110] backdrop-blur-md">
+            <button onclick="window.closeCardViewer()" class="absolute top-6 right-6 text-white bg-slate-800 border border-slate-600 w-10 h-10 rounded-full font-bold active:scale-95 cursor-pointer shadow-lg flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="cv-title" class="font-display font-black text-2xl text-[var(--tg-primary)] mb-6 text-center tracking-widest uppercase drop-shadow-md"></h3>
+            <div class="relative">
+                <div class="absolute inset-0 bg-[var(--tg-primary)]/20 blur-3xl rounded-full"></div>
+                <img id="cv-img" src="" class="relative z-10 max-w-full max-h-[65vh] rounded-xl shadow-[0_0_40px_rgba(255,204,0,0.4)] border-2 border-[var(--tg-primary)] object-contain">
+            </div>
+            <p class="text-white/50 text-xs font-bold mt-6 tracking-widest uppercase">Colección Oficial</p>
+        </div>
+
         <!-- MODALES GLOBALES -->
         <div id="custom-modal" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center p-5 z-[100] backdrop-blur-sm">
             <div class="tg-card w-full p-6 text-center border-t-4 border-t-[var(--ton-blue)]">
@@ -578,24 +626,19 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, remove, get, push, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // --- FIREBASE CONFIGURATION (ROBUSTA) ---
-        let firebaseConfig = {};
-        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-            try { firebaseConfig = JSON.parse(__firebase_config); } catch(e){}
-        }
-        if (!firebaseConfig.apiKey) {
-            firebaseConfig = {
-                apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
-                authDomain: "toros-coleados-pro.firebaseapp.com",
-                databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
-                projectId: "toros-coleados-pro",
-                storageBucket: "toros-coleados-pro.firebasestorage.app",
-                messagingSenderId: "563546037351",
-                appId: "1:563546037351:web:6903515e92f03f14a388c2"
-            };
-        }
+        // --- FIREBASE CONFIGURATION (EXACTA) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
+            authDomain: "toros-coleados-pro.firebaseapp.com",
+            databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
+            projectId: "toros-coleados-pro",
+            storageBucket: "toros-coleados-pro.firebasestorage.app",
+            messagingSenderId: "563546037351",
+            appId: "1:563546037351:web:6903515e92f03f14a388c2",
+            measurementId: "G-5Q86F19DPJ"
+        };
         
         const rawAppId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'toros-coleados-pro';
         const appId = rawAppId.replace(/[.#$\[\]]/g, '');
@@ -605,14 +648,13 @@
 
         const ADMIN_WALLET = "UQDQG0-IgjUsyQpbLbZLt32fwg2JBFVb5IVr7UcuiSFTlSsr";
 
-        // --- MIGRACIÓN DE SALDOS ---
+        // --- ESTADO LOCAL ---
         let oldPoints = parseInt(localStorage.getItem('tc_puntosBoveda')) || 0;
         if (oldPoints > 0) {
             localStorage.setItem('tc_cc', oldPoints); 
             localStorage.removeItem('tc_puntosBoveda');
         }
 
-        // --- ESTADO LOCAL ---
         let playerId = localStorage.getItem('tc_pid');
         if(!playerId) { playerId = crypto.randomUUID(); localStorage.setItem('tc_pid', playerId); }
 
@@ -627,6 +669,9 @@
             initialSplashDone: false
         };
 
+        // Estado UI para Galeria
+        window.activeGalleryTab = 'market';
+
         let globalConfig = {
             bannerUrl: null, 
             mangaNames: ["Toros en mi Pueblo", "Copa en Maracay", "Camp. Barquisimeto"],
@@ -634,24 +679,19 @@
             bullNames: ["Toro Cebú"],
             customBgImg: null,
             customHorseImgs: [null, null, null],
-            customBullImgs: [null]
+            customBullImgs: [null],
+            customCards: [] // Array dinámico para las tarjetas creadas en la Puerta Trasera
         };
 
         const BULLS_DATA = [ { emoji:'🐂', fz: 6, vel: 0.35 } ];
         const HORSES_DATA = [ { emoji:'🐎', fz: 5, vel: 0.2 }, { emoji:'🏇', fz: 8, vel: 0.4 }, { emoji:'🐴', fz: 7, vel: 0.3 } ];
         
-        const CARDS_DATA = [
-            { id: 'bronce', name: 'Tarjeta Bronce', price: 500, color: 'text-orange-600', border: 'border-orange-600' },
-            { id: 'plata', name: 'Tarjeta Plata', price: 1500, color: 'text-slate-300', border: 'border-slate-300' },
-            { id: 'oro', name: 'Tarjeta Oro', price: 3000, color: 'text-yellow-400', border: 'border-yellow-400' }
-        ];
-
         window.game = { active: false, mode: 'career', roomType: null, currentRoomCode: null, pendingRoomType: null, level: 1, horsePos: -20, matchScore: 0, turn: 1, anim: null };
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json', buttonRootId: 'ton-connect' });
 
         // --- MANEJO DEL SPLASH SCREEN (BIENVENIDA) ---
-        function processSplashScreen() {
+        window.processSplashScreen = () => {
             if (localState.initialSplashDone) return;
             localState.initialSplashDone = true;
 
@@ -671,7 +711,7 @@
                     else window.nav('menu');
                 }, 500); 
             }, 3500);
-        }
+        };
 
         // --- AUTH Y SINCRONIZACIÓN MEJORADA ---
         onAuthStateChanged(auth, (user) => {
@@ -681,13 +721,20 @@
                 const configRef = ref(db, `artifacts/${appId}/public/data/config_maestra`);
                 onValue(configRef, (snap) => {
                     if(snap.exists()) {
-                        globalConfig = { ...globalConfig, ...snap.val() };
+                        const dbConfig = snap.val();
+                        globalConfig = { ...globalConfig, ...dbConfig };
+                        if (!globalConfig.customCards) globalConfig.customCards = []; // Fallback si no hay
                         window.updateVisuals();
+                        if (!document.getElementById('screen-galeria').classList.contains('hidden')) window.renderGallery();
                     }
-                    processSplashScreen(); 
+                    window.processSplashScreen(); 
                 }, (error) => {
-                    console.error("Error al leer Firebase:", error);
-                    processSplashScreen(); 
+                    console.error("Error DB:", error);
+                    const st = document.getElementById('splash-text');
+                    if (st && error.code === 'PERMISSION_DENIED') {
+                        st.innerHTML = "<span class='text-red-500 font-bold'>ERROR: REGLAS DE BASE DE DATOS BLOQUEADAS</span>";
+                    }
+                    setTimeout(window.processSplashScreen, 4000); 
                 });
                 
                 window.syncRanking();
@@ -699,15 +746,35 @@
             } else {
                 signInAnonymously(auth).catch(e => {
                     console.error("Firebase Auth Falló:", e);
-                    processSplashScreen(); 
+                    const st = document.getElementById('splash-error');
+                    if (st) {
+                        st.classList.remove('hidden');
+                        if (e.code === 'auth/operation-not-allowed' || e.code === 'auth/admin-restricted-operation') {
+                            st.innerHTML = `
+                                <p class="font-bold text-[10px] text-red-400">Error: Inicio de sesión Anónimo bloqueado</p>
+                                <p class="text-[9px] mt-1 text-white">Por seguridad, Firebase bloquea nuevas conexiones hasta que las autorices.</p>
+                                <p class="text-[9px] mt-1 text-yellow-300 font-bold">SOLUCIÓN EN TU CONSOLA:</p>
+                                <ol class="text-[9px] text-left list-decimal pl-4 mt-1 text-gray-300">
+                                    <li>Abre Firebase Console > Authentication</li>
+                                    <li>Ve a la pestaña "Sign-in method"</li>
+                                    <li>Haz clic en "Add new provider" y selecciona "Anonymous" (Anónimo)</li>
+                                    <li>Habilítalo y guarda los cambios.</li>
+                                </ol>
+                                <button onclick="window.processSplashScreen()" class="mt-3 w-full bg-[var(--tg-primary)] text-black px-4 py-2 rounded-xl font-bold cursor-pointer text-xs shadow-md active:scale-95">Jugar Offline temporalmente</button>
+                            `;
+                        } else {
+                            st.innerHTML = `<p class="font-bold text-[10px]">Error: ${e.message}</p><button onclick="window.processSplashScreen()" class="mt-2 bg-white text-black px-3 py-1 rounded font-bold cursor-pointer">Continuar</button>`;
+                        }
+                    }
                 });
             }
         });
 
+        // Seguro contra desconexiones infinitas
         setTimeout(() => {
             if (!localState.initialSplashDone) {
-                console.warn("Tiempo de espera de Firebase agotado. Forzando inicio del juego...");
-                processSplashScreen();
+                console.warn("Tiempo de espera agotado. Forzando inicio...");
+                window.processSplashScreen();
             }
         }, 6000);
 
@@ -717,9 +784,9 @@
             const targetScreen = document.getElementById('screen-'+id);
             if (targetScreen) targetScreen.classList.remove('hidden');
             
-            if(id === 'secret-admin') window.loadRetirosAdmin();
+            if(id === 'secret-admin') { window.loadRetirosAdmin(); window.renderAdminCards(); }
             if(id === 'establo') window.updateEstabloUI();
-            if(id === 'galeria') window.renderGallery();
+            if(id === 'galeria') { window.activeGalleryTab = 'market'; window.renderGallery(); }
         };
 
         window.openWallet = () => window.nav('wallet');
@@ -837,42 +904,101 @@
             });
         };
 
-        // --- GALERÍA (TIENDA NFT) ---
+        // --- GALERÍA MARKETPLACE (NUEVO) ---
+        window.setGalleryTab = (tab) => {
+            window.activeGalleryTab = tab;
+            const btnMarket = document.getElementById('btn-tab-market');
+            const btnMine = document.getElementById('btn-tab-mine');
+            
+            if (tab === 'market') {
+                btnMarket.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[var(--tg-primary)] text-black shadow-md transition-all cursor-pointer";
+                btnMine.className = "flex-1 py-2 text-xs font-bold rounded-lg text-[var(--tg-text-sec)] hover:bg-[var(--tg-border)] transition-all cursor-pointer";
+            } else {
+                btnMine.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[var(--tg-primary)] text-black shadow-md transition-all cursor-pointer";
+                btnMarket.className = "flex-1 py-2 text-xs font-bold rounded-lg text-[var(--tg-text-sec)] hover:bg-[var(--tg-border)] transition-all cursor-pointer";
+            }
+            window.renderGallery();
+        };
+
         window.renderGallery = () => {
             const container = document.getElementById('gallery-container');
             if(!container) return;
             container.innerHTML = '';
-            CARDS_DATA.forEach(c => {
+            
+            const cards = globalConfig.customCards || [];
+            
+            if (cards.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-10 text-[var(--tg-text-sec)] text-xs">Aún no hay tarjetas en el mercado.<br>El Administrador pronto agregará nuevas piezas de colección.</div>`;
+                return;
+            }
+
+            let renderedCount = 0;
+
+            cards.forEach(c => {
                 const owned = localState.inventario.includes(c.id);
+                
+                // Si estoy en mercado, oculto las mías. Si estoy en mis tarjetas, oculto las del mercado.
+                if (window.activeGalleryTab === 'market' && owned) return;
+                if (window.activeGalleryTab === 'mine' && !owned) return;
+
+                renderedCount++;
+
+                const actionBtn = owned 
+                    ? `<button onclick="window.viewCard('${c.id}')" class="w-full bg-slate-800 text-white border border-slate-600 shadow-md active:scale-95 cursor-pointer font-bold py-2 rounded-lg text-xs transition"><i class="fa-solid fa-eye"></i> Ver Tarjeta</button>`
+                    : `<button onclick="window.buyCard('${c.id}')" class="w-full bg-[var(--tg-primary)] text-black shadow-md active:scale-95 cursor-pointer font-bold py-2 rounded-lg text-xs transition">Comprar</button>`;
+
                 container.innerHTML += `
-                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-xl p-4 text-center relative flex flex-col justify-between">
-                        ${owned ? '<div class="absolute top-2 right-2 bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">TUYA</div>' : ''}
-                        <div class="mb-3">
-                            <div class="w-16 h-20 mx-auto rounded-lg border-2 ${c.border} flex items-center justify-center mb-2 shadow-inner bg-black/20">
-                                <i class="fa-solid fa-id-badge text-3xl ${c.color}"></i>
+                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-xl p-3 text-center flex flex-col justify-between overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.5)]">
+                        <div class="mb-3 flex flex-col items-center">
+                            <div class="w-full h-32 mb-2 bg-black/40 rounded-lg overflow-hidden flex items-center justify-center border border-[var(--tg-border)]/50 relative">
+                                ${owned ? '<div class="absolute top-1 right-1 bg-green-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow z-10 uppercase">Tuya</div>' : ''}
+                                <img src="${c.image}" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-300">
                             </div>
-                            <h4 class="font-bold text-xs text-white">${c.name}</h4>
-                            <p class="text-[10px] text-orange-400 font-bold">${c.price} CC</p>
+                            <h4 class="font-bold text-[11px] text-white leading-tight line-clamp-2 min-h-[28px]">${c.name}</h4>
+                            <p class="text-[10px] text-orange-400 font-bold mt-1 bg-orange-400/10 px-2 py-0.5 rounded-full inline-block border border-orange-400/20">${c.price} CC</p>
                         </div>
-                        <button onclick="buyCard('${c.id}')" class="w-full ${owned ? 'bg-slate-800 text-gray-500' : 'bg-[var(--tg-primary)] text-black shadow-md active:scale-95 cursor-pointer'} font-bold py-2 rounded-lg text-xs transition" ${owned ? 'disabled' : ''}>
-                            ${owned ? 'En Inventario' : 'Comprar'}
-                        </button>
+                        ${actionBtn}
                     </div>
                 `;
             });
+
+            if (renderedCount === 0) {
+                const msg = window.activeGalleryTab === 'market' 
+                    ? "¡Has comprado todo el mercado!" 
+                    : "Aún no has comprado ninguna tarjeta. ¡Ve al mercado!";
+                container.innerHTML = `<div class="col-span-2 text-center py-10 text-[var(--tg-text-sec)] text-xs">${msg}</div>`;
+            }
         };
 
         window.buyCard = (id) => {
-            const c = CARDS_DATA.find(x => x.id === id);
+            const cards = globalConfig.customCards || [];
+            const c = cards.find(x => x.id === id);
             if(!c || localState.inventario.includes(id)) return;
             if(localState.coleoCoin < c.price) return window.showAlert("Saldo Insuficiente", "Juega en la Copa Virtual o cambia Oro para conseguir más $ColeoCoins.");
             
-            window.showConfirm("Compra de Tarjeta", `¿Pagar ${c.price} CC por ${c.name}?`, () => {
+            window.showConfirm("Compra de NFT", `¿Confirmas la compra de la tarjeta <b>${c.name}</b> por <b class="text-orange-400">${c.price} CC</b>?`, () => {
                 localState.coleoCoin -= c.price;
                 localState.inventario.push(id);
-                window.saveData(); window.renderGallery();
-                window.showAlert("¡Colección Creciente!", `Has comprado la ${c.name}.`);
+                window.saveData(); 
+                window.renderGallery();
+                window.viewCard(id); // Mostrarla a lo grande al comprar
             });
+        };
+
+        window.viewCard = (id) => {
+            const cards = globalConfig.customCards || [];
+            const c = cards.find(x => x.id === id);
+            if (!c) return;
+            
+            document.getElementById('cv-title').innerText = c.name;
+            document.getElementById('cv-img').src = c.image;
+            document.getElementById('card-viewer-modal').classList.remove('hidden');
+            document.getElementById('card-viewer-modal').classList.add('flex');
+        };
+
+        window.closeCardViewer = () => {
+            document.getElementById('card-viewer-modal').classList.add('hidden');
+            document.getElementById('card-viewer-modal').classList.remove('flex');
         };
 
         // --- SISTEMA MULTIJUGADOR ---
@@ -884,53 +1010,132 @@
             document.getElementById('modal-desc').innerHTML = "¿Con quién deseas jugar?";
             document.getElementById('modal-input').classList.add('hidden');
             document.getElementById('modal-buttons').innerHTML = `
-                <button onclick="joinPublicLobby()" class="w-full bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-globe"></i> Partida Pública Rápida</button>
-                <button onclick="createPrivateLobby()" class="w-full bg-[var(--vzla-blue)] text-white p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-plus"></i> Crear Sala Privada</button>
-                <button onclick="joinPrivateLobbyPrompt()" class="w-full bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white p-3 rounded-xl font-bold active:scale-95 transition cursor-pointer"><i class="fa-solid fa-right-to-bracket"></i> Unirse con Código</button>
-                <button onclick="closeModal()" class="w-full bg-red-900/30 text-red-400 p-2 rounded-xl mt-2 font-bold text-sm cursor-pointer">Cancelar</button>
+                <button onclick="window.joinPublicLobby()" class="w-full bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-globe"></i> Partida Pública Rápida</button>
+                <button onclick="window.createPrivateLobby()" class="w-full bg-[var(--vzla-blue)] text-white p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-plus"></i> Crear Sala Privada</button>
+                <button onclick="window.joinPrivateLobbyPrompt()" class="w-full bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white p-3 rounded-xl font-bold active:scale-95 transition cursor-pointer"><i class="fa-solid fa-right-to-bracket"></i> Unirse con Código</button>
+                <button onclick="window.closeModal()" class="w-full bg-red-900/30 text-red-400 p-2 rounded-xl mt-2 font-bold text-sm cursor-pointer">Cancelar</button>
             `;
             document.getElementById('custom-modal').classList.remove('hidden');
             document.getElementById('custom-modal').classList.add('flex');
         };
 
-        window.joinPublicLobby = () => { window.closeModal(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(null); else window.joinFreeLobby(null); };
-        window.createPrivateLobby = () => { window.closeModal(); const code = Math.random().toString(36).substring(2, 6).toUpperCase(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code); else window.joinFreeLobby(code); };
+        window.joinPublicLobby = () => { 
+            window.closeModal(); 
+            if (window.game.pendingRoomType === 'apuesta') {
+                window.showPrompt("Apuesta Pública", "¿De cuánto será el pote por jugador? (TON):", async (val) => {
+                    const bet = parseFloat(val);
+                    if (isNaN(bet) || bet <= 0) return window.showAlert("Error", "Monto inválido.");
+                    
+                    window.showProcessing(`Buscando sala de ${bet} TON...`);
+                    try {
+                        const snap = await get(ref(db, `artifacts/${appId}/public/data/salas`));
+                        let targetRoom = null;
+                        if (snap.exists()) {
+                            const salas = snap.val();
+                            for (let key in salas) {
+                                if (key.startsWith('manga_apuesta_public_') && salas[key].estado === 'esperando' && salas[key].apuesta === bet) {
+                                    const numJugadores = salas[key].jugadores ? Object.keys(salas[key].jugadores).length : 0;
+                                    if (numJugadores < 4) {
+                                        targetRoom = key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        window.closeProcessing();
+                        if (targetRoom) {
+                            window.initiateTONPayment(targetRoom, bet, false); 
+                        } else {
+                            const newRoom = `manga_apuesta_public_${Math.random().toString(36).substring(2, 8)}`;
+                            window.initiateTONPayment(newRoom, bet, true); 
+                        }
+                    } catch(e) {
+                        window.closeProcessing();
+                        window.showAlert("Error", "Falla de conexión.");
+                    }
+                });
+            } else { 
+                window.joinFreeLobby(null); 
+            } 
+        };
+
+        window.createPrivateLobby = () => { 
+            window.closeModal(); 
+            const code = Math.random().toString(36).substring(2, 6).toUpperCase(); 
+            if (window.game.pendingRoomType === 'apuesta') {
+                window.showPrompt("Crear Sala Privada", "¿De cuánto será la apuesta por jugador? (TON):", (val) => {
+                    const bet = parseFloat(val);
+                    if (isNaN(bet) || bet <= 0) return window.showAlert("Error", "Monto inválido.");
+                    window.initiateTONPayment(`manga_apuesta_${code}`, bet, true, code);
+                });
+            } else { 
+                window.joinFreeLobby(`manga_gratis_${code}`, code); 
+            } 
+        };
+
         window.joinPrivateLobbyPrompt = () => {
-            window.showPrompt("Unirse a Sala", "Introduce el código de 4 letras:", (code) => {
+            window.showPrompt("Unirse a Sala", "Introduce el código de 4 letras:", async (code) => {
                 if (code && code.length > 0) {
-                    if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code.toUpperCase());
-                    else window.joinFreeLobby(code.toUpperCase());
+                    const cleanCode = code.toUpperCase();
+                    if (window.game.pendingRoomType === 'apuesta') {
+                        window.showProcessing("Verificando sala...");
+                        try {
+                            const roomName = `manga_apuesta_${cleanCode}`;
+                            const snap = await get(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`));
+                            window.closeProcessing();
+                            if (snap.exists() && snap.val().estado === 'esperando') {
+                                const bet = snap.val().apuesta || 0;
+                                window.initiateTONPayment(roomName, bet, false, cleanCode);
+                            } else {
+                                window.showAlert("Error", "La sala no existe o ya está en curso.");
+                            }
+                        } catch(e) {
+                            window.closeProcessing();
+                            window.showAlert("Error", "Error de conexión.");
+                        }
+                    } else {
+                        window.joinFreeLobby(`manga_gratis_${cleanCode}`, cleanCode);
+                    }
                 }
             });
         };
 
         window.shareRoomCode = () => {
             const code = window.game.currentRoomCode;
-            const text = `¡Únete a mi manga de Toros Coleados! 🐂🐎\n\nEntra al juego, dale a "Unirse con Código" y pega esto: ${code}`;
+            let text = `¡Únete a mi manga de Toros Coleados! 🐂🐎\n\n`;
+            if (window.game.roomType.includes('apuesta')) {
+                text += `Entra en "Apuesta TON" -> "Unirse con Código" y pega esto: ${code}\nLa apuesta es de ${window.game.currentBet} TON.`;
+            } else {
+                text += `Entra en "Gratis" -> "Unirse con Código" y pega esto: ${code}`;
+            }
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=https://t.me/&text=${encodeURIComponent(text)}`);
             } else { navigator.clipboard.writeText(text).then(() => window.showAlert("Copiado", `Código ${code} copiado al portapapeles.`)); }
         };
 
-        window.joinFreeLobby = async (privateCode = null) => {
-            window.game.roomType = privateCode ? `manga_gratis_${privateCode}` : 'manga_gratis';
-            window.game.currentRoomCode = privateCode;
+        window.joinFreeLobby = async (roomName = null, displayCode = null) => {
+            window.game.roomType = roomName || 'manga_gratis';
+            window.game.currentRoomCode = displayCode;
+            window.game.currentBet = 0;
             window.showProcessing("Buscando sala...");
-            await window.joinLobbyDirect(window.game.roomType, null);
+            await window.joinLobbyDirect(window.game.roomType, null, true, 0);
             window.closeProcessing();
         };
 
-        window.initiateTONPayment = async (privateCode = null) => {
+        window.initiateTONPayment = async (roomName, betAmount, isCreating, displayCode = null) => {
             if (!tonConnectUI.connected) return window.showAlert("Billetera no conectada", "Conecta tu billetera TON para jugar con Oro.");
-            window.game.roomType = privateCode ? `manga_apuesta_${privateCode}` : 'manga_apuesta';
-            window.game.currentRoomCode = privateCode;
-            window.showConfirm("Contrato TON", "Entrarás a la sala apostando 0.1 TON.", async () => {
+            window.game.roomType = roomName;
+            window.game.currentRoomCode = displayCode;
+            window.game.currentBet = betAmount;
+            
+            window.showConfirm("Contrato TON", `Entrarás a la sala apostando <b class="text-[var(--vzla-yellow)]">${betAmount} TON</b>.`, async () => {
                 window.showProcessing("Aprobando transacción...");
                 try {
-                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: "100000000" }] }; 
+                    const nanoTon = Math.floor(betAmount * 1000000000).toString();
+                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: nanoTon }] }; 
                     const result = await tonConnectUI.sendTransaction(tx);
                     if(result && result.boc) {
-                        await window.joinLobbyDirect(window.game.roomType, result.boc);
+                        await window.joinLobbyDirect(roomName, result.boc, isCreating, betAmount);
                         window.closeProcessing();
                     }
                 } catch(e) {
@@ -940,7 +1145,7 @@
             });
         };
 
-        window.joinLobbyDirect = async (roomName, txHash = null) => {
+        window.joinLobbyDirect = async (roomName, txHash = null, isCreating = false, betAmount = 0) => {
             window.nav('lobby');
             const privateInfo = document.getElementById('lobby-private-info');
             if (window.game.currentRoomCode) {
@@ -948,12 +1153,26 @@
                 privateInfo.classList.remove('hidden');
             } else { privateInfo.classList.add('hidden'); }
 
+            const apInfo = document.getElementById('lobby-apuesta-info');
+            if (apInfo) {
+                if (roomName.includes('apuesta')) {
+                    apInfo.innerHTML = `Valor del Pote (Entrada): <span class="text-[var(--vzla-yellow)] font-black text-sm">${betAmount} TON</span>`;
+                    apInfo.classList.remove('hidden');
+                } else {
+                    apInfo.classList.add('hidden');
+                }
+            }
+
             const roomRef = ref(db, `artifacts/${appId}/public/data/salas/${roomName}`);
             try {
                 const snap = await get(roomRef);
                 const statusStr = txHash ? 'PAGADO' : 'LISTO';
                 if (!snap.exists() || snap.val().estado === 'terminado') {
-                    await set(roomRef, { estado: 'esperando', jugadores: { [playerId]: { nombre: localState.nickname, status: statusStr, score: -1 } } });
+                    await set(roomRef, { 
+                        estado: 'esperando', 
+                        apuesta: betAmount,
+                        jugadores: { [playerId]: { nombre: localState.nickname, status: statusStr, score: -1 } } 
+                    });
                 } else {
                     await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { nombre: localState.nickname, status: statusStr, score: -1 });
                 }
@@ -1008,7 +1227,7 @@
                 const isMe = p.id === playerId; 
                 let pt = 0; let extraStr = '';
                 
-                if (roomName.startsWith('manga_apuesta')) {
+                if (roomName.includes('apuesta')) {
                     pt = p.premio > 0 ? Math.floor(p.premio * 1000) : 0;
                     if(pt > 0) extraStr = `<span class="text-yellow-400">+${pt} Oro</span>`;
                 } else {
@@ -1021,7 +1240,7 @@
             });
             
             if(myPts > 0) { 
-                if(roomName.startsWith('manga_apuesta')) localState.oroLlanero += myPts;
+                if(roomName.includes('apuesta')) localState.oroLlanero += myPts;
                 else localState.coleoCoin += myPts;
                 window.saveData(); 
             }
@@ -1045,7 +1264,7 @@
             const hImg = globalConfig.customHorseImgs[localState.horseIndex];
             const estHorseEmoji = document.getElementById('est-horse-emoji');
             if (estHorseEmoji) {
-                estHorseEmoji.innerHTML = hImg ? `<img src="${hImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${HORSES_DATA[localState.horseIndex].emoji}</div>`;
+                estHorseEmoji.innerHTML = hImg ? `<img src="${hImg}" class="h-20 w-20 object-contain drop-shadow-md" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${HORSES_DATA[localState.horseIndex].emoji}</div>`;
             }
             const estHorseName = document.getElementById('est-horse-name');
             if (estHorseName) {
@@ -1096,8 +1315,8 @@
             const horse = HORSES_DATA[localState.horseIndex];
             const bull = BULLS_DATA[0];
 
-            let filoSize = Math.max(1.5, 3 + (horse.fz * 0.5) - (bull.fz * 0.4)); 
-            let costadoSize = Math.max(filoSize + 1, 6 + (horse.fz * 0.5) - (bull.fz * 0.2)); 
+            let filoSize = Math.max(2.5, 4 + (horse.fz * 0.5) - (bull.fz * 0.4)); 
+            let costadoSize = Math.max(filoSize + 1.5, 7 + (horse.fz * 0.5) - (bull.fz * 0.2)); 
 
             window.game.zones = { fMin: 45 - filoSize, fMax: 45 + filoSize, cMin: 45 - costadoSize, cMax: 45 + costadoSize };
 
@@ -1106,8 +1325,8 @@
             document.getElementById('zone-costado').style.left = window.game.zones.cMin + '%'; 
             document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
             
-            document.getElementById('ent-horse').innerHTML = hImg ? `<img src="${hImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${horse.emoji}</div>`;
-            document.getElementById('ent-bull').innerHTML = bImg ? `<img src="${bImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${bull.emoji}</div>`;
+            document.getElementById('ent-horse').innerHTML = hImg ? `<img src="${hImg}" class="h-16 w-16 sm:h-20 sm:w-20 object-contain drop-shadow-md" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${horse.emoji}</div>`;
+            document.getElementById('ent-bull').innerHTML = bImg ? `<img src="${bImg}" class="h-14 w-14 sm:h-16 sm:w-16 object-contain drop-shadow-md" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${bull.emoji}</div>`;
             document.getElementById('manga-bg').style.backgroundImage = globalConfig.customBgImg ? `url(${globalConfig.customBgImg})` : '';
             
             document.getElementById('hud-turn').innerText = `${window.game.turn}/4`;
@@ -1196,9 +1415,12 @@
                 list.sort((a,b) => b.score - a.score);
                 
                 let resDB = {};
-                if (roomName.startsWith('manga_apuesta')) {
-                    const premios = [0.36*0.7, 0.36*0.2, 0.36*0.1, 0];
-                    list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 }; });
+                if (roomName.includes('apuesta')) {
+                    const snapRoom = await get(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`));
+                    const bet = snapRoom.exists() ? (snapRoom.val().apuesta || 0.1) : 0.1;
+                    const prizePool = bet * 4 * 0.9; // 10% comisión para ti
+                    const premios = [prizePool * 0.7, prizePool * 0.2, prizePool * 0.1, 0];
+                    list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: premios[idx] || 0, posicion: idx + 1 }; });
                 } else {
                     list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: 0, posicion: idx + 1 }; });
                 }
@@ -1261,7 +1483,6 @@
         };
 
         window.saveAdminSettings = async () => {
-            // Intentar forzar conexión si no está conectado
             if (!localState.userConnected) {
                 try {
                     await signInAnonymously(auth);
@@ -1288,7 +1509,8 @@
                 ],
                 customBgImg: globalConfig.customBgImg,
                 customHorseImgs: globalConfig.customHorseImgs,
-                customBullImgs: globalConfig.customBullImgs
+                customBullImgs: globalConfig.customBullImgs,
+                customCards: globalConfig.customCards || []
             };
             try {
                 window.showProcessing("Sincronizando globalmente...");
@@ -1315,34 +1537,38 @@
                 document.getElementById('sec-h3').value = globalConfig.horseNames[2] || "";
                 
                 document.getElementById('sec-b1').value = globalConfig.bullNames[0] || "";
+                window.renderAdminCards();
             }
             window.updateEstabloUI();
         };
 
-        // --- OPTIMIZADOR DE IMÁGENES (EVITA COLAPSAR LA BASE DE DATOS) ---
-        function resizeImage(file, callback) {
+        // --- OPTIMIZADOR DE IMÁGENES ---
+        function resizeImage(file, callback, isCard = false) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 256; // Comprime la imagen para no saturar Firebase
+                    let MAX_WIDTH = isCard ? 300 : 256; 
+                    let MAX_HEIGHT = isCard ? 450 : 256; 
                     let width = img.width;
                     let height = img.height;
 
-                    if (width > height && width > MAX_SIZE) {
-                        height *= MAX_SIZE / width;
-                        width = MAX_SIZE;
-                    } else if (height > MAX_SIZE) {
-                        width *= MAX_SIZE / height;
-                        height = MAX_SIZE;
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
                     }
 
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/png'));
+                    
+                    // Para tarjetas usamos JPEG con compresión 0.8 para no saturar Firebase
+                    const format = isCard ? 'image/jpeg' : 'image/png';
+                    const quality = isCard ? 0.8 : undefined;
+                    callback(canvas.toDataURL(format, quality));
                 }
                 img.src = e.target.result;
             }
@@ -1352,6 +1578,73 @@
         window.handleFileUpload = (e, key) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig[key] = res); };
         window.handleHorseUpload = (e, idx) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig.customHorseImgs[idx] = res); };
         window.handleBullUpload = (e, idx) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig.customBullImgs[idx] = res); };
+
+        // --- CREADOR DE TARJETAS (ADMIN) ---
+        let pendingCardImage = null;
+        document.getElementById('admin-card-file').addEventListener('change', function(e) {
+            if(e.target.files[0]) {
+                resizeImage(e.target.files[0], (res) => { pendingCardImage = res; }, true);
+            }
+        });
+
+        window.addCustomCard = () => {
+            const name = document.getElementById('admin-card-name').value.trim();
+            const price = parseInt(document.getElementById('admin-card-price').value);
+            
+            if (!name || isNaN(price) || price <= 0 || !pendingCardImage) {
+                return window.showAlert("Faltan datos", "Asegúrate de poner un nombre, un precio válido y subir una imagen.");
+            }
+
+            const newCard = {
+                id: 'nft_' + Math.random().toString(36).substring(2, 9),
+                name: name,
+                price: price,
+                image: pendingCardImage
+            };
+
+            if (!globalConfig.customCards) globalConfig.customCards = [];
+            globalConfig.customCards.push(newCard);
+            
+            // Limpiar formulario
+            document.getElementById('admin-card-name').value = '';
+            document.getElementById('admin-card-price').value = '';
+            document.getElementById('admin-card-file').value = '';
+            pendingCardImage = null;
+
+            window.renderAdminCards();
+            window.showAlert("Añadida", "Tarjeta creada. Recuerda darle a 'Sincronizar Todo a la DB' para que los jugadores la vean.");
+        };
+
+        window.deleteCustomCard = (id) => {
+            if (!globalConfig.customCards) return;
+            globalConfig.customCards = globalConfig.customCards.filter(c => c.id !== id);
+            window.renderAdminCards();
+        };
+
+        window.renderAdminCards = () => {
+            const container = document.getElementById('admin-cards-list');
+            if(!container) return;
+            container.innerHTML = '';
+            const cards = globalConfig.customCards || [];
+            
+            if (cards.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-[var(--tg-text-sec)]">Aún no hay tarjetas.</p>';
+                return;
+            }
+
+            cards.forEach(c => {
+                container.innerHTML += `
+                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] p-2 rounded flex justify-between items-center gap-2">
+                        <img src="${c.image}" class="w-8 h-12 object-cover rounded bg-black border border-[var(--tg-border)]">
+                        <div class="flex-1 text-left">
+                            <p class="font-bold text-[10px] text-white line-clamp-1">${c.name}</p>
+                            <p class="text-[9px] text-orange-400">${c.price} CC</p>
+                        </div>
+                        <button onclick="window.deleteCustomCard('${c.id}')" class="text-red-500 hover:text-red-400 bg-red-900/30 p-2 rounded cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        };
 
         window.clearMods = async () => {
             window.showConfirm("Limpiar", "¿Borrar gráficos y nombres personalizados para todos los jugadores?", async () => {
@@ -1374,7 +1667,7 @@
                             <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-yellow-400/50 text-xs mb-2">
                                 <div class="flex justify-between font-bold mb-1"><span class="text-white">${r.jugador}</span><span class="text-yellow-400">${r.ton} TON</span></div>
                                 <p class="text-[10px] text-gray-500 break-all mb-2">${r.wallet}</p>
-                                <button onclick="marcarPagado('${k}')" class="w-full bg-green-600 text-white font-bold p-2 rounded cursor-pointer">Marcar Pagado</button>
+                                <button onclick="window.marcarPagado('${k}')" class="w-full bg-green-600 text-white font-bold p-2 rounded cursor-pointer">Marcar Pagado</button>
                             </div>
                         `;
                     }
@@ -1386,8 +1679,8 @@
         // --- MODALES ---
         window.showProcessing = (msg) => { document.getElementById('modal-title').innerText = "Procesando"; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = ''; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
         window.closeProcessing = () => { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); };
-        window.showAlert = (t, d) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="w-full bg-[var(--tg-primary)] text-black font-bold p-3 rounded-xl cursor-pointer">Entendido</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
-        window.showConfirm = (t, d, cb) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold text-white cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-green-600 p-3 rounded-xl font-bold text-white cursor-pointer">Aceptar</button>`; document.getElementById('modal-ok').onclick = () => { window.closeModal(); cb(); }; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
+        window.showAlert = (t, d) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="window.closeModal()" class="w-full bg-[var(--tg-primary)] text-black font-bold p-3 rounded-xl cursor-pointer">Entendido</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
+        window.showConfirm = (t, d, cb) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="window.closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold text-white cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-green-600 p-3 rounded-xl font-bold text-white cursor-pointer">Aceptar</button>`; document.getElementById('modal-ok').onclick = () => { window.closeModal(); cb(); }; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
         window.showPrompt = (t, d, cb, isPassword = false) => { 
             document.getElementById('modal-title').innerText = t; 
             document.getElementById('modal-desc').innerHTML = d; 
@@ -1395,7 +1688,7 @@
             inp.classList.remove('hidden'); 
             inp.value = ''; 
             inp.type = isPassword ? 'password' : 'text';
-            document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl text-white font-bold cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold cursor-pointer">Aceptar</button>`; 
+            document.getElementById('modal-buttons').innerHTML = `<button onclick="window.closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl text-white font-bold cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold cursor-pointer">Aceptar</button>`; 
             document.getElementById('modal-ok').onclick = () => { const v = inp.value; window.closeModal(); cb(v); }; 
             document.getElementById('custom-modal').classList.remove('hidden'); 
             document.getElementById('custom-modal').classList.add('flex'); 
