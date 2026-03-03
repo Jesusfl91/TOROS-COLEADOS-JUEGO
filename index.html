@@ -16,21 +16,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:ital,wght@0,800;1,900&display=swap');
 
         :root {
-            /* Paleta Venezuela Dark + TON */
             --tg-bg: #090e17; 
             --tg-surface: #131c31; 
             --tg-border: #233154; 
-            
             --vzla-yellow: #FFCC00;
             --vzla-blue: #00247D;
             --vzla-red: #CF142B;
-            --ton-blue: #0098EA; /* TON Diamond Blue */
-
+            --ton-blue: #0098EA;
             --tg-primary: var(--vzla-yellow);
             --tg-text: #ffffff;
             --tg-text-sec: #94a3b8;
-            
-            /* Manga (Tierra) */
             --manga-bg: #2b1d14; 
             --talanquera: #1a110b; 
         }
@@ -44,93 +39,34 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .font-display {
-            font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase;
-        }
-
-        /* Utilidades UI */
-        .tg-card {
-            background-color: var(--tg-surface);
-            border: 1px solid var(--tg-border);
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-        }
-
-        .tg-input {
-            background-color: var(--tg-bg);
-            border: 1px solid var(--tg-border);
-            color: var(--tg-text);
-            border-radius: 0.75rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .tg-input:focus {
-            outline: none;
-            border-color: var(--ton-blue);
-            box-shadow: 0 0 0 2px rgba(0, 152, 234, 0.2);
-        }
-
-        .tg-btn-primary {
-            background-color: var(--tg-primary);
-            color: #000000;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            transition: transform 0.1s active, filter 0.2s;
-        }
+        .font-display { font-family: 'Montserrat', sans-serif; text-transform: uppercase; }
+        
+        .tg-card { background-color: var(--tg-surface); border: 1px solid var(--tg-border); border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
+        .tg-input { background-color: var(--tg-bg); border: 1px solid var(--tg-border); color: var(--tg-text); border-radius: 0.75rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .tg-input:focus { outline: none; border-color: var(--ton-blue); box-shadow: 0 0 0 2px rgba(0, 152, 234, 0.2); }
+        
+        .tg-btn-primary { background-color: var(--tg-primary); color: #000000; border-radius: 0.75rem; font-weight: 700; transition: transform 0.1s active, filter 0.2s; }
         .tg-btn-primary:active { transform: scale(0.97); }
         .tg-btn-primary:hover { filter: brightness(1.1); }
-
-        .tg-btn-secondary {
-            background-color: var(--vzla-blue);
-            color: #ffffff;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            border: 1px solid #1a3c9e;
-            transition: transform 0.1s active, background-color 0.2s;
-        }
+        
+        .tg-btn-secondary { background-color: var(--vzla-blue); color: #ffffff; border-radius: 0.75rem; font-weight: 600; border: 1px solid #1a3c9e; transition: transform 0.1s active; }
         .tg-btn-secondary:active { transform: scale(0.97); }
-
-        .tg-btn-ton {
-            background-color: var(--ton-blue);
-            color: #ffffff;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            transition: transform 0.1s active, filter 0.2s;
-            box-shadow: 0 0 15px rgba(0, 152, 234, 0.4);
-        }
+        
+        .tg-btn-ton { background-color: var(--ton-blue); color: #ffffff; border-radius: 0.75rem; font-weight: 700; transition: transform 0.1s active; box-shadow: 0 0 15px rgba(0, 152, 234, 0.4); }
         .tg-btn-ton:active { transform: scale(0.97); }
         .tg-btn-ton:disabled { background-color: #334155; box-shadow: none; color: #94a3b8; }
-
-        /* Botão Competição Online (Azul Transparente) */
-        .tg-btn-duelo {
-            background-color: rgba(0, 152, 234, 0.1);
-            color: #ffffff;
-            border-radius: 0.75rem;
-            border: 1px solid var(--ton-blue);
-            font-weight: 800;
-            transition: transform 0.1s active, background-color 0.2s, box-shadow 0.2s;
-            box-shadow: inset 0 0 15px rgba(0, 152, 234, 0.15), 0 0 15px rgba(0, 152, 234, 0.3);
-        }
-        .tg-btn-duelo:active { transform: scale(0.97); box-shadow: inset 0 0 10px rgba(0, 152, 234, 0.1), 0 0 10px rgba(0, 152, 234, 0.2); }
+        
+        .tg-btn-duelo { background-color: rgba(0, 152, 234, 0.1); color: #ffffff; border-radius: 0.75rem; border: 1px solid var(--ton-blue); font-weight: 800; transition: transform 0.1s active, background-color 0.2s; box-shadow: inset 0 0 15px rgba(0, 152, 234, 0.15), 0 0 15px rgba(0, 152, 234, 0.3); }
+        .tg-btn-duelo:active { transform: scale(0.97); box-shadow: inset 0 0 10px rgba(0, 152, 234, 0.1); }
         .tg-btn-duelo:hover { background-color: rgba(0, 152, 234, 0.2); }
 
-        /* Estética de la Manga */
-        .manga-track {
-            background-color: var(--manga-bg);
-            background-image: radial-gradient(#1c110a 15%, transparent 16%), radial-gradient(#1c110a 15%, transparent 16%);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-        }
+        .tg-btn-gratis { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; border-radius: 0.75rem; border: 1px solid var(--tg-border); font-weight: 800; transition: transform 0.1s active, background-color 0.2s; }
+        .tg-btn-gratis:active { transform: scale(0.97); }
+        .tg-btn-gratis:hover { background-color: rgba(255, 255, 255, 0.1); }
 
-        .talanquera {
-            background-color: var(--talanquera);
-            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.4) 40px, rgba(0,0,0,0.4) 45px);
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
-        }
+        .manga-track { background-color: var(--manga-bg); background-image: radial-gradient(#1c110a 15%, transparent 16%), radial-gradient(#1c110a 15%, transparent 16%); background-size: 20px 20px; background-position: 0 0, 10px 10px; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
+        .talanquera { background-color: var(--talanquera); background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.4) 40px, rgba(0,0,0,0.4) 45px); border-top: 2px solid #000; border-bottom: 2px solid #000; }
 
-        /* Animaciones */
         @keyframes gallop { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(-2deg); } }
         @keyframes run-bull { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px) rotate(2deg); } }
         .anim-gallop { animation: gallop 0.4s infinite; }
@@ -152,13 +88,31 @@
         .custom-scrollbar-light::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
         
         #ton-connect { display: flex; justify-content: center; }
+
+        /* Estilo para el Splash Screen */
+        #screen-splash {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: var(--tg-bg);
+            transition: opacity 0.5s ease-out;
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex justify-center items-center bg-[var(--tg-bg)]">
 
-    <!-- Main Container -->
     <div id="app" class="w-full max-w-md h-full bg-[var(--tg-bg)] text-white relative overflow-hidden flex flex-col sm:border sm:border-[var(--tg-border)] sm:rounded-[2rem] shadow-2xl">
         
+        <!-- PANTALLA DE BIENVENIDA (SPLASH SCREEN) -->
+        <section id="screen-splash" class="absolute inset-0 z-[100] flex flex-col justify-end items-center pb-10">
+            <div class="bg-black/50 backdrop-blur-sm p-4 rounded-xl text-center border border-white/10 shadow-lg animate-pulse">
+                <h1 class="font-display font-black text-3xl leading-none text-white tracking-tighter mb-1">
+                    TOROS<br><span class="text-[var(--tg-primary)]">COLEADOS</span>
+                </h1>
+                <p class="text-xs text-gray-300 font-semibold tracking-widest mt-2">CARGANDO LA MANGA...</p>
+            </div>
+        </section>
+
         <!-- Franja Tricolor Vzla -->
         <div class="h-1.5 w-full flex shrink-0">
             <div class="flex-1 bg-[var(--vzla-yellow)]"></div>
@@ -173,34 +127,29 @@
                 <span id="ui-nickname" class="font-bold font-display truncate w-24 sm:w-32 text-base tracking-tight">Cargando...</span>
             </div>
             <div class="flex items-center gap-2">
-                <!-- Botón de Bóveda Arriba -->
-                <button onclick="nav('boveda')" class="flex items-center gap-1.5 bg-green-500/10 border border-green-500/30 px-3 py-1.5 sm:py-2 rounded-xl hover:bg-green-500/20 transition active:scale-95 shadow-sm">
-                    <i class="fa-solid fa-vault text-green-400 text-sm"></i>
-                    <span id="header-puntos-boveda" class="font-bold font-display text-green-400 text-sm sm:text-base">0 pts</span>
+                <!-- Dual Currency Display -->
+                <button onclick="nav('boveda')" class="flex flex-col items-end gap-0.5 bg-slate-800/80 border border-slate-600 px-3 py-1 rounded-xl active:scale-95 shadow-sm text-right">
+                    <span class="text-[10px] font-bold text-orange-400 flex items-center justify-end gap-1"><span id="header-cc">0</span> <i class="fa-solid fa-coins"></i></span>
+                    <span class="text-[10px] font-bold text-yellow-400 flex items-center justify-end gap-1"><span id="header-oro">0</span> <i class="fa-solid fa-cubes"></i></span>
                 </button>
-                
-                <!-- Botón de Billetera Arriba -->
                 <button onclick="openWallet()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--ton-blue)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:bg-[var(--tg-border)] transition active:scale-95 shrink-0">
                     <i class="fa-solid fa-wallet text-lg"></i>
                 </button>
             </div>
         </header>
 
-        <!-- Screens Container -->
         <main class="flex-1 relative overflow-y-auto custom-scrollbar bg-[var(--tg-bg)]">
             
-            <!-- 0. TERMS AND CONDITIONS -->
+            <!-- 0. REGLAMENTO -->
             <section id="screen-reglamento" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-50">
-                <div class="w-full bg-[#fdf6e3] text-[#271c19] p-6 sm:p-8 rounded shadow-[0_0_30px_rgba(0,0,0,0.8)] border-4 border-[#8b5a2b] bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] relative">
-                    <h2 class="font-display font-black text-2xl text-center mb-4 text-[#5c3a21] border-b-2 border-[#8b5a2b] pb-2">Reglamento de la Manga</h2>
+                <div class="w-full bg-[#fdf6e3] text-[#271c19] p-6 sm:p-8 rounded border-4 border-[#8b5a2b] bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] relative">
+                    <h2 class="font-display font-black text-2xl text-center mb-4 text-[#5c3a21] border-b-2 border-[#8b5a2b] pb-2">Reglamento</h2>
                     <div class="space-y-4 text-sm font-medium leading-relaxed max-h-[50vh] overflow-y-auto pr-3 custom-scrollbar-light">
                         <p>¡Bienvenido, Coleador! Antes de apretar la cincha y salir al coso, debe aceptar las reglas:</p>
                         <ul class="list-disc pl-5 space-y-3">
-                            <li><b>Habilidad Técnica:</b> El resultado depende de su precisión (Power-Timing).</li>
-                            <li><b>Pagos Web3 (TON):</b> El Duelo Online se paga con criptomoneda TON de forma directa e irreversible. La Federación cobra una comisión por mantenimiento tecnológico del servidor global.</li>
-                            <li><b>Bóveda de Puntos:</b> Acumula puntos jugando y cámbialos por TON a tu billetera conectada al llegar a 5000 puntos.</li>
-                            <li><b>Conexión:</b> No nos hacemos responsables por fallas de internet. Una vez enviada la transacción a la blockchain, no hay devoluciones.</li>
-                            <li><b>Mayoría de Edad:</b> Solo se permite la entrada a mayores de 18 años. Juegue con gallardía.</li>
+                            <li><b>Competición Online:</b> Tienes salas gratuitas (Ganas $ColeoCoin) y salas de apuesta en TON (Ganas Oro Llanero).</li>
+                            <li><b>Bóveda y Galería:</b> Usa $ColeoCoin para comprar Tarjetas Exclusivas. Cambia o Retira tu Oro Llanero por TON reales.</li>
+                            <li><b>Ranking Global:</b> Tu puntuación se sincroniza en tiempo real con todos los demás jugadores de la manga.</li>
                         </ul>
                     </div>
                     <button onclick="acceptTerms()" class="mt-6 w-full bg-[#8b5a2b] hover:bg-[#5c3a21] text-[#fdf6e3] p-4 font-bold text-lg rounded shadow-lg transition-transform active:scale-95 border-2 border-[#3e2723]">
@@ -209,15 +158,15 @@
                 </div>
             </section>
 
-            <!-- 1. START MENU -->
+            <!-- 1. MENU -->
             <section id="screen-menu" class="relative w-full min-h-full hidden flex-col items-center pt-8 pb-10 px-5 bg-[radial-gradient(ellipse_at_top,_var(--tg-surface)_0%,_var(--tg-bg)_100%)]">
                 
-                <!-- Candado Admin (Súper Escondido) -->
-                <button onclick="requestAdminAccess()" class="absolute bottom-2 right-2 text-white opacity-5 hover:opacity-20 transition p-4 z-50 outline-none">
-                    <i class="fa-solid fa-lock text-[10px]"></i>
+                <!-- BOTÓN MODO MÁSTER (CANDADO) - CASI INVISIBLE -->
+                <button onclick="requestAdminAccess()" class="absolute bottom-2 right-2 opacity-5 hover:opacity-20 text-white transition p-4 z-50 outline-none cursor-pointer">
+                    <i class="fa-solid fa-lock text-sm"></i>
                 </button>
 
-                <div class="text-center mb-6 mt-2">
+                <div class="text-center mb-4 mt-2">
                     <h1 class="font-display font-black text-5xl leading-none text-white tracking-tighter mb-2">
                         TOROS<br><span class="text-[var(--tg-primary)]">COLEADOS</span>
                     </h1>
@@ -233,169 +182,171 @@
                     </div>
                 </div>
 
-                <!-- Perfil del Coleador (Solo visual, no pide escribir cada vez) -->
-                <div id="menu-nickname-display" class="w-full tg-card p-4 mb-6 border-t-2 border-t-[var(--vzla-blue)] mt-4 flex justify-between items-center">
+                <div id="menu-nickname-display" class="w-full tg-card p-3 mb-3 border-t-2 border-t-[var(--vzla-blue)] mt-2 flex justify-between items-center">
                     <div>
                         <span class="block text-[10px] text-[var(--tg-text-sec)] uppercase tracking-wider font-bold mb-0.5">Apodo del Coleador</span>
                         <span class="font-bold text-lg text-white" id="menu-nickname-text">Cargando...</span>
                     </div>
-                    <button onclick="toggleNicknameEdit()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--tg-text-sec)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:text-white hover:bg-[var(--tg-border)] transition active:scale-95">
+                    <button onclick="toggleNicknameEdit()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--tg-text-sec)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:text-white hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-pen"></i>
                     </button>
                 </div>
 
-                <!-- Modo Edición (Oculto por defecto) -->
-                <div id="menu-nickname-edit" class="w-full tg-card p-4 mb-6 border-t-2 border-t-[var(--vzla-blue)] mt-4 hidden">
+                <div id="menu-nickname-edit" class="w-full tg-card p-3 mb-3 border-t-2 border-t-[var(--vzla-blue)] mt-2 hidden">
                     <label class="block text-xs font-semibold text-[var(--tg-text-sec)] mb-2 text-center uppercase tracking-wider">Ingresa tu Apodo</label>
                     <div class="flex gap-2">
-                        <input type="text" id="input-nickname" placeholder="Ej. El Centauro" class="w-full p-3 tg-input text-center font-bold text-base" onkeypress="if(event.key === 'Enter') saveAndCloseNickname()">
-                        <button onclick="saveAndCloseNickname()" class="bg-[var(--tg-primary)] text-black px-4 rounded-xl font-bold active:scale-95 transition shadow-md">
+                        <input type="text" id="input-nickname" placeholder="Ej. El Centauro" class="w-full p-2 tg-input text-center font-bold text-base">
+                        <button onclick="saveAndCloseNickname()" class="bg-[var(--tg-primary)] text-black px-4 rounded-xl font-bold active:scale-95 transition shadow-md cursor-pointer">
                             <i class="fa-solid fa-check"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="w-full mt-auto space-y-3">
-                    <button onclick="nav('career')" class="w-full tg-btn-primary p-4 flex items-center justify-center gap-3 text-lg shadow-[0_0_15px_rgba(255,204,0,0.3)]">
-                        <i class="fa-solid fa-horse-head"></i> Copa Virtual (Gratis)
+                <!-- PANEL DE NOMBRE DEL CABALLO -->
+                <div id="menu-horsename-display" class="w-full tg-card p-3 mb-5 border-t-2 border-t-[var(--vzla-red)] flex justify-between items-center">
+                    <div>
+                        <span class="block text-[10px] text-[var(--tg-text-sec)] uppercase tracking-wider font-bold mb-0.5">Nombre del Caballo</span>
+                        <span class="font-bold text-lg text-white" id="menu-horsename-text">Cargando...</span>
+                    </div>
+                    <button onclick="toggleHorseNameEdit()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--tg-text-sec)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:text-white hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </div>
+
+                <div id="menu-horsename-edit" class="w-full tg-card p-3 mb-5 border-t-2 border-t-[var(--vzla-red)] hidden">
+                    <label class="block text-xs font-semibold text-[var(--tg-text-sec)] mb-2 text-center uppercase tracking-wider">Bautiza a tu Caballo</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="input-horsename" placeholder="Ej. Relámpago" class="w-full p-2 tg-input text-center font-bold text-base">
+                        <button onclick="saveAndCloseHorseName()" class="bg-[var(--vzla-red)] text-white px-4 rounded-xl font-bold active:scale-95 transition shadow-md cursor-pointer">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="w-full mt-auto space-y-3 z-10 relative">
+                    <button onclick="nav('career')" class="w-full tg-btn-primary p-3 flex items-center justify-center gap-3 text-base shadow-[0_0_15px_rgba(255,204,0,0.3)] cursor-pointer">
+                        <i class="fa-solid fa-horse-head"></i> Copa Virtual (Solo)
                     </button>
                     
-                    <button onclick="nav('multiplayer')" class="w-full tg-btn-duelo p-4 flex items-center justify-center gap-3 text-lg relative overflow-hidden">
-                        <i class="fa-solid fa-users text-[var(--ton-blue)] text-xl"></i>
-                        <span class="font-black uppercase tracking-widest text-sm drop-shadow-md text-white">Competición Online</span>
+                    <button onclick="showMultiplayerMenu('gratis')" class="w-full tg-btn-gratis p-3 flex flex-col items-center justify-center text-base relative overflow-hidden cursor-pointer">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-users text-gray-300 text-lg"></i>
+                            <span class="font-black uppercase tracking-widest text-sm drop-shadow-md text-white">Competición Online</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Gratis / Gana $ColeoCoins</span>
                     </button>
 
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <button onclick="nav('ranking')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
-                            <i class="fa-solid fa-trophy text-[var(--tg-primary)] text-xl"></i> 
-                            <span class="font-semibold">Ranking</span>
+                    <button onclick="showMultiplayerMenu('apuesta')" class="w-full tg-btn-duelo p-3 flex flex-col items-center justify-center text-base relative overflow-hidden cursor-pointer">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-users text-[var(--ton-blue)] text-lg"></i>
+                            <span class="font-black uppercase tracking-widest text-sm drop-shadow-md text-white">Competición Online</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-[var(--vzla-yellow)] uppercase tracking-widest bg-black/40 px-2 py-0.5 rounded shadow-inner">Apuesta TON / Gana Oro</span>
+                    </button>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <button onclick="nav('ranking')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-3 text-[10px] flex flex-col items-center justify-center gap-1 hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-trophy text-[var(--tg-primary)] text-base"></i> 
+                            <span class="font-semibold uppercase">Ranking</span>
                         </button>
-                        <button onclick="nav('instructions')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
-                            <i class="fa-solid fa-book-open text-[var(--vzla-blue)] text-xl"></i> 
-                            <span class="font-semibold">Instrucciones</span>
+                        <button onclick="nav('galeria')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-3 text-[10px] flex flex-col items-center justify-center gap-1 hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-images text-purple-400 text-base"></i> 
+                            <span class="font-semibold uppercase">Galería</span>
+                        </button>
+                        <button onclick="nav('instructions')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-3 text-[10px] flex flex-col items-center justify-center gap-1 hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-book-open text-[var(--vzla-blue)] text-base"></i> 
+                            <span class="font-semibold uppercase">Ayuda</span>
                         </button>
                     </div>
                 </div>
             </section>
 
-            <!-- 1.05 BOVEDA SCREEN -->
+            <!-- LA GALERIA -->
+            <section id="screen-galeria" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">La Galería</h2>
+                </div>
+                
+                <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] p-4 rounded-xl mb-6 text-center text-sm text-gray-400 shadow-inner">
+                    Tus ahorros: <b class="text-orange-400 text-xl ml-1" id="galeria-cc">0</b> <i class="fa-solid fa-coins text-orange-400"></i>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4" id="gallery-container">
+                    <!-- JS Injects Cards Here -->
+                </div>
+            </section>
+
+            <!-- BOVEDA SCREEN -->
             <section id="screen-boveda" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
                 <div class="flex items-center mb-6">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-2xl ml-2 tracking-tight">Mi Bóveda</h2>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Cajero Virtual</h2>
                 </div>
                 
-                <div class="tg-card p-6 mb-6 text-center border-t-2 border-t-green-500 relative overflow-hidden flex flex-col items-center">
-                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-40 bg-green-500/10 blur-3xl rounded-full"></div>
-                    
-                    <p class="text-[var(--tg-text-sec)] text-xs font-bold uppercase tracking-widest mb-2 relative z-10">Puntos Acumulados</p>
-                    <p id="boveda-puntos" class="text-7xl font-display font-black text-green-400 mb-2 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">0</p>
-                    
-                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] px-4 py-2 rounded-full mt-2 mb-6 relative z-10">
-                        <p class="text-white font-semibold text-sm">Equivale a: <span id="boveda-ton" class="text-[var(--ton-blue)] font-bold text-base ml-1">0.00 <i class="fa-solid fa-gem text-xs"></i> TON</span></p>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="tg-card p-4 text-center border-t-2 border-t-yellow-400">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Oro Llanero</p>
+                        <p id="boveda-oro" class="text-2xl font-black text-yellow-400 flex items-center justify-center gap-1"><i class="fa-solid fa-cubes text-sm"></i> 0</p>
+                        <p id="boveda-ton" class="text-[10px] text-blue-400 font-bold mt-1">0.00 TON</p>
                     </div>
-
-                    <div class="w-full bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-border)] text-left text-xs text-[var(--tg-text-sec)] mb-6 space-y-3">
-                        <div class="flex items-start gap-2">
-                            <i class="fa-solid fa-circle-info text-[var(--ton-blue)] mt-0.5"></i> 
-                            <p><b>Tasa de cambio:</b> Juega en la Manga y gana competiciones para acumular puntos. 1000 puntos equivalen a 1 TON.</p>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <i class="fa-solid fa-triangle-exclamation text-[var(--vzla-yellow)] mt-0.5"></i> 
-                            <p><b>Retiro mínimo:</b> Debes acumular al menos <b>5000 pts</b> para habilitar el retiro a tu billetera.</p>
-                        </div>
+                    <div class="tg-card p-4 text-center border-t-2 border-t-orange-400">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">$ColeoCoins</p>
+                        <p id="boveda-cc" class="text-2xl font-black text-orange-400 flex items-center justify-center gap-1"><i class="fa-solid fa-coins text-sm"></i> 0</p>
+                        <p class="text-[10px] text-gray-500 font-bold mt-1">Para la Galería</p>
                     </div>
-
-                    <button id="btn-reclamar-boveda" onclick="reclamarPuntos()" class="w-full tg-btn-ton p-4 text-lg font-bold flex items-center justify-center gap-3 relative z-10">
-                        <i class="fa-solid fa-hand-holding-dollar text-xl"></i> Solicitar Retiro a mi Wallet
-                    </button>
                 </div>
 
-                <div class="mt-auto text-center">
-                    <p class="text-[10px] text-[var(--tg-text-sec)]">El administrador validará y enviará los fondos a la dirección de tu billetera TON.</p>
+                <div class="space-y-3">
+                    <button onclick="comprarOro()" class="w-full bg-[var(--ton-blue)] hover:bg-[#007cbd] text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-md cursor-pointer">
+                        <i class="fa-solid fa-cart-shopping"></i> Comprar Oro (Pagar TON)
+                    </button>
+                    <button onclick="cambiarOroPorCC()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-sm cursor-pointer">
+                        <i class="fa-solid fa-right-left"></i> Cambiar Oro por $ColeoCoins
+                    </button>
+                    
+                    <div class="pt-4">
+                        <p class="text-[10px] text-[var(--tg-text-sec)] text-center mb-2">Se requieren 5000 Oro para solicitar un retiro a tu wallet.</p>
+                        <button onclick="reclamarPuntos()" class="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition shadow-md cursor-pointer">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> Retirar Oro a mi Wallet
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            <!-- 1.1 WALLET SCREEN -->
+            <!-- WALLET SCREEN -->
             <section id="screen-wallet" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
                 <div class="flex items-center mb-8">
                     <button onclick="nav('menu')" class="text-[var(--ton-blue)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
                     <h2 class="font-display text-2xl ml-2 tracking-tight">Tu Billetera</h2>
                 </div>
-                
                 <div class="tg-card p-8 mb-6 text-center border-t-2 border-t-[var(--ton-blue)] relative overflow-hidden flex flex-col items-center">
                     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-[var(--ton-blue)]/10 blur-3xl rounded-full"></div>
-                    
                     <i class="fa-solid fa-wallet text-5xl text-[var(--ton-blue)] mb-4 relative z-10 drop-shadow-lg"></i>
                     <p class="text-white font-bold text-lg mb-2 relative z-10">Billetera TON Network</p>
-                    <p class="text-xs text-[var(--tg-text-sec)] relative z-10 mb-8 px-2">Conecta tu billetera para poder pagar las inscripciones de los duelos y recibir tus ganancias.</p>
-                    
+                    <p class="text-xs text-[var(--tg-text-sec)] relative z-10 mb-8 px-2">Conecta tu billetera para pagar entradas y recibir premios.</p>
                     <div id="ton-connect" class="relative z-10 scale-110 origin-top"></div>
-                </div>
-
-                <div class="mt-auto bg-[var(--tg-surface)] p-5 rounded-2xl border border-[var(--tg-border)] shadow-inner">
-                    <h4 class="text-[var(--vzla-yellow)] font-bold text-sm mb-2"><i class="fa-solid fa-circle-info"></i> Información de Pagos</h4>
-                    <p class="text-xs text-[var(--tg-text-sec)] leading-relaxed">
-                        Al retirar de tu Bóveda, el Juez de Mesa utilizará la dirección de la billetera conectada aquí para transferir tus ganancias reales en TON.
-                    </p>
                 </div>
             </section>
 
-            <!-- 1.2 INSTRUCTIONS SCREEN -->
+            <!-- INSTRUCTIONS -->
             <section id="screen-instructions" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
                 <div class="flex items-center mb-6">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-2xl ml-2 tracking-tight">Instrucciones</h2>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Ayuda</h2>
                 </div>
                 <div class="tg-card p-6 mb-6 text-sm text-[var(--tg-text-sec)] space-y-4">
-                    <p><strong class="text-white">Objetivo:</strong> Tienes 4 turnos por manga. Tu caballo galopará hacia el toro. Presiona <b class="text-white">"COLEAR"</b> cuando estés sobre las zonas de acierto.</p>
+                    <p><strong class="text-white">Objetivo:</strong> Presiona <b class="text-white">COLEAR</b> sobre las zonas de acierto.</p>
                     <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div><strong class="text-green-400">Filo de Lomo (20 Pts)</strong></div>
-                        <p class="text-xs">Acierta en la zona verde estrecha del centro. El toro da una voltereta completa en el aire.</p>
+                        <strong class="text-green-400">Zona Verde: Filo de Lomo (20 Pts)</strong>
                     </div>
                     <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-[var(--tg-primary)] shadow-[0_0_10px_var(--tg-primary)]"></div><strong class="text-[var(--tg-primary)]">Costado (10 Pts)</strong></div>
-                        <p class="text-xs">Acierta en la zona amarilla exterior. El toro cae de lado, sumando menos puntos.</p>
-                    </div>
-                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-[var(--vzla-red)]"></div><strong class="text-[var(--vzla-red)]">Nulo (0 Pts)</strong></div>
-                        <p class="text-xs">Se produce si presionas muy pronto, muy tarde, o si dejas pasar al toro.</p>
+                        <strong class="text-[var(--tg-primary)]">Zona Amarilla: Costado (10 Pts)</strong>
                     </div>
                 </div>
-                <button onclick="nav('menu')" class="mt-auto w-full tg-btn-primary p-4 text-lg font-bold">¡Entendido!</button>
             </section>
 
-            <!-- 1.3 INSTRUCTIONS WALLET / DUELO SCREEN -->
-            <section id="screen-instructions-ton" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
-                <div class="flex items-center mb-6">
-                    <button onclick="nav('multiplayer')" class="text-[var(--ton-blue)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-xl ml-2 tracking-tight text-white">Guía de Competición</h2>
-                </div>
-                <div class="tg-card p-6 mb-6 text-sm text-[var(--tg-text-sec)] space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                    <h3 class="text-[var(--tg-primary)] font-bold text-center text-lg mb-2">🚩 ¡BIENVENIDO A LA MANGA! 🏇💨</h3>
-                    <p class="text-center text-white font-semibold mb-4 border-b border-[var(--tg-border)] pb-4">Competición de 4 Coleadores - Apuestas en TON</p>
-
-                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)]">
-                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">1. Prepara tu Billetera TON 💰</h4>
-                        <p class="text-xs space-y-2">Este juego funciona con TON. Conéctala en el Menú Principal.</p>
-                    </div>
-                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
-                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">2. Paga la Inscripción 🎫</h4>
-                        <p class="text-xs space-y-2">Al pulsar "Competición Online", aprobarás el pago desde tu billetera hacia la Federación. Entrarás a la sala de espera.</p>
-                    </div>
-                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
-                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">3. Gana Puntos en tu Bóveda 🏦</h4>
-                        <p class="text-xs space-y-2">El Pote Neto se reparte y se convierte en <b>Puntos en tu Bóveda (1 TON = 1000 pts)</b>.</p>
-                    </div>
-                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
-                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">4. Retira tus Ganancias 💸</h4>
-                        <p class="text-xs space-y-2">Al acumular <b>5000 puntos</b>, ve a "Mi Bóveda" y solicita el retiro. El administrador enviará los TON a tu wallet registrada.</p>
-                    </div>
-                </div>
-                <button onclick="nav('multiplayer')" class="mt-auto w-full tg-btn-ton p-4 text-lg font-bold shadow-[0_0_15px_rgba(0,152,234,0.3)]">¡Entendido, al ruedo!</button>
-            </section>
-
-            <!-- 2. CAREER MODE -->
+            <!-- CAREER MODE (3 ETAPAS) -->
             <section id="screen-career" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
                 <div class="flex items-center mb-8">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
@@ -403,123 +354,84 @@
                 </div>
                 <div class="space-y-4">
                     <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group" onclick="prepGame('career', 1)">
-                        <div><span class="text-[var(--tg-primary)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 1</span><h3 id="ui-manga-1" class="font-bold text-lg text-white">Toros en mi Pueblo</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Toros Novillos • Básica</p></div>
+                        <div>
+                            <span class="text-[var(--tg-primary)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 1</span>
+                            <h3 id="ui-manga-1" class="font-bold text-lg text-white">Toros en mi Pueblo</h3>
+                        </div>
                         <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
                     </div>
                     <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-blue)]" onclick="prepGame('career', 2)">
-                        <div><span class="text-[var(--vzla-blue)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 2</span><h3 id="ui-manga-2" class="font-bold text-lg text-white">Copa en Maracay</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Toro Cebú • Media</p></div>
+                        <div>
+                            <span class="text-[var(--vzla-blue)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 2</span>
+                            <h3 id="ui-manga-2" class="font-bold text-lg text-white">Copa en Maracay</h3>
+                        </div>
                         <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
                     </div>
                     <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-red)]" onclick="prepGame('career', 3)">
-                        <div><span class="text-[var(--vzla-red)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Final</span><h3 id="ui-manga-3" class="font-bold text-lg text-white">Camp. Barquisimeto</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Padrote Rebelde • Extrema</p></div>
+                        <div>
+                            <span class="text-[var(--vzla-red)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 3</span>
+                            <h3 id="ui-manga-3" class="font-bold text-lg text-white">Camp. Barquisimeto</h3>
+                        </div>
                         <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. MULTIPLAYER SETUP -->
-            <section id="screen-multiplayer" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
-                <div class="flex items-center mb-6">
-                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-2xl ml-2 tracking-tight">Competición Online</h2>
-                </div>
-
-                <button onclick="nav('instructions-ton')" class="mb-5 w-full bg-[var(--tg-bg)] border border-[var(--ton-blue)] text-white rounded-xl p-3 text-sm flex justify-center items-center gap-2 hover:bg-[var(--tg-surface)] transition active:scale-95 shadow-inner">
-                    <i class="fa-solid fa-circle-question text-[var(--ton-blue)] text-lg"></i>
-                    <span class="font-semibold text-gray-200">Guía: ¿Cómo conectar y apostar?</span>
-                </button>
-                
-                <div class="tg-card p-6 mb-6 border-t-2 border-t-[var(--ton-blue)]">
-                    <h3 class="font-bold text-lg text-center mb-5 text-white">Bolsa de Recompensas</h3>
-                    <div class="space-y-4 text-sm">
-                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3">
-                            <span class="text-[var(--tg-text-sec)]">Entrada p/p:</span>
-                            <span class="font-semibold text-white"><span id="mp-fee">0.1</span> <i class="fa-solid fa-gem text-[var(--ton-blue)] text-xs"></i> TON</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3 text-[var(--vzla-red)]">
-                            <span>Comisión Juez (<span id="mp-com-perc">10</span>%):</span>
-                            <span>-<span id="mp-com-val">0.04</span> TON</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-2">
-                            <span class="font-bold text-green-400 uppercase tracking-wide text-xs">Pote a Repartir:</span>
-                            <span class="font-bold text-green-400 text-xl"><span id="mp-pool">0.36</span> <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span>
-                        </div>
-                        <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-[var(--tg-primary)]">1ro</span><span id="mp-1st" class="text-white font-bold">252 pts</span></div>
-                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-gray-300">2do</span><span id="mp-2nd" class="text-white font-bold">72 pts</span></div>
-                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-orange-400">3ro</span><span id="mp-3rd" class="text-white font-bold">36 pts</span></div>
-                        </div>
-                        <p class="text-[10px] text-center text-[var(--tg-text-sec)] mt-2">Los premios se abonarán como Puntos en tu Bóveda.</p>
-                    </div>
-                </div>
-
-                <button id="btn-pay-ton" onclick="initiateTONPayment()" class="mt-auto w-full tg-btn-ton p-4 text-lg flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(0,152,234,0.3)]">
-                    <i class="fa-solid fa-wallet"></i> Pagar y Buscar Partida
-                </button>
-            </section>
-
-            <!-- 3.5 MATCHMAKING LOBBY -->
+            <!-- MATCHMAKING LOBBY -->
             <section id="screen-lobby" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-30">
-                <button onclick="cancelLobby()" class="absolute top-4 left-4 z-50 text-[var(--vzla-red)] hover:text-white font-bold text-xs tracking-widest uppercase transition-all p-2.5 bg-[var(--tg-bg)] rounded-xl border border-[var(--vzla-red)]/30 shadow-md active:scale-95 flex items-center gap-2">
+                <button onclick="cancelLobby()" class="absolute top-4 left-4 z-50 text-[var(--vzla-red)] hover:text-white font-bold text-xs tracking-widest uppercase transition-all p-2.5 bg-[var(--tg-bg)] rounded-xl border border-[var(--vzla-red)]/30 shadow-md active:scale-95 flex items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i> Salir de la Sala
                 </button>
-
                 <div class="w-full tg-card p-6 border-[var(--ton-blue)]/30 shadow-[0_0_30px_rgba(0,152,234,0.1)] mt-10">
                     <div class="text-center mb-6">
                         <div class="inline-block p-3 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full mb-3 animate-pulse">
                             <i class="fa-solid fa-satellite-dish text-[var(--ton-blue)] text-xl"></i>
                         </div>
                         <h2 class="font-display text-xl text-white tracking-tight">Sala de Espera</h2>
-                        <p class="text-xs text-[var(--tg-text-sec)] mt-1">Esperando oponentes con pago validado...</p>
+                        <p class="text-xs text-[var(--tg-text-sec)] mt-1">Sincronizando con los rivales...</p>
                     </div>
-                    
-                    <div id="lobby-slots" class="space-y-3 text-sm mb-6"></div>
 
+                    <div id="lobby-private-info" class="hidden mb-6 bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-primary)]/50 text-center shadow-inner">
+                        <p class="text-[10px] font-bold text-[var(--tg-text-sec)] uppercase tracking-widest mb-1">Código de Invitación:</p>
+                        <p id="lobby-room-code" class="text-3xl font-black text-[var(--tg-primary)] tracking-widest mb-3 drop-shadow-md">----</p>
+                        <button onclick="shareRoomCode()" class="w-full bg-[var(--vzla-blue)] hover:bg-[#0033a0] text-white p-2.5 rounded-lg font-bold text-xs transition active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-share-nodes"></i> Compartir con Amigos
+                        </button>
+                    </div>
+
+                    <div id="lobby-slots" class="space-y-3 text-sm mb-6"></div>
                     <div class="bg-[var(--tg-bg)] rounded-xl p-4 text-center border border-[var(--tg-border)]">
                         <p class="text-[var(--tg-text-sec)] text-[10px] mb-1 uppercase tracking-widest font-semibold">Coleadores Listos</p>
                         <div class="flex justify-center items-baseline gap-1">
-                            <span id="lobby-count" class="text-4xl font-display font-bold text-[var(--ton-blue)]">1</span>
+                            <span id="lobby-count" class="text-4xl font-display font-bold text-[var(--ton-blue)]">0</span>
                             <span class="text-[var(--tg-text-sec)] text-sm">/ 4</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 4. ESTABLO Y CORRAL (PRE-MATCH) -->
+            <!-- ESTABLO Y CORRAL -->
             <section id="screen-establo" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5 z-10">
                 <div class="flex items-center mb-6">
-                    <button onclick="navigateBackFromEstablo()" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors cursor-pointer"><i class="fa-solid fa-arrow-left text-xl"></i></button>
                     <h2 class="font-display text-2xl ml-2 tracking-tight">Preparación</h2>
                 </div>
-                
                 <div class="tg-card p-6 my-auto border-t-2 border-t-[var(--tg-primary)]">
                     <div class="flex justify-between items-center mb-6 border-b border-[var(--tg-border)] pb-6">
-                        <button onclick="changeHorse(-1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-left text-sm text-[var(--tg-primary)]"></i></button>
+                        <button onclick="changeHorse(-1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer"><i class="fa-solid fa-chevron-left text-sm text-[var(--tg-primary)]"></i></button>
                         <div class="text-center flex flex-col items-center px-2">
-                            <div id="est-horse-emoji" class="text-6xl mb-2 drop-shadow-md"></div>
+                            <div id="est-horse-emoji" class="h-20 w-20 flex items-center justify-center text-6xl mb-2 drop-shadow-md"><div style="transform:scaleX(-1);">🐎</div></div>
                             <h4 id="est-horse-name" class="font-bold text-white text-lg tracking-tight">Criollo Llanero</h4>
                         </div>
-                        <button onclick="changeHorse(1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-right text-sm text-[var(--tg-primary)]"></i></button>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-[10px] font-semibold text-[var(--tg-text-sec)] mb-2 uppercase tracking-wider text-center">Bautiza a tu montura</label>
-                        <input type="text" id="input-horsename" placeholder="Ej. Marlboro" class="w-full p-3 tg-input text-center font-semibold text-base" onchange="saveHorseName()">
-                    </div>
-
-                    <div class="space-y-4 text-xs font-semibold">
-                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Fuerza</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-fue" class="h-full bg-[var(--vzla-red)] transition-all duration-500 w-[50%]"></div></div><span id="est-val-fue" class="w-4 text-right text-white">5</span></div>
-                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Veloc.</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-vel" class="h-full bg-[var(--vzla-blue)] transition-all duration-500 w-[70%]"></div></div><span id="est-val-vel" class="w-4 text-right text-white">7</span></div>
-                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Estabil.</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-est" class="h-full bg-green-500 transition-all duration-500 w-[90%]"></div></div><span id="est-val-est" class="w-4 text-right text-white">9</span></div>
+                        <button onclick="changeHorse(1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95 cursor-pointer"><i class="fa-solid fa-chevron-right text-sm text-[var(--tg-primary)]"></i></button>
                     </div>
                 </div>
-
-                <button onclick="startGame()" class="mt-6 w-full tg-btn-primary p-4 text-lg flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                <button onclick="startGame()" class="mt-6 w-full tg-btn-primary p-4 text-lg flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)] cursor-pointer">
                     A la Manga <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </section>
 
-            <!-- 5. SECRET ADMIN PANEL (PUERTA TRASERA TON) -->
+            <!-- SECRET ADMIN PANEL -->
             <section id="screen-secret-admin" class="relative w-full min-h-full hidden flex-col pt-8 pb-16 px-5 z-[60]">
                 <div class="flex items-center mb-6">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
@@ -527,140 +439,98 @@
                 </div>
                 
                 <div class="space-y-5">
-                    
-                    <!-- NUEVA SECCIÓN DE RETIROS PENDIENTES -->
-                    <div class="tg-card p-5 border-t-4 border-t-green-500">
-                        <h3 class="font-semibold text-sm text-green-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer mr-1"></i> Retiros Pendientes</h3>
-                        <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)] mb-3 text-[10px] text-[var(--tg-text-sec)]">
-                            Los jugadores que soliciten canjear sus 5000 puntos aparecerán aquí para que les transfieras los TON desde tu billetera a la de ellos manualmente.
-                        </div>
+                    <div class="tg-card p-5 border-t-4 border-t-yellow-400">
+                        <h3 class="font-semibold text-sm text-yellow-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer mr-1"></i> Retiros de Oro</h3>
                         <div id="admin-retiros-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2">
                             <p class="text-xs text-[var(--tg-text-sec)] text-center">Cargando retiros...</p>
                         </div>
                     </div>
 
-                    <div class="tg-card p-5 border-t-4 border-t-[var(--ton-blue)]">
-                        <h3 class="font-semibold text-sm text-[var(--ton-blue)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-gem mr-1"></i> Configuración Economía</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Precio de Entrada (TON):</label>
-                                <input type="number" step="0.01" id="sec-ton-fee" class="w-full p-3 tg-input" placeholder="0.1">
-                            </div>
-                            <div>
-                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">% Comisión Tuya de cada Competición:</label>
-                                <input type="number" id="sec-com" min="0" max="100" class="w-full p-3 tg-input">
-                            </div>
-                            <div class="flex items-center justify-between bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                                <span class="text-xs font-semibold">Inscripciones Abiertas:</span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                  <input type="checkbox" id="sec-ton-open" class="sr-only peer" checked>
-                                  <div class="w-11 h-6 bg-[#334155] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--ton-blue)]"></div>
-                                </label>
-                            </div>
-                            <button onclick="saveTonConfig()" class="w-full mt-2 bg-[var(--ton-blue)] hover:bg-[#007cbd] text-white p-3 rounded-xl font-bold transition active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(0,152,234,0.3)]">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Actualizar Servidor
-                            </button>
+                    <!-- CAMPO PARA BANNER DE BIENVENIDA -->
+                    <div class="tg-card p-5 border-t-4 border-t-purple-500">
+                        <h3 class="font-semibold text-sm text-purple-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-image mr-1"></i> Imagen de Bienvenida</h3>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] text-[var(--tg-text-sec)] font-bold uppercase tracking-wider">Link de la Imagen (URL)</label>
+                            <input type="text" id="sec-banner" class="w-full p-3 tg-input text-sm" placeholder="Ej: https://mi-imagen.com/foto.jpg">
+                            <p class="text-[10px] text-gray-500 mt-1 leading-tight">Pega un enlace directo a una imagen. Se mostrará en pantalla completa al iniciar el juego.</p>
                         </div>
-                        <button onclick="calculateCorteDeCaja()" class="w-full mt-4 bg-[var(--vzla-blue)] hover:bg-[#0033a0] text-white p-3 rounded-xl font-bold transition active:scale-95 flex items-center justify-center gap-2 border border-[#1a3c9e]">
-                            <i class="fa-solid fa-cash-register"></i> Ver Ganancias de Hoy
-                        </button>
                     </div>
 
-                    <div class="tg-card p-5">
-                        <h3 class="font-semibold text-sm text-[var(--vzla-yellow)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-map-location mr-1"></i> Torneos</h3>
+                    <div class="tg-card p-5 border-t-4 border-t-blue-500">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-yellow)] mb-3 uppercase tracking-wider">Nombres de Etapas (3)</h3>
                         <div class="space-y-3">
-                            <input type="text" id="sec-m1" class="w-full p-3 tg-input" placeholder="Manga 1">
-                            <input type="text" id="sec-m2" class="w-full p-3 tg-input" placeholder="Manga 2">
-                            <input type="text" id="sec-m3" class="w-full p-3 tg-input" placeholder="Manga 3">
+                            <input type="text" id="sec-m1" class="w-full p-3 tg-input text-sm" placeholder="Manga Etapa 1">
+                            <input type="text" id="sec-m2" class="w-full p-3 tg-input text-sm" placeholder="Manga Etapa 2">
+                            <input type="text" id="sec-m3" class="w-full p-3 tg-input text-sm" placeholder="Manga Etapa 3">
                         </div>
-                    </div>
-
-                    <div class="tg-card p-5">
-                        <h3 class="font-semibold text-sm text-[var(--vzla-red)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-horse mr-1"></i> Caballos</h3>
+                        <hr class="border-slate-700 my-4">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-red)] mb-3 uppercase tracking-wider">Nombres de Caballos (3)</h3>
                         <div class="space-y-3">
-                            <input type="text" id="sec-h1" class="w-full p-3 tg-input" placeholder="Caballo 1">
-                            <input type="text" id="sec-h2" class="w-full p-3 tg-input" placeholder="Caballo 2">
-                            <input type="text" id="sec-h3" class="w-full p-3 tg-input" placeholder="Caballo 3">
+                            <input type="text" id="sec-h1" class="w-full p-3 tg-input text-sm" placeholder="Caballo 1">
+                            <input type="text" id="sec-h2" class="w-full p-3 tg-input text-sm" placeholder="Caballo 2">
+                            <input type="text" id="sec-h3" class="w-full p-3 tg-input text-sm" placeholder="Caballo 3">
                         </div>
-                    </div>
-
-                    <div class="tg-card p-5">
-                        <h3 class="font-semibold text-sm text-[#8b5a2b] mb-3 uppercase tracking-wider"><i class="fa-solid fa-hippo mr-1"></i> Toros</h3>
+                        <hr class="border-slate-700 my-4">
+                        <h3 class="font-semibold text-sm text-[#8b5a2b] mb-3 uppercase tracking-wider">Nombre del Toro</h3>
                         <div class="space-y-3">
-                            <input type="text" id="sec-b1" class="w-full p-3 tg-input" placeholder="Toro 1">
-                            <input type="text" id="sec-b2" class="w-full p-3 tg-input" placeholder="Toro 2">
-                            <input type="text" id="sec-b3" class="w-full p-3 tg-input" placeholder="Toro 3">
+                            <input type="text" id="sec-b1" class="w-full p-3 tg-input text-sm" placeholder="Toro (Aplica para todas las etapas)">
                         </div>
                     </div>
 
-                    <div class="tg-card p-5 border-[var(--vzla-blue)]/30">
-                        <h3 class="font-semibold text-sm text-purple-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-palette mr-1"></i> Mods Gráficos</h3>
-                        <div class="space-y-3 text-xs">
+                    <div class="tg-card p-5 border-purple-500/30">
+                        <h3 class="font-semibold text-sm text-purple-400 mb-3 uppercase tracking-wider">Mods Gráficos (PNG Global)</h3>
+                        <div class="space-y-4 text-xs">
                             <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                                <label class="block mb-2 font-semibold text-gray-300">Suelo (Arena):</label>
-                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customBgImg')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                                <label class="block mb-2 font-semibold">Arena (Suelo):</label>
+                                <input type="file" accept="image/*" onchange="handleFileUpload(event, 'customBgImg')" class="w-full text-[var(--tg-text-sec)] cursor-pointer">
                             </div>
                             <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                                <label class="block mb-2 font-semibold text-gray-300">Caballo 1 (PNG Transparente):</label>
-                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 0)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                                <label class="block mb-2 font-semibold">Caballos 1, 2 y 3:</label>
+                                <div class="flex gap-1">
+                                    <input type="file" accept="image/png" onchange="handleHorseUpload(event, 0)" class="w-1/3 text-[8px] text-[var(--tg-text-sec)] cursor-pointer">
+                                    <input type="file" accept="image/png" onchange="handleHorseUpload(event, 1)" class="w-1/3 text-[8px] text-[var(--tg-text-sec)] cursor-pointer">
+                                    <input type="file" accept="image/png" onchange="handleHorseUpload(event, 2)" class="w-1/3 text-[8px] text-[var(--tg-text-sec)] cursor-pointer">
+                                </div>
                             </div>
                             <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                                <label class="block mb-2 font-semibold text-gray-300">Caballo 2 (PNG Transparente):</label>
-                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 1)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
-                            </div>
-                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                                <label class="block mb-2 font-semibold text-gray-300">Caballo 3 (PNG Transparente):</label>
-                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 2)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                                <label class="block mb-2 font-semibold">Toro:</label>
+                                <div class="flex gap-1">
+                                    <input type="file" accept="image/png" onchange="handleBullUpload(event, 0)" class="w-full text-[8px] text-[var(--tg-text-sec)] cursor-pointer">
+                                </div>
                             </div>
                         </div>
-                        <button onclick="clearMods()" class="mt-4 w-full py-2 rounded-lg text-xs font-semibold text-[var(--vzla-red)] bg-[var(--vzla-red)]/10 hover:bg-[var(--vzla-red)]/20 transition">Limpiar Gráficos</button>
+                        <button onclick="clearMods()" class="mt-4 w-full py-3 bg-red-900/40 text-red-400 font-bold rounded-xl border border-red-900 cursor-pointer">RESETEAR GRÁFICOS PARA TODOS</button>
                     </div>
 
-                    <div class="tg-card p-5 border-[var(--vzla-red)]/30">
-                        <h3 class="font-semibold text-sm text-red-500 mb-3 uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> Seguridad</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Contraseña Maestra:</label>
-                                <input type="text" id="sec-pwd" class="w-full p-3 tg-input">
-                            </div>
-                            <div>
-                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Palabra de Recuperación:</label>
-                                <input type="text" id="sec-rec" class="w-full p-3 tg-input">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg mt-4">Guardar Locals</button>
-                    <button onclick="nav('menu')" class="w-full tg-btn-secondary p-4 text-lg mt-2">Cerrar Panel</button>
+                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg cursor-pointer">Sincronizar a Todos</button>
+                    <button onclick="nav('menu')" class="w-full tg-btn-secondary p-4 text-lg cursor-pointer">Cerrar Panel</button>
                 </div>
             </section>
 
-            <!-- 6. RANKING SCREEN -->
+            <!-- RANKING SCREEN -->
             <section id="screen-ranking" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
                 <div class="flex items-center mb-6">
                     <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                    <h2 class="font-display text-2xl ml-2 tracking-tight">Top Coleadores</h2>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Ranking Global</h2>
                 </div>
-                
                 <div class="tg-card overflow-hidden">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-[var(--tg-bg)] text-[var(--tg-text-sec)] border-b border-[var(--tg-border)]">
-                            <tr>
-                                <th class="p-3 text-center w-12">#</th>
-                                <th class="p-3">Nombre</th>
-                                <th class="p-3 text-right">Pts</th>
-                            </tr>
+                            <tr><th class="p-3 text-center w-12">#</th><th class="p-3">Nombre</th><th class="p-3 text-right">Pts</th></tr>
                         </thead>
                         <tbody id="ranking-body" class="divide-y divide-[var(--tg-border)]"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- 7. GAME SCREEN (LA MANGA) -->
+            <!-- GAME SCREEN (LA MANGA) -->
             <section id="screen-game" class="absolute inset-0 hidden flex flex-col bg-gradient-to-b from-[#1a110b] to-[var(--tg-bg)]">
-                <div class="h-16 bg-[var(--tg-surface)]/90 backdrop-blur-md border-b border-[var(--tg-border)] p-3 flex items-center justify-between z-10">
-                    <p id="locutor-text" class="text-xs font-semibold text-[var(--tg-primary)] italic text-center mx-2 line-clamp-2">"¡Atención, se abre el toril!"</p>
-                    <div class="text-right flex flex-col items-end">
+                <div class="h-16 bg-[var(--tg-surface)]/90 backdrop-blur-md border-b border-[var(--tg-border)] p-3 flex items-center justify-between z-10 gap-2">
+                    <button onclick="quitGame()" class="text-[var(--vzla-red)] hover:text-white transition-colors cursor-pointer z-50 bg-[var(--tg-bg)] border border-[var(--vzla-red)]/30 flex items-center justify-center w-10 h-10 rounded-xl shrink-0 shadow-md" title="Abandonar Partida">
+                        <i class="fa-solid fa-door-open"></i>
+                    </button>
+                    <p id="locutor-text" class="text-xs font-semibold text-[var(--tg-primary)] italic text-center line-clamp-2 flex-1">"¡Abran puerta!"</p>
+                    <div class="text-right flex flex-col items-end shrink-0">
                         <span class="text-[10px] text-[var(--tg-text-sec)] font-semibold uppercase">Turno <span id="hud-turn" class="text-white">1/4</span></span>
                         <span class="font-bold text-sm text-green-400"><span id="hud-score">0</span> Pts</span>
                     </div>
@@ -669,822 +539,820 @@
                 <div class="flex-1 relative flex flex-col justify-between overflow-hidden">
                     <div class="h-6 talanquera w-full relative z-0 opacity-80"></div> 
                     <div id="manga-bg" class="flex-1 manga-track relative overflow-hidden">
-                        <div id="zone-costado" class="hit-zone border-[var(--tg-primary)]/40 bg-[var(--tg-primary)]/10" title="Costado"></div>
-                        <div id="zone-filo" class="hit-zone border-green-500/60 bg-green-500/20 z-0" title="Filo de Lomo"></div>
+                        <div id="zone-costado" class="hit-zone border-[var(--tg-primary)]/40 bg-[var(--tg-primary)]/10"></div>
+                        <div id="zone-filo" class="hit-zone border-green-500/60 bg-green-500/20 z-0"></div>
                         <div id="game-entities" class="absolute inset-0 w-full h-full">
-                            <div id="pos-bull" class="absolute top-[52%] left-[55%] transform -translate-y-1/2 z-10"><div id="ent-bull" class="text-5xl anim-bull drop-shadow-lg flex items-center justify-center"></div></div>
-                            <div id="pos-horse" class="absolute top-1/2 left-[-20%] transform -translate-y-1/2 z-20"><div id="ent-horse" class="text-6xl anim-gallop drop-shadow-lg flex items-center justify-center"></div></div>
+                            <div id="pos-bull" class="absolute top-[52%] left-[55%] transform -translate-y-1/2 z-10"><div id="ent-bull" class="text-5xl anim-bull flex items-center justify-center"><div style="transform:scaleX(-1);">🐂</div></div></div>
+                            <div id="pos-horse" class="absolute top-1/2 left-[-20%] transform -translate-y-1/2 z-20"><div id="ent-horse" class="text-6xl anim-gallop flex items-center justify-center"><div style="transform:scaleX(-1);">🐎</div></div></div>
                         </div>
-                        <div id="dust" class="absolute top-[60%] left-[55%] transform -translate-x-1/2 translate-y-4 w-32 h-12 bg-white/10 blur-xl rounded-full animate-pulse hidden z-0"></div>
                     </div>
                     <div class="h-8 talanquera w-full relative z-0 flex items-center justify-center opacity-80"></div> 
                 </div>
 
-                <div class="h-32 bg-[var(--tg-surface)] border-t border-[var(--tg-border)] p-5 flex flex-col justify-center items-center gap-3 relative z-10">
-                    <button id="btn-colear" class="w-full tg-btn-primary py-4 font-display font-black text-xl tracking-wide shadow-[0_0_15px_rgba(255,204,0,0.3)]">COLEAR</button>
+                <div class="h-32 bg-[var(--tg-surface)] border-t border-[var(--tg-border)] p-5 flex flex-col justify-center items-center relative z-10">
+                    <button id="btn-colear" class="w-full tg-btn-primary py-4 font-display font-black text-xl tracking-wide shadow-[0_0_15px_rgba(255,204,0,0.3)] cursor-pointer">COLEAR</button>
                 </div>
             </section>
-
-            <!-- 8. OVERLAYS -->
-            <div id="overlay-result" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-50 backdrop-blur-md">
-                <div class="w-full tg-card p-6 text-center border-t-4 border-t-[var(--tg-primary)] shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
-                    <h2 id="res-title" class="font-display font-black text-3xl mb-2 text-white">Misión</h2>
-                    <p id="res-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Calculando...</p>
-                    <div id="res-mp-details" class="hidden mb-6 text-left bg-[var(--tg-bg)] rounded-xl p-4 border border-[var(--tg-border)] text-sm"></div>
-                    <button id="btn-result-action" onclick="closeResult()" class="w-full tg-btn-primary p-4 text-base">Continuar</button>
-                </div>
-            </div>
-
-            <!-- 9. CUSTOM MODAL -->
-            <div id="custom-modal" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-[100] backdrop-blur-md">
-                <div class="tg-card w-full p-6 text-center shadow-2xl border-t-4 border-t-[var(--vzla-blue)]">
-                    <h2 id="modal-title" class="font-bold text-xl text-white mb-2">Atención</h2>
-                    <p id="modal-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Contenido</p>
-                    <input type="text" id="modal-input" class="w-full p-3 tg-input text-center font-semibold mb-6 hidden">
-                    <div id="modal-buttons" class="flex gap-3 justify-center w-full"></div>
-                </div>
-            </div>
-
         </main>
+        
+        <!-- MODALES GLOBALES -->
+        <div id="custom-modal" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center p-5 z-[100] backdrop-blur-sm">
+            <div class="tg-card w-full p-6 text-center border-t-4 border-t-[var(--ton-blue)]">
+                <h2 id="modal-title" class="font-bold text-xl mb-2 text-white"></h2>
+                <p id="modal-desc" class="text-sm text-[var(--tg-text-sec)] mb-6"></p>
+                <input type="text" id="modal-input" class="w-full p-3 tg-input text-center font-bold mb-6 hidden">
+                <div id="modal-buttons" class="flex flex-col gap-2 w-full justify-center"></div>
+            </div>
+        </div>
+
+        <div id="overlay-result" class="absolute inset-0 bg-[var(--tg-bg)]/90 hidden flex-col items-center justify-center p-5 z-50 backdrop-blur-md">
+            <div class="w-full tg-card p-6 text-center border-t-4 border-t-[var(--tg-primary)]">
+                <h2 id="res-title" class="font-display font-black text-3xl mb-2 text-white"></h2>
+                <p id="res-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm"></p>
+                <button onclick="closeResult()" class="w-full tg-btn-primary p-4 text-base cursor-pointer">Continuar</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Módulo Principal JS: Firebase y TON Connect -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, remove, get, onDisconnect, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update, remove, get, push, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // --- CREDENCIALES FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
-            authDomain: "toros-coleados-pro.firebaseapp.com",
-            databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
-            projectId: "toros-coleados-pro",
-            storageBucket: "toros-coleados-pro.firebasestorage.app",
-            messagingSenderId: "563546037351",
-            appId: "1:563546037351:web:6903515e92f03f14a388c2"
-        };
+        // --- FIREBASE CONFIGURATION (ROBUSTA) ---
+        let firebaseConfig = {};
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            try { firebaseConfig = JSON.parse(__firebase_config); } catch(e){}
+        }
+        if (!firebaseConfig.apiKey) {
+            firebaseConfig = {
+                apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
+                authDomain: "toros-coleados-pro.firebaseapp.com",
+                databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
+                projectId: "toros-coleados-pro",
+                storageBucket: "toros-coleados-pro.firebasestorage.app",
+                messagingSenderId: "563546037351",
+                appId: "1:563546037351:web:6903515e92f03f14a388c2"
+            };
+        }
+        
+        const rawAppId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'toros-coleados-pro';
+        const appId = rawAppId.replace(/[.#$\[\]]/g, '');
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
 
-        // --- INICIALIZACIÓN OFICIAL TELEGRAM ---
-        const tg = window.Telegram?.WebApp || null;
-        let tgUser = tg?.initDataUnsafe?.user || null;
-        if(tg) { tg.ready(); tg.expand(); }
-
-        let playerId = tgUser ? tgUser.id.toString() : localStorage.getItem('tc_pid');
-        if (!playerId) { playerId = crypto.randomUUID(); localStorage.setItem('tc_pid', playerId); }
-
-        // --- INICIALIZACIÓN TON CONNECT ---
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect'
-        });
-        
-        // BILLETERA ADMINISTRATIVA
         const ADMIN_WALLET = "UQDQG0-IgjUsyQpbLbZLt32fwg2JBFVb5IVr7UcuiSFTlSsr";
 
-        // --- GLOBAL CONFIG (FIREBASE) ---
-        let globalTonConfig = { precio_entrada: 0.1, inscripciones_abiertas: true };
-        onValue(ref(db, 'configuracion'), (snapshot) => {
-            if(snapshot.exists()) {
-                globalTonConfig = snapshot.val();
-                updateMpSetup(); 
-                const btnPay = document.getElementById('btn-pay-ton');
-                if(btnPay) {
-                    if(!globalTonConfig.inscripciones_abiertas) {
-                        btnPay.innerHTML = '<i class="fa-solid fa-lock"></i> Inscripciones Cerradas';
-                        btnPay.disabled = true;
+        // --- MIGRACIÓN DE SALDOS ---
+        let oldPoints = parseInt(localStorage.getItem('tc_puntosBoveda')) || 0;
+        if (oldPoints > 0) {
+            localStorage.setItem('tc_cc', oldPoints); 
+            localStorage.removeItem('tc_puntosBoveda');
+        }
+
+        // --- ESTADO LOCAL ---
+        let playerId = localStorage.getItem('tc_pid');
+        if(!playerId) { playerId = crypto.randomUUID(); localStorage.setItem('tc_pid', playerId); }
+
+        let localState = {
+            nickname: localStorage.getItem('tc_nickname') || 'Coleador',
+            horseName: localStorage.getItem('tc_horsename') || 'Mi Caballo',
+            horseIndex: parseInt(localStorage.getItem('tc_horseIndex')) || 0,
+            coleoCoin: parseInt(localStorage.getItem('tc_cc')) || 0,
+            oroLlanero: parseInt(localStorage.getItem('tc_oro')) || 0,
+            inventario: JSON.parse(localStorage.getItem('tc_inv')) || [],
+            userConnected: false,
+            initialSplashDone: false
+        };
+
+        let globalConfig = {
+            bannerUrl: null, 
+            mangaNames: ["Toros en mi Pueblo", "Copa en Maracay", "Camp. Barquisimeto"],
+            horseNames: ["Criollo Llanero", "Cuarto de Milla", "Pinto Americano"],
+            bullNames: ["Toro Cebú"],
+            customBgImg: null,
+            customHorseImgs: [null, null, null],
+            customBullImgs: [null]
+        };
+
+        const BULLS_DATA = [ { emoji:'🐂', fz: 6, vel: 0.35 } ];
+        const HORSES_DATA = [ { emoji:'🐎', fz: 5, vel: 0.2 }, { emoji:'🏇', fz: 8, vel: 0.4 }, { emoji:'🐴', fz: 7, vel: 0.3 } ];
+        
+        const CARDS_DATA = [
+            { id: 'bronce', name: 'Tarjeta Bronce', price: 500, color: 'text-orange-600', border: 'border-orange-600' },
+            { id: 'plata', name: 'Tarjeta Plata', price: 1500, color: 'text-slate-300', border: 'border-slate-300' },
+            { id: 'oro', name: 'Tarjeta Oro', price: 3000, color: 'text-yellow-400', border: 'border-yellow-400' }
+        ];
+
+        window.game = { active: false, mode: 'career', roomType: null, currentRoomCode: null, pendingRoomType: null, level: 1, horsePos: -20, matchScore: 0, turn: 1, anim: null };
+
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json', buttonRootId: 'ton-connect' });
+
+        // --- AUTH Y SINCRONIZACIÓN ---
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                localState.userConnected = true;
+                onValue(ref(db, `artifacts/${appId}/public/data/config_maestra`), (snap) => {
+                    if(snap.exists()) {
+                        globalConfig = { ...globalConfig, ...snap.val() };
+                        updateVisuals();
+                        processSplashScreen(); 
                     } else {
-                        btnPay.innerHTML = '<i class="fa-solid fa-wallet"></i> Pagar y Buscar Partida';
-                        btnPay.disabled = false;
+                        processSplashScreen();
                     }
-                }
+                });
+                syncRanking();
+                get(ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`)).then(snap => {
+                    if(!snap.exists()) updateRankingInDB(0);
+                });
+            } else {
+                signInAnonymously(auth).catch(e => console.error("Firebase Auth Falló:", e));
             }
         });
 
-        // --- GAME DATA ---
-        const HORSES = [
-            { id: 'criollo', name: 'Criollo Llanero', emoji: '🐎', fuerza: 5, velocidad: 7, estabilidad: 9 },
-            { id: 'milla', name: 'Cuarto de Milla', emoji: '🏇', fuerza: 8, velocidad: 9, estabilidad: 6 },
-            { id: 'pinto', name: 'Pinto Americano', emoji: '🐴', fuerza: 7, velocidad: 8, estabilidad: 8 }
-        ];
-        const BULLS = [
-            { id: 'novillo', name: 'Novillo', emoji: '🐄', bravura: 4, peso: 350 },
-            { id: 'cebu', name: 'Toro Cebú', emoji: '🐂', bravura: 7, peso: 500 },
-            { id: 'padrote', name: 'Padrote Rebelde', emoji: '🐃', bravura: 9, peso: 650 }
-        ];
+        // --- MANEJO DEL SPLASH SCREEN (BIENVENIDA) ---
+        function processSplashScreen() {
+            if (localState.initialSplashDone) return;
+            localState.initialSplashDone = true;
 
-        let state = {
-            nickname: tgUser ? tgUser.first_name : (localStorage.getItem('tc_nickname') || 'Coleador'),
-            horseIndex: parseInt(localStorage.getItem('tc_horse')) || 0,
-            horseName: localStorage.getItem('tc_horseName') || '',
-            customBgImg: localStorage.getItem('tc_mod_bg') || null,
-            customHorseImgs: JSON.parse(localStorage.getItem('tc_mod_horses')) || [null, null, null],
-            puntosBoveda: parseInt(localStorage.getItem('tc_puntosBoveda')) || 0, // BÓVEDA
-            mangaNames: JSON.parse(localStorage.getItem('tc_mangaNames')) || ["Toros en mi Pueblo", "Copa en Maracay", "Campeonato Barquisimeto"],
-            horseNames: JSON.parse(localStorage.getItem('tc_horseNames')) || ["Criollo Llanero", "Cuarto de Milla", "Pinto Americano"],
-            bullNames: JSON.parse(localStorage.getItem('tc_bullNames')) || ["Novillo", "Toro Cebú", "Padrote Rebelde"],
-            admin: { fee: parseInt(localStorage.getItem('tc_fee')) || 100, com: parseInt(localStorage.getItem('tc_com')) || 10, password: localStorage.getItem('tc_admin_pwd') || 'ADMIN123', recovery: localStorage.getItem('tc_admin_rec') || 'COLEO' },
-            ranking: JSON.parse(localStorage.getItem('tc_ranking')) || [{ nombre: 'El Centauro', puntos: 1500 }]
-        };
+            const splash = document.getElementById('screen-splash');
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
 
-        window.game = { active: false, mode: 'career', level: 1, horsePos: -20, horseSpeed: 0.5, animFrame: null, mpData: null, currentTurn: 1, maxTurns: 4, matchScore: 0, filoCount: 0, zones: {} };
-        let lobbyListener = null;
-
-        const phrases = {
-            start: ["¡Atención, se abre el toril!", "¡Salió el toro, apriete coleador!", "¡Cuidado en la manga!"],
-            filo: ["¡Filo de Lomo perfecto!", "¡Qué ejecución impecable!", "¡Limpiecito ese filo!"],
-            costado: ["¡Cayó de costado!", "¡Recortó el toro sumando!", "¡Buena caída, suma puntos!"],
-            nulo: ["¡Nulo, se le fue!", "¡Pasó de largo el jinete!", "¡Falló en la zona!"]
-        };
-
-        function init() {
-            HORSES[0].name = state.horseNames[0]; HORSES[1].name = state.horseNames[1]; HORSES[2].name = state.horseNames[2];
-            BULLS[0].name = state.bullNames[0]; BULLS[1].name = state.bullNames[1]; BULLS[2].name = state.bullNames[2];
-            document.getElementById('input-nickname').value = state.nickname;
-            
-            updateHeader(); renderRanking(); updateBovedaUI();
-            
-            if(localStorage.getItem('reglamentoAceptado') !== 'true') {
-                document.getElementById('app-header').classList.add('hidden'); nav('reglamento');
-            } else { document.getElementById('app-header').classList.remove('hidden'); nav('menu'); }
-        }
-
-        function acceptTerms() { localStorage.setItem('reglamentoAceptado', 'true'); document.getElementById('app-header').classList.remove('hidden'); nav('menu'); }
-
-        function saveData() {
-            localStorage.setItem('tc_nickname', state.nickname);
-            localStorage.setItem('tc_horse', state.horseIndex);
-            localStorage.setItem('tc_horseName', state.horseName);
-            localStorage.setItem('tc_puntosBoveda', state.puntosBoveda); 
-            localStorage.setItem('tc_fee', state.admin.fee);
-            localStorage.setItem('tc_com', state.admin.com);
-            localStorage.setItem('tc_admin_pwd', state.admin.password);
-            localStorage.setItem('tc_admin_rec', state.admin.recovery);
-            localStorage.setItem('tc_mangaNames', JSON.stringify(state.mangaNames));
-            localStorage.setItem('tc_horseNames', JSON.stringify(state.horseNames));
-            localStorage.setItem('tc_bullNames', JSON.stringify(state.bullNames));
-            localStorage.setItem('tc_ranking', JSON.stringify(state.ranking));
-            if(state.customBgImg) localStorage.setItem('tc_mod_bg', state.customBgImg); else localStorage.removeItem('tc_mod_bg');
-            localStorage.setItem('tc_mod_horses', JSON.stringify(state.customHorseImgs));
-            updateHeader(); updateBovedaUI();
-        }
-
-        function updateHeader() { 
-            document.getElementById('ui-nickname').innerText = state.nickname; 
-            if(document.getElementById('menu-nickname-text')) {
-                document.getElementById('menu-nickname-text').innerText = state.nickname;
+            if (globalConfig.bannerUrl) {
+                splash.style.backgroundImage = `linear-gradient(to top, var(--tg-bg) 0%, transparent 100%), url('${globalConfig.bannerUrl}')`;
             }
-        }
-        
-        function saveNickname() { const val = document.getElementById('input-nickname').value.trim(); if(val) { state.nickname = val; saveData(); } }
-        function saveHorseName() { state.horseName = document.getElementById('input-horsename').value.trim(); saveData(); }
 
-        window.toggleNicknameEdit = function() {
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.classList.add('hidden');
+                    splash.style.display = 'none';
+                    if(localStorage.getItem('tc_terms') !== 'true') nav('reglamento');
+                    else nav('menu');
+                }, 500); 
+            }, 3500);
+        }
+
+        // --- NAVEGACIÓN Y MENÚS ---
+        window.nav = (id) => {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            const targetScreen = document.getElementById('screen-'+id);
+            if (targetScreen) targetScreen.classList.remove('hidden');
+            
+            if(id === 'secret-admin') loadRetirosAdmin();
+            if(id === 'establo') updateEstabloUI();
+            if(id === 'galeria') renderGallery();
+        };
+
+        window.openWallet = () => nav('wallet');
+
+        window.acceptTerms = () => { localStorage.setItem('tc_terms', 'true'); nav('menu'); };
+
+        window.toggleNicknameEdit = () => {
             document.getElementById('menu-nickname-display').classList.add('hidden');
             document.getElementById('menu-nickname-edit').classList.remove('hidden');
-            document.getElementById('input-nickname').value = state.nickname;
-            document.getElementById('input-nickname').focus();
+            document.getElementById('input-nickname').value = localState.nickname;
         };
 
-        window.saveAndCloseNickname = function() {
-            saveNickname();
+        window.saveAndCloseNickname = () => {
+            const val = document.getElementById('input-nickname').value.trim();
+            if(val) {
+                localState.nickname = val;
+                saveData();
+                if(localState.userConnected) updateRankingInDB(0); 
+            }
             document.getElementById('menu-nickname-edit').classList.add('hidden');
             document.getElementById('menu-nickname-display').classList.remove('hidden');
         };
 
-        function updateBovedaUI() {
-            if(document.getElementById('header-puntos-boveda')) document.getElementById('header-puntos-boveda').innerText = state.puntosBoveda + ' pts';
-            if(document.getElementById('boveda-puntos')) document.getElementById('boveda-puntos').innerText = state.puntosBoveda;
-            if(document.getElementById('boveda-ton')) document.getElementById('boveda-ton').innerHTML = (state.puntosBoveda / 1000).toFixed(2) + ' <i class="fa-solid fa-gem text-xs"></i> TON';
-        }
+        window.toggleHorseNameEdit = () => {
+            document.getElementById('menu-horsename-display').classList.add('hidden');
+            document.getElementById('menu-horsename-edit').classList.remove('hidden');
+            document.getElementById('input-horsename').value = localState.horseName;
+        };
 
-        function nav(screenId) {
-            document.querySelectorAll('main > section').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-            const targetScreen = document.getElementById('screen-' + screenId);
-            targetScreen.classList.remove('hidden'); targetScreen.classList.add('flex');
-            document.querySelector('main').scrollTop = 0;
-            if(screenId === 'multiplayer') updateMpSetup();
-            if(screenId === 'ranking') renderRanking();
-            if(screenId === 'menu' || screenId === 'boveda') updateBovedaUI();
-        }
-
-        function updateMpSetup() {
-            const fee = globalTonConfig.precio_entrada || 0.1;
-            const total = fee * 4;
-            const comisionDev = total * (state.admin.com / 100);
-            const poteNeto = total - comisionDev;
-            
-            if(document.getElementById('mp-fee')) document.getElementById('mp-fee').innerText = fee;
-            if(document.getElementById('mp-com-perc')) document.getElementById('mp-com-perc').innerText = state.admin.com;
-            if(document.getElementById('mp-com-val')) document.getElementById('mp-com-val').innerText = comisionDev.toFixed(2);
-            if(document.getElementById('mp-pool')) document.getElementById('mp-pool').innerText = poteNeto.toFixed(2); 
-
-            // Mostrar el equivalente en puntos en la UI (1 TON = 1000 pts)
-            if(document.getElementById('mp-1st')) document.getElementById('mp-1st').innerText = Math.floor(poteNeto * 0.70 * 1000) + ' pts';
-            if(document.getElementById('mp-2nd')) document.getElementById('mp-2nd').innerText = Math.floor(poteNeto * 0.20 * 1000) + ' pts';
-            if(document.getElementById('mp-3rd')) document.getElementById('mp-3rd').innerText = Math.floor(poteNeto * 0.10 * 1000) + ' pts';
-        }
-
-        function prepGame(mode, level) { window.game.mode = mode; window.game.level = level; updateEstabloUI(); nav('establo'); }
-
-        function updateEstabloUI() {
-            const horse = HORSES[state.horseIndex];
-            const customImg = state.customHorseImgs[state.horseIndex];
-            
-            if (customImg) {
-                document.getElementById('est-horse-emoji').innerHTML = `<img src="${customImg}" style="transform: scaleX(-1); width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));">`;
-            } else {
-                document.getElementById('est-horse-emoji').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+        window.saveAndCloseHorseName = () => {
+            const val = document.getElementById('input-horsename').value.trim();
+            if(val) {
+                localState.horseName = val;
+                saveData();
             }
+            document.getElementById('menu-horsename-edit').classList.add('hidden');
+            document.getElementById('menu-horsename-display').classList.remove('hidden');
+        };
+
+        function updateHeader() {
+            document.getElementById('ui-nickname').innerText = localState.nickname;
+            document.getElementById('menu-nickname-text').innerText = localState.nickname;
+            if(document.getElementById('menu-horsename-text')) {
+                document.getElementById('menu-horsename-text').innerText = localState.horseName;
+            }
+        }
+
+        function updateBalancesUI() {
+            document.getElementById('header-cc').innerText = localState.coleoCoin;
+            document.getElementById('header-oro').innerText = localState.oroLlanero;
             
-            document.getElementById('est-horse-name').innerText = horse.name;
-            document.getElementById('input-horsename').value = state.horseName;
-            document.getElementById('est-bar-fue').style.width = (horse.fuerza * 10) + '%'; document.getElementById('est-val-fue').innerText = horse.fuerza;
-            document.getElementById('est-bar-vel').style.width = (horse.velocidad * 10) + '%'; document.getElementById('est-val-vel').innerText = horse.velocidad;
-            document.getElementById('est-bar-est').style.width = (horse.estabilidad * 10) + '%'; document.getElementById('est-val-est').innerText = horse.estabilidad;
+            if(document.getElementById('boveda-cc')) document.getElementById('boveda-cc').innerText = localState.coleoCoin;
+            if(document.getElementById('boveda-oro')) document.getElementById('boveda-oro').innerText = localState.oroLlanero;
+            if(document.getElementById('boveda-ton')) document.getElementById('boveda-ton').innerText = (localState.oroLlanero/1000).toFixed(2) + ' TON';
+            if(document.getElementById('galeria-cc')) document.getElementById('galeria-cc').innerText = localState.coleoCoin;
         }
 
-        function changeHorse(dir) {
-            state.horseIndex += dir;
-            if(state.horseIndex < 0) state.horseIndex = HORSES.length - 1;
-            if(state.horseIndex >= HORSES.length) state.horseIndex = 0;
-            saveData(); updateEstabloUI();
+        function saveData() {
+            localStorage.setItem('tc_nickname', localState.nickname);
+            localStorage.setItem('tc_horsename', localState.horseName);
+            localStorage.setItem('tc_horseIndex', localState.horseIndex);
+            localStorage.setItem('tc_cc', localState.coleoCoin);
+            localStorage.setItem('tc_oro', localState.oroLlanero);
+            localStorage.setItem('tc_inv', JSON.stringify(localState.inventario));
+            updateHeader();
+            updateBalancesUI();
         }
 
-        window.navigateBackFromEstablo = function() {
-            nav(window.game.mode === 'career' ? 'career' : 'multiplayer');
-        }
+        // --- SISTEMA DUAL ECONOMY ---
+        window.comprarOro = async () => {
+            showPrompt("Comprar Oro Llanero", "1 TON = 1000 Oro Llanero. Introduce la cantidad de TON a enviar:", async (val) => {
+                const tonAmount = parseFloat(val);
+                if(isNaN(tonAmount) || tonAmount <= 0) return showAlert("Error", "Cantidad inválida.");
+                if(!tonConnectUI.connected) return showAlert("Billetera", "Conecta tu wallet en el Menú Principal primero.");
 
-        // ====== TON PAYMENT Y MATCHMAKING ======
-
-        async function initiateTONPayment() {
-            if(!globalTonConfig.inscripciones_abiertas) {
-                showCustomAlert("Inscripciones Cerradas", "El administrador ha cerrado las competiciones temporalmente.");
-                return;
-            }
-
-            if (!tonConnectUI.connected) {
-                showCustomAlert("Billetera no conectada", "Por favor, conecta tu billetera TON en el menú principal antes de jugar.");
-                return;
-            }
-
-            const fee = globalTonConfig.precio_entrada || 0.1;
-
-            showCustomConfirm(
-                "Contrato TON", 
-                `Se enviará <b>${fee} TON</b> a la Federación para validar tu inscripción a la competición.<br><br><span class="text-xs text-gray-500">Asegúrate de confirmar en tu app de billetera.</span>`, 
-                async () => {
-                    showProcessing("Aprobando transacción en blockchain...<br><i class='fa-solid fa-gem fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
+                showProcessing("Aprobando transacción en blockchain...");
+                try {
+                    const nanoTon = Math.floor(tonAmount * 1000000000);
+                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: nanoTon.toString() }] };
+                    await tonConnectUI.sendTransaction(tx);
                     
-                    try {
-                        const nanoTon = Math.floor(fee * 1000000000); 
-                        const transaction = {
-                            validUntil: Math.floor(Date.now() / 1000) + 360,
-                            messages: [{ address: ADMIN_WALLET, amount: nanoTon.toString() }]
-                        };
+                    const oroComprado = Math.floor(tonAmount * 1000);
+                    localState.oroLlanero += oroComprado;
+                    saveData();
+                    closeProcessing();
+                    showAlert("Compra Exitosa", `Has recibido ${oroComprado} de Oro Llanero.`);
+                } catch(e) { closeProcessing(); showAlert("Transacción Cancelada", "No se completó el pago."); }
+            });
+        };
 
-                        const result = await tonConnectUI.sendTransaction(transaction);
-                        
-                        if (result && result.boc) {
-                            closeProcessing();
-                            joinLobby(result.boc); 
-                        } else { throw new Error("Transacción no devolvió BOC"); }
-                    } catch (e) {
-                        closeProcessing();
-                        console.error(e);
-                        showCustomAlert("Transacción Cancelada", "El pago fue cancelado o rechazado por tu billetera.");
-                    }
+        window.cambiarOroPorCC = () => {
+            showPrompt("Cambiar a $ColeoCoins", "Tasa: 1 Oro = 1 ColeoCoin.<br><span class='text-red-400 text-xs'>(No se puede revertir)</span><br>¿Cuánto Oro quieres cambiar?", (val) => {
+                const amt = parseInt(val);
+                if(isNaN(amt) || amt <= 0 || amt > localState.oroLlanero) return showAlert("Error", "Monto inválido o insuficiente.");
+                
+                localState.oroLlanero -= amt;
+                localState.coleoCoin += amt;
+                saveData();
+                showAlert("Conversión Exitosa", `Cambiaste ${amt} Oro por ${amt} $ColeoCoins.`);
+            });
+        };
+
+        window.reclamarPuntos = async () => {
+            if(!tonConnectUI.connected) return showAlert("Billetera", "Conecta tu wallet primero.");
+            if(localState.oroLlanero < 5000) return showAlert("Saldo Insuficiente", "Necesitas al menos 5000 Oro Llanero para poder retirar (5 TON).");
+            
+            showConfirm("Solicitar Retiro", `¿Deseas retirar ${localState.oroLlanero} Oro por ${(localState.oroLlanero/1000).toFixed(2)} TON?`, async () => {
+                showProcessing("Enviando orden a la federación...");
+                try {
+                    await push(ref(db, `artifacts/${appId}/public/data/retiros_pendientes`), {
+                        jugador: localState.nickname, wallet: tonConnectUI.account.address || tonConnectUI.account.publicKey,
+                        puntos: localState.oroLlanero, ton: (localState.oroLlanero/1000).toFixed(2), estado: 'pendiente'
+                    });
+                    localState.oroLlanero = 0; saveData();
+                    closeProcessing(); showAlert("Solicitud Enviada", "El Juez procesará tu pago a la brevedad.");
+                } catch(e) { closeProcessing(); showAlert("Error", "Falla de red."); }
+            });
+        };
+
+        // --- GALERÍA (TIENDA NFT) ---
+        window.renderGallery = () => {
+            const container = document.getElementById('gallery-container');
+            if(!container) return;
+            container.innerHTML = '';
+            CARDS_DATA.forEach(c => {
+                const owned = localState.inventario.includes(c.id);
+                container.innerHTML += `
+                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-xl p-4 text-center relative flex flex-col justify-between">
+                        ${owned ? '<div class="absolute top-2 right-2 bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow">TUYA</div>' : ''}
+                        <div class="mb-3">
+                            <div class="w-16 h-20 mx-auto rounded-lg border-2 ${c.border} flex items-center justify-center mb-2 shadow-inner bg-black/20">
+                                <i class="fa-solid fa-id-badge text-3xl ${c.color}"></i>
+                            </div>
+                            <h4 class="font-bold text-xs text-white">${c.name}</h4>
+                            <p class="text-[10px] text-orange-400 font-bold">${c.price} CC</p>
+                        </div>
+                        <button onclick="buyCard('${c.id}')" class="w-full ${owned ? 'bg-slate-800 text-gray-500' : 'bg-[var(--tg-primary)] text-black shadow-md active:scale-95 cursor-pointer'} font-bold py-2 rounded-lg text-xs transition" ${owned ? 'disabled' : ''}>
+                            ${owned ? 'En Inventario' : 'Comprar'}
+                        </button>
+                    </div>
+                `;
+            });
+        };
+
+        window.buyCard = (id) => {
+            const c = CARDS_DATA.find(x => x.id === id);
+            if(!c || localState.inventario.includes(id)) return;
+            if(localState.coleoCoin < c.price) return showAlert("Saldo Insuficiente", "Juega en la Copa Virtual o cambia Oro para conseguir más $ColeoCoins.");
+            
+            showConfirm("Compra de Tarjeta", `¿Pagar ${c.price} CC por ${c.name}?`, () => {
+                localState.coleoCoin -= c.price;
+                localState.inventario.push(id);
+                saveData(); renderGallery();
+                showAlert("¡Colección Creciente!", `Has comprado la ${c.name}.`);
+            });
+        };
+
+        // --- SISTEMA MULTIJUGADOR ---
+        let unsubscribeLobby = null;
+
+        window.showMultiplayerMenu = (type) => {
+            window.game.pendingRoomType = type;
+            document.getElementById('modal-title').innerText = "Multijugador " + (type === 'gratis' ? "(Gratis)" : "(Apuesta)");
+            document.getElementById('modal-desc').innerHTML = "¿Con quién deseas jugar?";
+            document.getElementById('modal-input').classList.add('hidden');
+            document.getElementById('modal-buttons').innerHTML = `
+                <button onclick="joinPublicLobby()" class="w-full bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-globe"></i> Partida Pública Rápida</button>
+                <button onclick="createPrivateLobby()" class="w-full bg-[var(--vzla-blue)] text-white p-3 rounded-xl font-bold shadow-md active:scale-95 transition cursor-pointer"><i class="fa-solid fa-plus"></i> Crear Sala Privada</button>
+                <button onclick="joinPrivateLobbyPrompt()" class="w-full bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white p-3 rounded-xl font-bold active:scale-95 transition cursor-pointer"><i class="fa-solid fa-right-to-bracket"></i> Unirse con Código</button>
+                <button onclick="closeModal()" class="w-full bg-red-900/30 text-red-400 p-2 rounded-xl mt-2 font-bold text-sm cursor-pointer">Cancelar</button>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
+        };
+
+        window.joinPublicLobby = () => { closeModal(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(null); else window.joinFreeLobby(null); };
+        window.createPrivateLobby = () => { closeModal(); const code = Math.random().toString(36).substring(2, 6).toUpperCase(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code); else window.joinFreeLobby(code); };
+        window.joinPrivateLobbyPrompt = () => {
+            showPrompt("Unirse a Sala", "Introduce el código de 4 letras:", (code) => {
+                if (code && code.length > 0) {
+                    if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code.toUpperCase());
+                    else window.joinFreeLobby(code.toUpperCase());
                 }
-            );
+            });
+        };
+
+        window.shareRoomCode = () => {
+            const code = window.game.currentRoomCode;
+            const text = `¡Únete a mi manga de Toros Coleados! 🐂🐎\n\nEntra al juego, dale a "Unirse con Código" y pega esto: ${code}`;
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=https://t.me/&text=${encodeURIComponent(text)}`);
+            } else { navigator.clipboard.writeText(text).then(() => showAlert("Copiado", `Código ${code} copiado al portapapeles.`)); }
+        };
+
+        window.joinFreeLobby = async (privateCode = null) => {
+            window.game.roomType = privateCode ? `manga_gratis_${privateCode}` : 'manga_gratis';
+            window.game.currentRoomCode = privateCode;
+            showProcessing("Buscando sala...");
+            await joinLobbyDirect(window.game.roomType, null);
+            closeProcessing();
+        };
+
+        window.initiateTONPayment = async (privateCode = null) => {
+            if (!tonConnectUI.connected) return showAlert("Billetera no conectada", "Conecta tu billetera TON para jugar con Oro.");
+            window.game.roomType = privateCode ? `manga_apuesta_${privateCode}` : 'manga_apuesta';
+            window.game.currentRoomCode = privateCode;
+            showConfirm("Contrato TON", "Entrarás a la sala apostando 0.1 TON.", async () => {
+                showProcessing("Aprobando transacción...");
+                try {
+                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: "100000000" }] }; // 0.1 TON
+                    const result = await tonConnectUI.sendTransaction(tx);
+                    if(result && result.boc) {
+                        await joinLobbyDirect(window.game.roomType, result.boc);
+                        closeProcessing();
+                    }
+                } catch(e) {
+                    closeProcessing(); 
+                    showAlert("Transacción Cancelada", "No se pudo completar el pago de inscripción.");
+                }
+            });
+        };
+
+        async function joinLobbyDirect(roomName, txHash = null) {
+            nav('lobby');
+            const privateInfo = document.getElementById('lobby-private-info');
+            if (window.game.currentRoomCode) {
+                document.getElementById('lobby-room-code').innerText = window.game.currentRoomCode;
+                privateInfo.classList.remove('hidden');
+            } else { privateInfo.classList.add('hidden'); }
+
+            const roomRef = ref(db, `artifacts/${appId}/public/data/salas/${roomName}`);
+            try {
+                const snap = await get(roomRef);
+                const statusStr = txHash ? 'PAGADO' : 'LISTO';
+                if (!snap.exists() || snap.val().estado === 'terminado') {
+                    await set(roomRef, { estado: 'esperando', jugadores: { [playerId]: { nombre: localState.nickname, status: statusStr, score: -1 } } });
+                } else {
+                    await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { nombre: localState.nickname, status: statusStr, score: -1 });
+                }
+                onDisconnect(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`)).remove();
+                listenToLobby(roomName);
+            } catch (e) { console.error(e); }
         }
 
-        async function joinLobby(txHash) {
-            showProcessing("Buscando sala disponible...");
-            const roomRef = ref(db, 'salas/manga_principal');
-            
-            try {
-                const snapshot = await get(roomRef);
-                const roomData = snapshot.val();
+        window.cancelLobby = async () => {
+            const roomName = window.game.roomType || 'manga_gratis';
+            await remove(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`));
+            if (unsubscribeLobby) unsubscribeLobby();
+            nav('menu');
+        };
 
-                if (!roomData || roomData.estado === 'terminado') {
-                    await set(roomRef, {
-                        estado: 'esperando', pote_acumulado: globalTonConfig.precio_entrada,
-                        jugadores: { [playerId]: { nombre: state.nickname, status: 'PAGADO', score: -1, hash: txHash } }
-                    });
-                } else {
-                    let count = Object.keys(roomData.jugadores || {}).length;
-                    if(count >= 4) {
-                        closeProcessing();
-                        showCustomAlert("Manga Llena", "Están corriendo en este momento. Tu pago está validado, entra en unos segundos.");
-                        return;
+        function listenToLobby(roomName) {
+            if (unsubscribeLobby) unsubscribeLobby();
+            const roomRef = ref(db, `artifacts/${appId}/public/data/salas/${roomName}`);
+            unsubscribeLobby = onValue(roomRef, (snap) => {
+                const data = snap.val(); if (!data) return;
+                const container = document.getElementById('lobby-slots');
+                if(container) {
+                    const pList = data.jugadores ? Object.values(data.jugadores) : [];
+                    container.innerHTML = '';
+                    for(let i=0; i<4; i++) {
+                        if(pList[i]) container.innerHTML += `<div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] p-3 rounded mb-2 flex justify-between"><span class="font-bold">${pList[i].nombre}</span><span class="text-green-400 text-xs font-bold">${pList[i].status}</span></div>`;
+                        else container.innerHTML += `<div class="bg-slate-800/50 border border-dashed border-slate-600 p-3 rounded mb-2 text-gray-500 text-center text-xs">Esperando...</div>`;
                     }
-                    await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), { nombre: state.nickname, status: 'PAGADO', score: -1, hash: txHash });
-                    await update(roomRef, { pote_acumulado: roomData.pote_acumulado + globalTonConfig.precio_entrada });
+                    document.getElementById('lobby-count').innerText = pList.length;
                 }
                 
-                onDisconnect(ref(db, `salas/manga_principal/jugadores/${playerId}`)).remove();
-                closeProcessing();
-                openLobby();
-
-            } catch (error) { console.error(error); closeProcessing(); showCustomAlert("Error", "Error de conexión con Firebase."); }
-        }
-
-        function openLobby() {
-            nav('lobby');
-            const roomRef = ref(db, 'salas/manga_principal');
-
-            lobbyListener = onValue(roomRef, (snapshot) => {
-                const data = snapshot.val();
-                if(!data) return;
-
-                const playersList = Object.values(data.jugadores || {});
-                renderLobby(playersList);
-
-                if(data.estado === 'esperando' && playersList.length === 4) {
-                    const pKeys = Object.keys(data.jugadores);
-                    if(pKeys[0] === playerId) update(roomRef, { estado: 'jugando' });
+                if (data.estado === 'esperando' && data.jugadores && Object.keys(data.jugadores).length === 4 && Object.keys(data.jugadores)[0] === playerId) {
+                    update(roomRef, { estado: 'jugando' });
                 }
-
-                if(data.estado === 'jugando' && window.game.mode !== 'multiplayer-active') {
-                    window.game.mode = 'multiplayer-active'; 
-                    window.game.mpData = { dbPlayers: data.jugadores, myPote: data.pote_acumulado };
-                    setTimeout(() => prepGame('multiplayer', 2), 1000); 
+                
+                if (data.estado === 'jugando' && window.game.mode !== 'multiplayer' && data.jugadores[playerId]) {
+                    window.game.mode = 'multiplayer'; setTimeout(() => prepGame('multiplayer', 2), 1000);
                 }
-
-                if(data.estado === 'terminado' && window.game.mode === 'multiplayer-waiting') {
-                    showFinalMultiplayerResults(data);
-                }
+                
+                if (data.estado === 'terminado' && window.game.mode === 'multiplayer') { showFinalMultiplayerResults(data, roomName); }
             });
         }
 
-        async function cancelLobby() {
-            showProcessing("Saliendo de la sala...");
-            try {
-                // Intentamos borrar al jugador de Firebase
-                if(db && playerId) {
-                    await remove(ref(db, `salas/manga_principal/jugadores/${playerId}`));
-                }
-            } catch(e) {
-                console.error("Error al salir de DB:", e);
-            } finally {
-                // PASE LO QUE PASE, te devuelve al menú y resetea el modo
-                window.game.mode = 'career'; 
-                if(lobbyListener) lobbyListener(); 
-                closeProcessing(); 
-                nav('menu');
-            }
-        }
-
-        function renderLobby(players) {
-            const container = document.getElementById('lobby-slots');
-            container.innerHTML = '';
-            for(let i = 0; i < 4; i++) {
-                const p = players[i];
-                if(p) {
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
-                            <span class="font-semibold text-white"><i class="fa-solid fa-user text-[var(--ton-blue)] mr-2 text-xs"></i>${p.nombre}</span>
-                            <span class="text-green-400 text-[10px] uppercase font-bold"><i class="fa-solid fa-check"></i> ${p.status}</span>
-                        </div>
-                    `;
+        function showFinalMultiplayerResults(data, roomName) {
+            window.game.mode = 'career'; closeProcessing();
+            if (unsubscribeLobby) unsubscribeLobby();
+            
+            const list = Object.values(data.resultados || {}).sort((a,b) => a.posicion - b.posicion);
+            let myPts = 0; let html = `<div class="text-xs text-gray-400 mb-2 font-bold uppercase">Resultados</div>`;
+            
+            list.forEach(p => {
+                const isMe = p.id === playerId; 
+                let pt = 0; let extraStr = '';
+                
+                if (roomName.startsWith('manga_apuesta')) {
+                    pt = p.premio > 0 ? Math.floor(p.premio * 1000) : 0;
+                    if(pt > 0) extraStr = `<span class="text-yellow-400">+${pt} Oro</span>`;
                 } else {
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center bg-[var(--tg-surface)] p-3 rounded-lg border border-[var(--tg-border)] border-dashed">
-                            <span class="text-[var(--tg-text-sec)]"><i class="fa-solid fa-clock text-xs mr-2"></i>Vacío</span>
-                            <i class="fa-solid fa-circle-notch fa-spin text-gray-600 text-xs"></i>
-                        </div>
-                    `;
+                    pt = p.score;
+                    if(pt > 0) extraStr = `<span class="text-orange-400">+${pt} CC</span>`;
                 }
+                
+                if(isMe && pt > 0) myPts = pt;
+                html += `<div class="flex justify-between py-1 ${isMe?'font-bold text-white':'text-gray-400'}"><span>${p.posicion}. ${p.nombre} (${p.score}pts)</span><span>${extraStr}</span></div>`;
+            });
+            
+            if(myPts > 0) { 
+                if(roomName.startsWith('manga_apuesta')) localState.oroLlanero += myPts;
+                else localState.coleoCoin += myPts;
+                saveData(); 
             }
-            document.getElementById('lobby-count').innerText = players.length;
+            
+            updatePlayerRanking(window.game.matchScore);
+            
+            document.getElementById('res-title').innerText = myPts > 0 ? "¡Ganaste!" : "Fin de Competición";
+            document.getElementById('res-desc').innerHTML = html;
+            document.getElementById('overlay-result').classList.remove('hidden');
         }
 
-        // ====== LÓGICA DE BÓVEDA Y RETIROS ======
-
-        window.reclamarPuntos = function() {
-            if (!tonConnectUI.connected) {
-                showCustomAlert("Billetera No Conectada", "Debes conectar tu billetera en el menú para que sepamos a dónde enviar los TON.");
-                nav('wallet');
-                return;
+        // --- LÓGICA DE JUEGO (CORE) ---
+        window.changeHorse = (dir) => { 
+            localState.horseIndex = (localState.horseIndex + dir + 3) % 3; 
+            saveData();
+            updateEstabloUI(); 
+        };
+        window.prepGame = (mode, level) => { window.game.mode = mode; window.game.level = level; nav('establo'); };
+        
+        function updateEstabloUI() {
+            const hImg = globalConfig.customHorseImgs[localState.horseIndex];
+            const estHorseEmoji = document.getElementById('est-horse-emoji');
+            if (estHorseEmoji) {
+                estHorseEmoji.innerHTML = hImg ? `<img src="${hImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${HORSES_DATA[localState.horseIndex].emoji}</div>`;
             }
-
-            if (state.puntosBoveda < 5000) {
-                showCustomAlert("Puntos Insuficientes", "Necesitas acumular al menos 5000 puntos para solicitar un retiro. ¡Sigue jugando y ganando competiciones!");
-                return;
+            const estHorseName = document.getElementById('est-horse-name');
+            if (estHorseName) {
+                estHorseName.innerText = `${localState.horseName} (${globalConfig.horseNames[localState.horseIndex] || "Caballo"})`;
             }
+        }
 
-            const tonRetiro = (state.puntosBoveda / 1000).toFixed(2);
-            const userWallet = tonConnectUI.account.address || tonConnectUI.account.publicKey; 
+        window.startGame = () => { window.game.turn = 1; window.game.matchScore = 0; nav('game'); startTurn(); };
 
-            showCustomConfirm(
-                "Confirmar Retiro", 
-                `Vas a canjear <b>${state.puntosBoveda} puntos</b> por <b>${tonRetiro} TON</b>.<br><br><span class="text-xs text-[var(--tg-text-sec)]">La solicitud se enviará a la Federación. El Juez la revisará y enviará los fondos a la billetera conectada.</span>`, 
-                async () => {
-                    showProcessing("Enviando solicitud al servidor...<br><i class='fa-solid fa-paper-plane fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
-                    
+        window.quitGame = () => {
+            showConfirm("Abandonar Manga", "¿Seguro que deseas retirarte? Perderás tu progreso en esta partida.", async () => {
+                window.game.active = false;
+                cancelAnimationFrame(window.game.anim);
+                
+                if (window.game.mode === 'multiplayer') {
+                    if (unsubscribeLobby) unsubscribeLobby(); 
+                    showProcessing("Saliendo de la sala...");
+                    const roomName = window.game.roomType;
                     try {
-                        // Guardar la solicitud en Firebase para el Admin
-                        await push(ref(db, 'retiros_pendientes'), {
-                            playerId: playerId,
-                            nombre: state.nickname,
-                            wallet: userWallet,
-                            puntos: state.puntosBoveda,
-                            ton: tonRetiro,
-                            fecha: Date.now(),
-                            estado: 'pendiente'
-                        });
-
-                        // Descontar puntos y guardar localmente
-                        state.puntosBoveda = 0;
-                        saveData();
-                        closeProcessing();
-                        
-                        showCustomAlert("¡Solicitud Enviada! ✅", `Tu petición de <b>${tonRetiro} TON</b> fue enviada con éxito. Podrás ver los fondos en tu billetera pronto.`);
-                    } catch (error) {
-                        console.error(error);
-                        closeProcessing();
-                        showCustomAlert("Error", "Ocurrió un error de red al enviar la solicitud.");
-                    }
+                        await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { score: window.game.matchScore });
+                        const snap = await get(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores`));
+                        const players = snap.val();
+                        let allFinished = true;
+                        for(let k in players) { if(players[k].score < 0) allFinished = false; }
+                        if (allFinished) {
+                            const list = Object.keys(players).map(k => ({ id: k, ...players[k] }));
+                            list.sort((a,b) => b.score - a.score);
+                            let resDB = {};
+                            if (roomName && roomName.startsWith('manga_apuesta')) {
+                                const premios = [0.36*0.7, 0.36*0.2, 0.36*0.1, 0];
+                                list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 }; });
+                            } else {
+                                list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: 0, posicion: idx + 1 }; });
+                            }
+                            await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`), { estado: 'terminado', resultados: resDB });
+                        }
+                    } catch(e) {}
+                    closeProcessing();
                 }
-            );
-        }
-
-        // ====== LÓGICA DE JUEGO (CORE) ======
-
-        function startGame() { window.game.currentTurn = 1; window.game.matchScore = 0; window.game.filoCount = 0; startTurn(); }
+                nav('menu');
+            });
+        };
 
         function startTurn() {
             window.game.active = true; window.game.horsePos = -20;
-            const horse = HORSES[state.horseIndex]; const bull = BULLS[window.game.level - 1];
+            const hImg = globalConfig.customHorseImgs[localState.horseIndex];
+            const bImg = globalConfig.customBullImgs[0];
+            const horse = HORSES_DATA[localState.horseIndex];
+            const bull = BULLS_DATA[0];
 
-            window.game.horseSpeed = (window.game.level * 0.3) + (horse.velocidad * 0.1); 
-            let filoSize = Math.max(1.5, 3 + (horse.fuerza * 0.5) - (bull.bravura * 0.4)); 
-            let costadoSize = Math.max(filoSize + 1, 6 + (horse.estabilidad * 0.5) - (bull.peso / 100)); 
+            let filoSize = Math.max(1.5, 3 + (horse.fz * 0.5) - (bull.fz * 0.4)); 
+            let costadoSize = Math.max(filoSize + 1, 6 + (horse.fz * 0.5) - (bull.fz * 0.2)); 
 
             window.game.zones = { fMin: 45 - filoSize, fMax: 45 + filoSize, cMin: 45 - costadoSize, cMax: 45 + costadoSize };
 
-            document.getElementById('zone-filo').style.left = window.game.zones.fMin + '%'; document.getElementById('zone-filo').style.width = (filoSize * 2) + '%';
-            document.getElementById('zone-costado').style.left = window.game.zones.cMin + '%'; document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
-
-            const customHorseImg = state.customHorseImgs[state.horseIndex];
-            if (customHorseImg) {
-                document.getElementById('ent-horse').innerHTML = `<img src="${customHorseImg}" style="transform: scaleX(-1); width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));">`;
-            } else {
-                document.getElementById('ent-horse').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
-            }
+            document.getElementById('zone-filo').style.left = window.game.zones.fMin + '%'; 
+            document.getElementById('zone-filo').style.width = (filoSize * 2) + '%';
+            document.getElementById('zone-costado').style.left = window.game.zones.cMin + '%'; 
+            document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
             
-            document.getElementById('ent-bull').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${bull.emoji}</div>`;
+            document.getElementById('ent-horse').innerHTML = hImg ? `<img src="${hImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${horse.emoji}</div>`;
+            document.getElementById('ent-bull').innerHTML = bImg ? `<img src="${bImg}" class="h-full object-contain" style="transform:scaleX(-1)">` : `<div style="transform:scaleX(-1);">${bull.emoji}</div>`;
+            document.getElementById('manga-bg').style.backgroundImage = globalConfig.customBgImg ? `url(${globalConfig.customBgImg})` : '';
             
-            const bgElement = document.getElementById('manga-bg');
-            if (state.customBgImg) { bgElement.style.backgroundImage = `url(${state.customBgImg})`; bgElement.style.backgroundSize = 'cover'; bgElement.classList.remove('manga-track'); } 
-            else { bgElement.style.backgroundImage = ''; bgElement.classList.add('manga-track'); }
-
-            document.getElementById('hud-turn').innerText = `${window.game.currentTurn}/${window.game.maxTurns}`;
+            document.getElementById('hud-turn').innerText = `${window.game.turn}/4`;
             document.getElementById('hud-score').innerText = window.game.matchScore;
             
-            const btn = document.getElementById('btn-colear'); btn.disabled = false; btn.innerText = "COLEAR";
-            document.getElementById('pos-horse').style.transition = 'none'; document.getElementById('pos-horse').style.left = '-20%';
-            document.getElementById('pos-bull').style.transition = 'none'; document.getElementById('pos-bull').style.left = '55%'; 
+            document.getElementById('pos-horse').style.transition = 'none';
+            document.getElementById('pos-horse').style.left = '-20%';
+            document.getElementById('pos-bull').style.transition = 'none';
+            document.getElementById('pos-bull').style.left = '55%';
+            document.getElementById('ent-bull').className = "text-5xl anim-bull flex items-center justify-center";
+            document.getElementById('ent-horse').className = "text-6xl anim-gallop flex items-center justify-center";
             
-            document.getElementById('ent-horse').className = 'text-6xl anim-gallop drop-shadow-lg flex items-center justify-center';
-            document.getElementById('ent-bull').className = 'text-5xl anim-bull drop-shadow-lg flex items-center justify-center';
-            document.getElementById('dust').classList.add('hidden');
+            const btn = document.getElementById('btn-colear');
+            btn.disabled = false;
+            btn.innerText = "COLEAR";
 
-            setLocutor(phrases.start[Math.floor(Math.random() * phrases.start.length)]);
-            if(window.game.currentTurn === 1) nav('game');
-            setTimeout(() => { if(window.game.active) gameLoop(); }, 500);
+            requestAnimationFrame(gameLoop);
         }
 
         function gameLoop() {
             if(!window.game.active) return;
-            window.game.horsePos += window.game.horseSpeed; document.getElementById('pos-horse').style.left = window.game.horsePos + '%';
-            if(window.game.horsePos > 80) { window.game.active = false; evaluarColeada(true); return; }
-            window.game.animFrame = requestAnimationFrame(gameLoop);
+            const speed = 0.5 + (HORSES_DATA[localState.horseIndex].vel) + (window.game.level * 0.1);
+            window.game.horsePos += speed;
+            document.getElementById('pos-horse').style.left = window.game.horsePos + '%'; 
+            if(window.game.horsePos > 85) { window.game.active = false; evaluar(true); return; }
+            window.game.anim = requestAnimationFrame(gameLoop);
         }
 
-        document.getElementById('btn-colear').addEventListener('click', () => {
-            if(!window.game.active) return; window.game.active = false; cancelAnimationFrame(window.game.animFrame); evaluarColeada(false);
-        });
+        document.getElementById('btn-colear').onclick = () => {
+            if(!window.game.active) return;
+            window.game.active = false; cancelAnimationFrame(window.game.anim); evaluar(false);
+        };
 
-        function evaluarColeada(pasoDeLargo) {
-            document.getElementById('btn-colear').disabled = true; document.getElementById('btn-colear').innerText = "Ejecutando...";
-            let score = 0, resType = 'nulo', p = window.game.horsePos;
-            if(!pasoDeLargo) {
-                if(p >= window.game.zones.fMin && p <= window.game.zones.fMax) { score = 20; resType = 'filo'; } 
-                else if (p >= window.game.zones.cMin && p <= window.game.zones.cMax) { score = 10; resType = 'costado'; }
+        function evaluar(paso) {
+            document.getElementById('btn-colear').disabled = true;
+            document.getElementById('btn-colear').innerText = "Ejecutando...";
+
+            let pts = 0; let msg = "¡Nulo!";
+            let actionType = 'nulo';
+            const pos = window.game.horsePos;
+            const zones = window.game.zones;
+
+            if(!paso) {
+                if(pos >= zones.fMin && pos <= zones.fMax) { pts = 20; msg = "¡Filo de Lomo!"; actionType = 'filo'; }
+                else if(pos >= zones.cMin && pos <= zones.cMax) { pts = 10; msg = "¡Costado!"; actionType = 'costado'; }
             }
-            setTimeout(() => executeResult(resType, score), 100);
-        }
+            window.game.matchScore += pts;
+            document.getElementById('locutor-text').innerText = `"${msg}"`;
 
-        function executeResult(type, score) {
-            const bull = document.getElementById('ent-bull');
-            const posHorse = document.getElementById('pos-horse'); const posBull = document.getElementById('pos-bull');
-            document.getElementById('manga-bg').classList.remove('manga-scrolling');
-            bull.classList.remove('anim-bull'); bull.classList.add('action-' + type);
-            posHorse.style.transition = 'left 1.5s ease-out'; posHorse.style.left = '120%';
+            const posHorse = document.getElementById('pos-horse');
+            const posBull = document.getElementById('pos-bull');
+            const entBull = document.getElementById('ent-bull');
 
-            if(type === 'filo' || type === 'costado') { document.getElementById('dust').classList.remove('hidden'); setTimeout(() => document.getElementById('dust').classList.add('hidden'), 1000); } 
-            else { posBull.style.transition = 'left 1.2s ease-in'; posBull.style.left = '120%'; }
+            posHorse.style.transition = 'left 1.5s ease-out';
+            posHorse.style.left = '120%';
 
-            setLocutor(phrases[type][Math.floor(Math.random() * phrases[type].length)]);
+            entBull.classList.remove('anim-bull');
+            entBull.classList.add('action-' + actionType);
+
+            if(actionType === 'nulo') {
+                posBull.style.transition = 'left 1.2s ease-in';
+                posBull.style.left = '120%';
+            }
 
             setTimeout(() => {
-                window.game.matchScore += score; if(type === 'filo') window.game.filoCount++;
-                if (window.game.currentTurn < window.game.maxTurns) showTurnResult(type, score);
-                else { if(window.game.mode === 'career') showCareerResult(); else processFirebaseTurn(); }
+                if(window.game.turn < 4) { window.game.turn++; startTurn(); }
+                else { 
+                    if(window.game.mode === 'career') finalizarManga(); 
+                    else if(window.game.mode === 'multiplayer') processFirebaseTurn();
+                }
             }, 1500);
         }
 
-        function setLocutor(txt) { document.getElementById('locutor-text').innerText = `"${txt}"`; }
-
-        function showTurnResult(type, score) {
-            document.getElementById('res-title').innerText = score > 0 ? "Buen Movimiento" : "Fallaste";
-            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${score>0?'text-white':'text-[var(--vzla-red)]'}`;
-            document.getElementById('res-desc').innerHTML = `Lograste <b>${type.toUpperCase()}</b> (+${score} Pts).<br><br><span class="text-xs text-[var(--tg-text-sec)] uppercase tracking-widest">Suma: <span class="text-white text-base">${window.game.matchScore} Pts</span></span>`;
-            document.getElementById('res-mp-details').classList.add('hidden');
-            const btn = document.getElementById('btn-result-action'); btn.innerText = "Siguiente Turno"; btn.onclick = () => {
-                document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex');
-                window.game.currentTurn++; startTurn();
-            };
-            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
-        }
-
-        function showCareerResult() {
-            updatePlayerRanking(window.game.matchScore);
-            
-            state.puntosBoveda += window.game.matchScore;
-            saveData();
-
-            let clasifica = (window.game.filoCount >= 3 && window.game.level < 3), campeon = (window.game.filoCount >= 3 && window.game.level === 3);
-            document.getElementById('res-title').innerText = clasifica ? "Clasificado" : (campeon ? "¡Campeón!" : "Manga Terminada");
-            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${campeon ? 'text-[var(--tg-primary)]' : (clasifica ? 'text-white' : 'text-[var(--vzla-red)]')}`;
-            document.getElementById('res-desc').innerHTML = `Total: <b class="text-white">${window.game.matchScore} Pts</b> guardados en tu Bóveda.<br>Filos: <b class="text-white">${window.game.filoCount}</b>.<br><br><span class="text-xs ${clasifica || campeon ? 'text-green-400' : 'text-[var(--tg-text-sec)]'}">${campeon ? 'Has dominado el circuito.' : (clasifica ? 'Avanzas al siguiente nivel.' : 'Necesitas 3 Filos para pasar.')}</span>`;
-            document.getElementById('res-mp-details').classList.add('hidden');
-            const btn = document.getElementById('btn-result-action');
-            if(clasifica) { btn.innerText = "Siguiente Etapa"; btn.onclick = () => { document.getElementById('overlay-result').classList.add('hidden'); prepGame('career', window.game.level + 1); }; } 
-            else { btn.innerText = "Finalizar"; btn.onclick = closeResult; }
-            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
-        }
-
         async function processFirebaseTurn() {
-            window.game.mode = 'multiplayer-waiting';
-            showProcessing("Sincronizando con los Jueces...<br><i class='fa-solid fa-gem fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
+            showProcessing("Esperando a los demás coleadores...");
+            const roomName = window.game.roomType;
+            await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { score: window.game.matchScore });
             
-            await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), { score: window.game.matchScore });
-            const snapshot = await get(ref(db, 'salas/manga_principal/jugadores'));
-            const players = snapshot.val();
+            const snap = await get(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores`));
+            const players = snap.val();
             let allFinished = true;
-            for(let key in players) { if(players[key].score < 0) allFinished = false; }
-
-            if(allFinished) {
-                const playersList = Object.keys(players).map(k => ({ id: k, nombre: players[k].nombre, score: players[k].score }));
-                let sorted = playersList.sort((a,b) => b.score === a.score ? Math.random() - 0.5 : b.score - a.score);
+            for(let k in players) { if(players[k].score < 0) allFinished = false; }
+            
+            if (allFinished) {
+                const list = Object.keys(players).map(k => ({ id: k, ...players[k] }));
+                list.sort((a,b) => b.score - a.score);
                 
-                const totalFee = globalTonConfig.precio_entrada * 4;
-                const comisionDev = totalFee * (state.admin.com / 100);
-                const poteNeto = totalFee - comisionDev;
-
-                const premios = [(poteNeto * 0.70).toFixed(2), (poteNeto * 0.20).toFixed(2), (poteNeto * 0.10).toFixed(2), 0];
-
-                const historialRecord = {
-                    timestamp: Date.now(), fecha: new Date().toLocaleString(),
-                    economia: { total_inscripciones: totalFee, comision_desarrollador: comisionDev, pote_repartido: poteNeto },
-                    jugadores: {}
-                };
-
-                let resultadosDB = {};
-                sorted.forEach((p, idx) => {
-                    historialRecord.jugadores[p.id] = { nombre: p.nombre, score: p.score, premio: premios[idx], posicion: idx + 1 };
-                    resultadosDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 };
-                });
-
-                await push(ref(db, 'historial_pagos'), historialRecord);
-                await update(ref(db, 'salas/manga_principal'), { estado: 'terminado', resultados: resultadosDB });
+                let resDB = {};
+                if (roomName.startsWith('manga_apuesta')) {
+                    const premios = [0.36*0.7, 0.36*0.2, 0.36*0.1, 0];
+                    list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 }; });
+                } else {
+                    list.forEach((p, idx) => { resDB[p.id] = { ...p, premio: 0, posicion: idx + 1 }; });
+                }
+                
+                await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`), { estado: 'terminado', resultados: resDB });
             }
         }
 
-        function showFinalMultiplayerResults(data) {
-            closeProcessing(); window.game.mode = 'career'; 
-            const resultados = data.resultados || {};
-            const playersList = Object.values(resultados).sort((a, b) => a.posicion - b.posicion);
-            
-            let prizePoints = 0;
-            let isUserWinner = false;
-            
-            let html = `<div class="font-bold text-center mb-3 text-[var(--tg-text-sec)] text-xs">REPARTO OFICIAL</div>`;
-            
-            playersList.forEach((p) => {
-                let isMe = (p.id === playerId);
-                let ptsGanados = 0;
-                
-                if(isMe && p.premio > 0) {
-                    // CONVERTIMOS EL PREMIO TON EN PUNTOS PARA LA BÓVEDA
-                    ptsGanados = Math.floor(parseFloat(p.premio) * 1000); 
-                    prizePoints = ptsGanados;
-                    state.puntosBoveda += ptsGanados; 
-                    isUserWinner = true;
-                }
-                
-                let badge = p.posicion === 1 ? '<i class="fa-solid fa-trophy text-[var(--tg-primary)]"></i>' : `${p.posicion}.`;
-                let styleRow = isMe ? 'text-white font-bold bg-[var(--tg-primary)]/10 px-2 rounded' : 'text-gray-400';
-
-                html += `
-                    <div class="flex justify-between items-center text-xs py-2 my-1 border-b border-[var(--tg-border)] last:border-0 ${styleRow}">
-                        <span>${badge} ${p.nombre} (${p.score}pts)</span>
-                        <span class="${p.premio > 0 ? 'text-green-400 font-bold' : ''}">${p.premio > 0 ? '+'+Math.floor(p.premio * 1000)+' Pts' : '0'}</span>
-                    </div>
-                `;
-            });
-
-            updatePlayerRanking(window.game.matchScore);
-            state.puntosBoveda += window.game.matchScore; // También suma los puntos normales del turno
+        async function finalizarManga() {
+            localState.coleoCoin += window.game.matchScore;
             saveData();
-
-            document.getElementById('res-title').innerText = isUserWinner ? "¡Cobraste Premio!" : "Manga Terminada";
-            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${isUserWinner ? 'text-green-400' : 'text-[var(--vzla-red)]'}`;
-            document.getElementById('res-desc').innerHTML = isUserWinner ? `Lograste entrar en el cuadro de cobro de la Manga.` : "No lograste sumar para llevarte un premio.";
-            
-            document.getElementById('res-mp-details').innerHTML = html; document.getElementById('res-mp-details').classList.remove('hidden');
-
-            const btn = document.getElementById('btn-result-action');
-            if(isUserWinner) {
-                btn.innerHTML = `<i class="fa-solid fa-check"></i> Entendido (+${prizePoints} Pts a Bóveda)`;
-                btn.className = "w-full tg-btn-primary p-4";
-                btn.onclick = () => { closeResult(); };
-            } else {
-                btn.innerText = "Salir al Menú";
-                btn.className = "w-full tg-btn-secondary p-4";
-                btn.onclick = closeResult;
-            }
-            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
+            updatePlayerRanking(window.game.matchScore);
+            document.getElementById('res-title').innerText = "Copa Terminada";
+            document.getElementById('res-desc').innerHTML = `Lograste ${window.game.matchScore} pts para tu Ranking y ganaste <span class="text-orange-400 font-bold">${window.game.matchScore} $ColeoCoins</span>.`;
+            document.getElementById('overlay-result').classList.remove('hidden');
         }
 
-        function closeResult() {
-            document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex');
-            if(lobbyListener) lobbyListener(); nav('menu');
+        // --- SISTEMA DE RANKING GLOBAL ---
+        async function updatePlayerRanking(puntosGanados) {
+            if (!localState.userConnected) return;
+            try {
+                const rankRef = ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`);
+                const snap = await get(rankRef);
+                let ptsPrevios = snap.exists() ? snap.val().puntos : 0;
+                await set(rankRef, { nombre: localState.nickname, puntos: ptsPrevios + puntosGanados });
+            } catch(e) {}
         }
-
-        function openWallet() { nav('wallet'); }
-
-        // --- FUNCIONES GLOBALES / ADMIN ---
-        window.nav = nav; window.saveNickname = saveNickname; window.saveHorseName = saveHorseName; window.prepGame = prepGame; window.changeHorse = changeHorse; window.startGame = startGame;
-        window.initiateTONPayment = initiateTONPayment; window.closeResult = closeResult; window.acceptTerms = acceptTerms; window.cancelLobby = cancelLobby; window.openWallet = openWallet;
         
-        // ADMIN PANEL: CARGAR RETIROS
-        function loadAdminRetiros() {
-            const retirosRef = ref(db, 'retiros_pendientes');
-            onValue(retirosRef, (snapshot) => {
-                const list = document.getElementById('admin-retiros-list');
-                if (!list) return;
-                list.innerHTML = '';
-                if (!snapshot.exists()) {
-                    list.innerHTML = '<p class="text-xs text-[var(--tg-text-sec)] text-center">No hay retiros pendientes.</p>';
-                    return;
-                }
-                const data = snapshot.val();
-                let hasPending = false;
-                Object.keys(data).forEach(key => {
-                    const r = data[key];
-                    if (r.estado === 'pendiente') {
-                        hasPending = true;
-                        list.innerHTML += `
-                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)] text-xs relative">
-                                <div class="flex justify-between mb-1">
-                                    <span class="font-bold text-white">${r.nombre}</span>
-                                    <span class="text-green-400 font-bold">${r.ton} TON</span>
-                                </div>
-                                <p class="text-[var(--tg-text-sec)] mb-2 font-mono text-[10px] break-all">${r.wallet}</p>
-                                <div class="flex gap-2 mt-2">
-                                    <button onclick="navigator.clipboard.writeText('${r.wallet}');" class="bg-[var(--tg-surface)] text-white px-2 py-2 rounded border border-[var(--tg-border)] flex-1 active:scale-95 transition"><i class="fa-solid fa-copy"></i> Copiar Wallet</button>
-                                    <button onclick="marcarRetiroPagado('${key}')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded flex-1 active:scale-95 transition"><i class="fa-solid fa-check"></i> Marcar Pagado</button>
-                                </div>
+        async function updateRankingInDB(puntosGanados) {
+            if (!localState.userConnected) return;
+            try {
+                const rankRef = ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`);
+                const snap = await get(rankRef);
+                let ptsPrevios = snap.exists() ? snap.val().puntos : 0;
+                await set(rankRef, { nombre: localState.nickname, puntos: ptsPrevios + puntosGanados });
+            } catch(e) {}
+        }
+
+        function syncRanking() {
+            if (!localState.userConnected) return;
+            onValue(ref(db, `artifacts/${appId}/public/data/ranking`), (snap) => {
+                const tbody = document.getElementById('ranking-body');
+                if(!tbody) return; tbody.innerHTML = '';
+                if(!snap.exists()) return;
+                const data = []; snap.forEach(child => data.push(child.val()));
+                data.sort((a,b) => b.puntos - a.puntos);
+                data.forEach((r, i) => {
+                    const isMe = r.nombre === localState.nickname;
+                    tbody.innerHTML += `<tr class="${isMe ? 'bg-yellow-500/10' : ''}"><td class="p-3 font-bold">${i+1}</td><td class="p-3 ${isMe ? 'text-yellow-500' : 'text-white'}">${r.nombre}</td><td class="p-3 text-right font-mono text-green-400">${r.puntos}</td></tr>`;
+                });
+            });
+        }
+
+        // --- PANEL DE ADMINISTRADOR ---
+        window.requestAdminAccess = () => {
+            showPrompt("Modo Máster", "Clave de acceso:", (pwd) => {
+                if(pwd === "ADMIN123") nav('secret-admin');
+                else showAlert("Acceso Denegado", "Clave incorrecta.", true); 
+            }, true); 
+        };
+
+        window.saveAdminSettings = async () => {
+            if (!localState.userConnected) return showAlert("Error", "No conectado a la DB.");
+            const newConfig = {
+                bannerUrl: document.getElementById('sec-banner').value || "",
+                mangaNames: [
+                    document.getElementById('sec-m1').value || "Toros en mi Pueblo", 
+                    document.getElementById('sec-m2').value || "Copa en Maracay",
+                    document.getElementById('sec-m3') ? document.getElementById('sec-m3').value || "Camp. Barquisimeto" : "Camp. Barquisimeto"
+                ],
+                horseNames: [
+                    document.getElementById('sec-h1').value || "Criollo Llanero", 
+                    document.getElementById('sec-h2').value || "Cuarto de Milla", 
+                    document.getElementById('sec-h3').value || "Pinto Americano"
+                ],
+                bullNames: [
+                    document.getElementById('sec-b1').value || "Toro Cebú"
+                ],
+                customBgImg: globalConfig.customBgImg,
+                customHorseImgs: globalConfig.customHorseImgs,
+                customBullImgs: globalConfig.customBullImgs
+            };
+            try {
+                showProcessing("Sincronizando globalmente...");
+                await set(ref(db, `artifacts/${appId}/public/data/config_maestra`), newConfig);
+                closeProcessing();
+                showAlert("Éxito", "Configuración y gráficos guardados para todos.");
+            } catch(e) { closeProcessing(); showAlert("Error", "No se pudo sincronizar."); }
+        };
+
+        function updateVisuals() {
+            document.getElementById('ui-manga-1').innerText = globalConfig.mangaNames[0] || "Toros en mi Pueblo";
+            document.getElementById('ui-manga-2').innerText = globalConfig.mangaNames[1] || "Copa en Maracay";
+            if(document.getElementById('ui-manga-3')) document.getElementById('ui-manga-3').innerText = globalConfig.mangaNames[2] || "Camp. Barquisimeto";
+            
+            if(!document.getElementById('screen-secret-admin').classList.contains('hidden')) {
+                document.getElementById('sec-banner').value = globalConfig.bannerUrl || "";
+                
+                document.getElementById('sec-m1').value = globalConfig.mangaNames[0] || "";
+                document.getElementById('sec-m2').value = globalConfig.mangaNames[1] || "";
+                if(document.getElementById('sec-m3')) document.getElementById('sec-m3').value = globalConfig.mangaNames[2] || "";
+                
+                document.getElementById('sec-h1').value = globalConfig.horseNames[0] || "";
+                document.getElementById('sec-h2').value = globalConfig.horseNames[1] || "";
+                document.getElementById('sec-h3').value = globalConfig.horseNames[2] || "";
+                
+                document.getElementById('sec-b1').value = globalConfig.bullNames[0] || "";
+            }
+            updateEstabloUI();
+        }
+
+        window.handleFileUpload = (e, key) => { const r = new FileReader(); r.onload = ev => globalConfig[key] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
+        window.handleHorseUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customHorseImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
+        window.handleBullUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customBullImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
+
+        window.clearMods = async () => {
+            showConfirm("Limpiar", "¿Borrar gráficos y nombres personalizados para todos los jugadores?", async () => {
+                await set(ref(db, `artifacts/${appId}/public/data/config_maestra`), null);
+                location.reload();
+            });
+        };
+
+        window.loadRetirosAdmin = () => {
+            onValue(ref(db, `artifacts/${appId}/public/data/retiros_pendientes`), (snap) => {
+                const inner = document.getElementById('admin-retiros-list');
+                if (!inner) return;
+                inner.innerHTML = '';
+                if(!snap.exists()) { inner.innerHTML = '<p class="text-xs text-[var(--tg-text-sec)]">Sin retiros pendientes.</p>'; return; }
+                const data = snap.val();
+                Object.keys(data).forEach(k => {
+                    const r = data[k];
+                    if(r.estado === 'pendiente') {
+                        inner.innerHTML += `
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-yellow-400/50 text-xs mb-2">
+                                <div class="flex justify-between font-bold mb-1"><span class="text-white">${r.jugador}</span><span class="text-yellow-400">${r.ton} TON</span></div>
+                                <p class="text-[10px] text-gray-500 break-all mb-2">${r.wallet}</p>
+                                <button onclick="marcarPagado('${k}')" class="w-full bg-green-600 text-white font-bold p-2 rounded cursor-pointer">Marcar Pagado</button>
                             </div>
                         `;
                     }
                 });
-                if (!hasPending) list.innerHTML = '<p class="text-xs text-[var(--tg-text-sec)] text-center">No hay retiros pendientes.</p>';
-            });
-        }
-
-        window.marcarRetiroPagado = function(key) {
-            showCustomConfirm("Confirmar Pago", "¿Ya enviaste los TON desde tu wallet a la wallet del jugador?", async () => {
-                showProcessing("Actualizando estado en Firebase...");
-                try {
-                    await update(ref(db, `retiros_pendientes/${key}`), { estado: 'pagado', fecha_pago: Date.now() });
-                    closeProcessing();
-                    showCustomAlert("¡Listo!", "El retiro se marcó como pagado exitosamente.");
-                } catch (error) {
-                    closeProcessing();
-                    showCustomAlert("Error", "No se pudo actualizar. Verifica tu conexión.");
-                }
             });
         };
+        window.marcarPagado = async (key) => { await update(ref(db, `artifacts/${appId}/public/data/retiros_pendientes/${key}`), { estado: 'pagado' }); };
 
-        window.calculateCorteDeCaja = async function() {
-            showProcessing("Calculando ganancias... <br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
-            try {
-                const snapshot = await get(ref(db, 'historial_pagos'));
-                const records = snapshot.val();
-                let gananciasHoy = 0; let gananciasTotales = 0;
-                if (records) {
-                    const now = new Date();
-                    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-                    Object.values(records).forEach(record => {
-                        const comision = record.economia?.comision_desarrollador || 0;
-                        gananciasTotales += comision;
-                        if (record.timestamp >= startOfDay) gananciasHoy += comision;
-                    });
-                }
-                closeProcessing();
-                showCustomAlert("Corte de Caja (Comisiones Tuya)", `<div class="text-left space-y-3 mt-4 bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-border)]"><div class="flex justify-between border-b border-[var(--tg-border)] pb-3"><span class="text-[var(--tg-text-sec)] text-sm font-semibold">Ganancias de Hoy:</span><span class="font-bold text-green-400 text-lg">+${gananciasHoy.toFixed(2)} <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span></div><div class="flex justify-between pt-1"><span class="text-[var(--tg-text-sec)] text-sm font-semibold">Total Histórico:</span><span class="font-bold text-white text-lg">+${gananciasTotales.toFixed(2)} <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span></div></div>`);
-            } catch (error) { console.error(error); closeProcessing(); showCustomAlert("Error", "No se pudo acceder a la base de datos."); }
-        };
-
-        window.saveTonConfig = async function() {
-            const newFee = parseFloat(document.getElementById('sec-ton-fee').value);
-            const isOpen = document.getElementById('sec-ton-open').checked;
-            showProcessing("Actualizando Servidor...");
-            try {
-                await update(ref(db, 'configuracion'), { precio_entrada: newFee, inscripciones_abiertas: isOpen });
-                state.admin.com = document.getElementById('sec-com').value;
-                saveData();
-                closeProcessing();
-                showCustomAlert("Completado", "Configuración actualizada en tiempo real.");
-            } catch (e) { console.error(e); closeProcessing(); showCustomAlert("Error", "No tienes permisos en Firebase."); }
-        };
-
-        window.requestAdminAccess = function() {
-            showLoginPrompt((pwd) => {
-                if (pwd === state.admin.password) openSecretAdmin(); else showCustomAlert("Error", "Contraseña incorrecta.");
-            }, () => {
-                showCustomPrompt("Recuperación", `Palabra secreta:`, (ans) => {
-                    if(ans.trim().toUpperCase() === state.admin.recovery.toUpperCase()) { state.admin.password = "ADMIN123"; saveData(); showCustomAlert("Restablecida", "La clave vuelve a ser <b>ADMIN123</b>."); } else showCustomAlert("Error", "Palabra incorrecta.");
-                });
-            });
-        };
-
-        window.saveAdminSettings = function() {
-            state.admin.password = document.getElementById('sec-pwd').value || "ADMIN123";
-            state.admin.recovery = document.getElementById('sec-rec').value || "COLEO";
-            state.mangaNames[0] = document.getElementById('sec-m1').value || "Toros en mi Pueblo";
-            state.mangaNames[1] = document.getElementById('sec-m2').value || "Copa en Maracay";
-            state.mangaNames[2] = document.getElementById('sec-m3').value || "Camp. Barquisimeto";
-            state.horseNames[0] = document.getElementById('sec-h1').value || "Criollo Llanero";
-            state.horseNames[1] = document.getElementById('sec-h2').value || "Cuarto de Milla";
-            state.horseNames[2] = document.getElementById('sec-h3').value || "Pinto Americano";
-            state.bullNames[0] = document.getElementById('sec-b1').value || "Novillo";
-            state.bullNames[1] = document.getElementById('sec-b2').value || "Toro Cebú";
-            state.bullNames[2] = document.getElementById('sec-b3').value || "Padrote Rebelde";
-            saveData(); init(); nav('menu'); showCustomAlert("Guardado", "Configuraciones aplicadas.");
-        };
-
-        window.handleFileUpload = function(event, stateKey) {
-            const file = event.target.files[0]; if(!file) return; const reader = new FileReader();
-            reader.onload = function(e) { state[stateKey] = e.target.result; }; reader.readAsDataURL(file);
-        };
-
-        window.handleHorseUpload = function(event, index) {
-            const file = event.target.files[0]; if(!file) return; const reader = new FileReader();
-            reader.onload = function(e) { state.customHorseImgs[index] = e.target.result; }; reader.readAsDataURL(file);
-        };
-
-        window.clearMods = function() {
-            showCustomConfirm("Limpiar Gráficos", "¿Borrar mods visuales?", () => {
-                state.customBgImg = null; 
-                state.customHorseImgs = [null, null, null];
-                saveData(); showCustomAlert("Listo", "Gráficos restaurados.", () => { init(); nav('menu'); });
-            });
-        };
-
-        function openSecretAdmin() {
-            document.getElementById('sec-ton-fee').value = globalTonConfig.precio_entrada;
-            document.getElementById('sec-ton-open').checked = globalTonConfig.inscripciones_abiertas;
-            document.getElementById('sec-com').value = state.admin.com;
-            document.getElementById('sec-m1').value = state.mangaNames[0]; document.getElementById('sec-m2').value = state.mangaNames[1]; document.getElementById('sec-m3').value = state.mangaNames[2];
-            document.getElementById('sec-h1').value = state.horseNames[0]; document.getElementById('sec-h2').value = state.horseNames[1]; document.getElementById('sec-h3').value = state.horseNames[2];
-            document.getElementById('sec-b1').value = state.bullNames[0]; document.getElementById('sec-b2').value = state.bullNames[1]; document.getElementById('sec-b3').value = state.bullNames[2];
-            document.getElementById('sec-pwd').value = state.admin.password; document.getElementById('sec-rec').value = state.admin.recovery;
-            loadAdminRetiros();
-            nav('secret-admin');
-        }
-
-        // Utilidades de UI (Modales)
+        // --- MODALES ---
         function showProcessing(msg) { document.getElementById('modal-title').innerText = "Procesando"; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = ''; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
         function closeProcessing() { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); }
-        function showCustomAlert(title, msg, onConfirm) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-ok" class="w-full tg-btn-primary p-3">Aceptar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-ok').onclick = () => { closeProcessing(); if(onConfirm) onConfirm(); }; }
-        function showCustomConfirm(title, msg, onConfirm, onCancel) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Confirmar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); if(onCancel) onCancel(); }; document.getElementById('modal-btn-yes').onclick = () => { closeProcessing(); if(onConfirm) onConfirm(); }; }
-        function showCustomPrompt(title, msg, onConfirm) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'text'; document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Aceptar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); }; document.getElementById('modal-btn-yes').onclick = () => { const val = inputEl.value; closeProcessing(); if(onConfirm) onConfirm(val); }; }
-        function showLoginPrompt(onConfirm, onRecover) { document.getElementById('modal-title').innerText = "Modo Master"; document.getElementById('modal-desc').innerHTML = "Clave requerida (Escondido en esquina inf-der):"; const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'password'; document.getElementById('modal-buttons').innerHTML = `<div class="flex flex-col w-full gap-3"><div class="flex gap-3"><button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Atrás</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Entrar</button></div><button id="modal-btn-recover" class="text-xs text-[var(--tg-primary)] mt-2 font-semibold">¿Olvidaste tu contraseña?</button></div>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); }; document.getElementById('modal-btn-yes').onclick = () => { const val = inputEl.value; closeProcessing(); if(onConfirm) onConfirm(val); }; document.getElementById('modal-btn-recover').onclick = () => { closeProcessing(); if(onRecover) onRecover(); }; }
-
-        function renderRanking() {
-            state.ranking.sort((a,b) => b.puntos - a.puntos);
-            const tbody = document.getElementById('ranking-body'); tbody.innerHTML = '';
-            state.ranking.forEach((r, idx) => { tbody.innerHTML += `<tr><td class="p-3 text-center font-bold ${idx===0?'text-[var(--tg-primary)]':''}">${idx+1}</td><td class="p-3 font-semibold">${r.nombre === state.nickname ? `<span class="text-[var(--tg-primary)]">${r.nombre}</span>` : r.nombre}</td><td class="p-3 text-right text-[var(--tg-text-sec)]">${r.puntos}</td></tr>`; });
+        function showAlert(t, d) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="w-full bg-[var(--tg-primary)] text-black font-bold p-3 rounded-xl cursor-pointer">Entendido</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
+        function showConfirm(t, d, cb) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold text-white cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-green-600 p-3 rounded-xl font-bold text-white cursor-pointer">Aceptar</button>`; document.getElementById('modal-ok').onclick = () => { closeModal(); cb(); }; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
+        function showPrompt(t, d, cb, isPassword = false) { 
+            document.getElementById('modal-title').innerText = t; 
+            document.getElementById('modal-desc').innerHTML = d; 
+            const inp = document.getElementById('modal-input'); 
+            inp.classList.remove('hidden'); 
+            inp.value = ''; 
+            inp.type = isPassword ? 'password' : 'text';
+            document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl text-white font-bold cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold cursor-pointer">Aceptar</button>`; 
+            document.getElementById('modal-ok').onclick = () => { const v = inp.value; closeModal(); cb(v); }; 
+            document.getElementById('custom-modal').classList.remove('hidden'); 
+            document.getElementById('custom-modal').classList.add('flex'); 
         }
-        function updatePlayerRanking(pts) { let found = state.ranking.find(r => r.nombre === state.nickname); if(found) found.puntos += pts; else state.ranking.push({ nombre: state.nickname, puntos: pts }); saveData(); }
+        window.closeModal = () => { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); };
+        window.closeResult = () => { document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex'); nav('menu'); };
 
-        init();
+        updateHeader(); updateBalancesUI();
+        // NOTA: La navegación inicial (Reglamento o Menú) ahora se maneja en processSplashScreen()
+
     </script>
 </body>
 </html>
