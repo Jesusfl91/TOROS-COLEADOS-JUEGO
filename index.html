@@ -650,28 +650,6 @@
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json', buttonRootId: 'ton-connect' });
 
-        // --- AUTH Y SINCRONIZACIÓN ---
-        onAuthStateChanged(auth, (user) => {
-            if(user) {
-                localState.userConnected = true;
-                onValue(ref(db, `artifacts/${appId}/public/data/config_maestra`), (snap) => {
-                    if(snap.exists()) {
-                        globalConfig = { ...globalConfig, ...snap.val() };
-                        updateVisuals();
-                        processSplashScreen(); 
-                    } else {
-                        processSplashScreen();
-                    }
-                });
-                syncRanking();
-                get(ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`)).then(snap => {
-                    if(!snap.exists()) updateRankingInDB(0);
-                });
-            } else {
-                signInAnonymously(auth).catch(e => console.error("Firebase Auth Falló:", e));
-            }
-        });
-
         // --- MANEJO DEL SPLASH SCREEN (BIENVENIDA) ---
         function processSplashScreen() {
             if (localState.initialSplashDone) return;
@@ -689,11 +667,49 @@
                 setTimeout(() => {
                     splash.classList.add('hidden');
                     splash.style.display = 'none';
-                    if(localStorage.getItem('tc_terms') !== 'true') nav('reglamento');
-                    else nav('menu');
+                    if(localStorage.getItem('tc_terms') !== 'true') window.nav('reglamento');
+                    else window.nav('menu');
                 }, 500); 
             }, 3500);
         }
+
+        // --- AUTH Y SINCRONIZACIÓN MEJORADA ---
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                localState.userConnected = true;
+                
+                const configRef = ref(db, `artifacts/${appId}/public/data/config_maestra`);
+                onValue(configRef, (snap) => {
+                    if(snap.exists()) {
+                        globalConfig = { ...globalConfig, ...snap.val() };
+                        window.updateVisuals();
+                    }
+                    processSplashScreen(); 
+                }, (error) => {
+                    console.error("Error al leer Firebase:", error);
+                    processSplashScreen(); 
+                });
+                
+                window.syncRanking();
+                
+                get(ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`)).then(snap => {
+                    if(!snap.exists()) window.updateRankingInDB(0);
+                }).catch(e => console.error("Error en ranking:", e));
+
+            } else {
+                signInAnonymously(auth).catch(e => {
+                    console.error("Firebase Auth Falló:", e);
+                    processSplashScreen(); 
+                });
+            }
+        });
+
+        setTimeout(() => {
+            if (!localState.initialSplashDone) {
+                console.warn("Tiempo de espera de Firebase agotado. Forzando inicio del juego...");
+                processSplashScreen();
+            }
+        }, 6000);
 
         // --- NAVEGACIÓN Y MENÚS ---
         window.nav = (id) => {
@@ -701,14 +717,13 @@
             const targetScreen = document.getElementById('screen-'+id);
             if (targetScreen) targetScreen.classList.remove('hidden');
             
-            if(id === 'secret-admin') loadRetirosAdmin();
-            if(id === 'establo') updateEstabloUI();
-            if(id === 'galeria') renderGallery();
+            if(id === 'secret-admin') window.loadRetirosAdmin();
+            if(id === 'establo') window.updateEstabloUI();
+            if(id === 'galeria') window.renderGallery();
         };
 
-        window.openWallet = () => nav('wallet');
-
-        window.acceptTerms = () => { localStorage.setItem('tc_terms', 'true'); nav('menu'); };
+        window.openWallet = () => window.nav('wallet');
+        window.acceptTerms = () => { localStorage.setItem('tc_terms', 'true'); window.nav('menu'); };
 
         window.toggleNicknameEdit = () => {
             document.getElementById('menu-nickname-display').classList.add('hidden');
@@ -720,8 +735,8 @@
             const val = document.getElementById('input-nickname').value.trim();
             if(val) {
                 localState.nickname = val;
-                saveData();
-                if(localState.userConnected) updateRankingInDB(0); 
+                window.saveData();
+                if(localState.userConnected) window.updateRankingInDB(0); 
             }
             document.getElementById('menu-nickname-edit').classList.add('hidden');
             document.getElementById('menu-nickname-display').classList.remove('hidden');
@@ -737,49 +752,48 @@
             const val = document.getElementById('input-horsename').value.trim();
             if(val) {
                 localState.horseName = val;
-                saveData();
+                window.saveData();
             }
             document.getElementById('menu-horsename-edit').classList.add('hidden');
             document.getElementById('menu-horsename-display').classList.remove('hidden');
         };
 
-        function updateHeader() {
+        window.updateHeader = () => {
             document.getElementById('ui-nickname').innerText = localState.nickname;
             document.getElementById('menu-nickname-text').innerText = localState.nickname;
             if(document.getElementById('menu-horsename-text')) {
                 document.getElementById('menu-horsename-text').innerText = localState.horseName;
             }
-        }
+        };
 
-        function updateBalancesUI() {
+        window.updateBalancesUI = () => {
             document.getElementById('header-cc').innerText = localState.coleoCoin;
             document.getElementById('header-oro').innerText = localState.oroLlanero;
-            
             if(document.getElementById('boveda-cc')) document.getElementById('boveda-cc').innerText = localState.coleoCoin;
             if(document.getElementById('boveda-oro')) document.getElementById('boveda-oro').innerText = localState.oroLlanero;
             if(document.getElementById('boveda-ton')) document.getElementById('boveda-ton').innerText = (localState.oroLlanero/1000).toFixed(2) + ' TON';
             if(document.getElementById('galeria-cc')) document.getElementById('galeria-cc').innerText = localState.coleoCoin;
-        }
+        };
 
-        function saveData() {
+        window.saveData = () => {
             localStorage.setItem('tc_nickname', localState.nickname);
             localStorage.setItem('tc_horsename', localState.horseName);
             localStorage.setItem('tc_horseIndex', localState.horseIndex);
             localStorage.setItem('tc_cc', localState.coleoCoin);
             localStorage.setItem('tc_oro', localState.oroLlanero);
             localStorage.setItem('tc_inv', JSON.stringify(localState.inventario));
-            updateHeader();
-            updateBalancesUI();
-        }
+            window.updateHeader();
+            window.updateBalancesUI();
+        };
 
         // --- SISTEMA DUAL ECONOMY ---
         window.comprarOro = async () => {
-            showPrompt("Comprar Oro Llanero", "1 TON = 1000 Oro Llanero. Introduce la cantidad de TON a enviar:", async (val) => {
+            window.showPrompt("Comprar Oro Llanero", "1 TON = 1000 Oro Llanero. Introduce la cantidad de TON a enviar:", async (val) => {
                 const tonAmount = parseFloat(val);
-                if(isNaN(tonAmount) || tonAmount <= 0) return showAlert("Error", "Cantidad inválida.");
-                if(!tonConnectUI.connected) return showAlert("Billetera", "Conecta tu wallet en el Menú Principal primero.");
+                if(isNaN(tonAmount) || tonAmount <= 0) return window.showAlert("Error", "Cantidad inválida.");
+                if(!tonConnectUI.connected) return window.showAlert("Billetera", "Conecta tu wallet en el Menú Principal primero.");
 
-                showProcessing("Aprobando transacción en blockchain...");
+                window.showProcessing("Aprobando transacción en blockchain...");
                 try {
                     const nanoTon = Math.floor(tonAmount * 1000000000);
                     const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: nanoTon.toString() }] };
@@ -787,39 +801,39 @@
                     
                     const oroComprado = Math.floor(tonAmount * 1000);
                     localState.oroLlanero += oroComprado;
-                    saveData();
-                    closeProcessing();
-                    showAlert("Compra Exitosa", `Has recibido ${oroComprado} de Oro Llanero.`);
-                } catch(e) { closeProcessing(); showAlert("Transacción Cancelada", "No se completó el pago."); }
+                    window.saveData();
+                    window.closeProcessing();
+                    window.showAlert("Compra Exitosa", `Has recibido ${oroComprado} de Oro Llanero.`);
+                } catch(e) { window.closeProcessing(); window.showAlert("Transacción Cancelada", "No se completó el pago."); }
             });
         };
 
         window.cambiarOroPorCC = () => {
-            showPrompt("Cambiar a $ColeoCoins", "Tasa: 1 Oro = 1 ColeoCoin.<br><span class='text-red-400 text-xs'>(No se puede revertir)</span><br>¿Cuánto Oro quieres cambiar?", (val) => {
+            window.showPrompt("Cambiar a $ColeoCoins", "Tasa: 1 Oro = 1 ColeoCoin.<br><span class='text-red-400 text-xs'>(No se puede revertir)</span><br>¿Cuánto Oro quieres cambiar?", (val) => {
                 const amt = parseInt(val);
-                if(isNaN(amt) || amt <= 0 || amt > localState.oroLlanero) return showAlert("Error", "Monto inválido o insuficiente.");
+                if(isNaN(amt) || amt <= 0 || amt > localState.oroLlanero) return window.showAlert("Error", "Monto inválido o insuficiente.");
                 
                 localState.oroLlanero -= amt;
                 localState.coleoCoin += amt;
-                saveData();
-                showAlert("Conversión Exitosa", `Cambiaste ${amt} Oro por ${amt} $ColeoCoins.`);
+                window.saveData();
+                window.showAlert("Conversión Exitosa", `Cambiaste ${amt} Oro por ${amt} $ColeoCoins.`);
             });
         };
 
         window.reclamarPuntos = async () => {
-            if(!tonConnectUI.connected) return showAlert("Billetera", "Conecta tu wallet primero.");
-            if(localState.oroLlanero < 5000) return showAlert("Saldo Insuficiente", "Necesitas al menos 5000 Oro Llanero para poder retirar (5 TON).");
+            if(!tonConnectUI.connected) return window.showAlert("Billetera", "Conecta tu wallet primero.");
+            if(localState.oroLlanero < 5000) return window.showAlert("Saldo Insuficiente", "Necesitas al menos 5000 Oro Llanero para poder retirar (5 TON).");
             
-            showConfirm("Solicitar Retiro", `¿Deseas retirar ${localState.oroLlanero} Oro por ${(localState.oroLlanero/1000).toFixed(2)} TON?`, async () => {
-                showProcessing("Enviando orden a la federación...");
+            window.showConfirm("Solicitar Retiro", `¿Deseas retirar ${localState.oroLlanero} Oro por ${(localState.oroLlanero/1000).toFixed(2)} TON?`, async () => {
+                window.showProcessing("Enviando orden a la federación...");
                 try {
                     await push(ref(db, `artifacts/${appId}/public/data/retiros_pendientes`), {
                         jugador: localState.nickname, wallet: tonConnectUI.account.address || tonConnectUI.account.publicKey,
                         puntos: localState.oroLlanero, ton: (localState.oroLlanero/1000).toFixed(2), estado: 'pendiente'
                     });
-                    localState.oroLlanero = 0; saveData();
-                    closeProcessing(); showAlert("Solicitud Enviada", "El Juez procesará tu pago a la brevedad.");
-                } catch(e) { closeProcessing(); showAlert("Error", "Falla de red."); }
+                    localState.oroLlanero = 0; window.saveData();
+                    window.closeProcessing(); window.showAlert("Solicitud Enviada", "El Juez procesará tu pago a la brevedad.");
+                } catch(e) { window.closeProcessing(); window.showAlert("Error", "Falla de red."); }
             });
         };
 
@@ -851,13 +865,13 @@
         window.buyCard = (id) => {
             const c = CARDS_DATA.find(x => x.id === id);
             if(!c || localState.inventario.includes(id)) return;
-            if(localState.coleoCoin < c.price) return showAlert("Saldo Insuficiente", "Juega en la Copa Virtual o cambia Oro para conseguir más $ColeoCoins.");
+            if(localState.coleoCoin < c.price) return window.showAlert("Saldo Insuficiente", "Juega en la Copa Virtual o cambia Oro para conseguir más $ColeoCoins.");
             
-            showConfirm("Compra de Tarjeta", `¿Pagar ${c.price} CC por ${c.name}?`, () => {
+            window.showConfirm("Compra de Tarjeta", `¿Pagar ${c.price} CC por ${c.name}?`, () => {
                 localState.coleoCoin -= c.price;
                 localState.inventario.push(id);
-                saveData(); renderGallery();
-                showAlert("¡Colección Creciente!", `Has comprado la ${c.name}.`);
+                window.saveData(); window.renderGallery();
+                window.showAlert("¡Colección Creciente!", `Has comprado la ${c.name}.`);
             });
         };
 
@@ -879,10 +893,10 @@
             document.getElementById('custom-modal').classList.add('flex');
         };
 
-        window.joinPublicLobby = () => { closeModal(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(null); else window.joinFreeLobby(null); };
-        window.createPrivateLobby = () => { closeModal(); const code = Math.random().toString(36).substring(2, 6).toUpperCase(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code); else window.joinFreeLobby(code); };
+        window.joinPublicLobby = () => { window.closeModal(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(null); else window.joinFreeLobby(null); };
+        window.createPrivateLobby = () => { window.closeModal(); const code = Math.random().toString(36).substring(2, 6).toUpperCase(); if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code); else window.joinFreeLobby(code); };
         window.joinPrivateLobbyPrompt = () => {
-            showPrompt("Unirse a Sala", "Introduce el código de 4 letras:", (code) => {
+            window.showPrompt("Unirse a Sala", "Introduce el código de 4 letras:", (code) => {
                 if (code && code.length > 0) {
                     if (window.game.pendingRoomType === 'apuesta') window.initiateTONPayment(code.toUpperCase());
                     else window.joinFreeLobby(code.toUpperCase());
@@ -895,39 +909,39 @@
             const text = `¡Únete a mi manga de Toros Coleados! 🐂🐎\n\nEntra al juego, dale a "Unirse con Código" y pega esto: ${code}`;
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=https://t.me/&text=${encodeURIComponent(text)}`);
-            } else { navigator.clipboard.writeText(text).then(() => showAlert("Copiado", `Código ${code} copiado al portapapeles.`)); }
+            } else { navigator.clipboard.writeText(text).then(() => window.showAlert("Copiado", `Código ${code} copiado al portapapeles.`)); }
         };
 
         window.joinFreeLobby = async (privateCode = null) => {
             window.game.roomType = privateCode ? `manga_gratis_${privateCode}` : 'manga_gratis';
             window.game.currentRoomCode = privateCode;
-            showProcessing("Buscando sala...");
-            await joinLobbyDirect(window.game.roomType, null);
-            closeProcessing();
+            window.showProcessing("Buscando sala...");
+            await window.joinLobbyDirect(window.game.roomType, null);
+            window.closeProcessing();
         };
 
         window.initiateTONPayment = async (privateCode = null) => {
-            if (!tonConnectUI.connected) return showAlert("Billetera no conectada", "Conecta tu billetera TON para jugar con Oro.");
+            if (!tonConnectUI.connected) return window.showAlert("Billetera no conectada", "Conecta tu billetera TON para jugar con Oro.");
             window.game.roomType = privateCode ? `manga_apuesta_${privateCode}` : 'manga_apuesta';
             window.game.currentRoomCode = privateCode;
-            showConfirm("Contrato TON", "Entrarás a la sala apostando 0.1 TON.", async () => {
-                showProcessing("Aprobando transacción...");
+            window.showConfirm("Contrato TON", "Entrarás a la sala apostando 0.1 TON.", async () => {
+                window.showProcessing("Aprobando transacción...");
                 try {
-                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: "100000000" }] }; // 0.1 TON
+                    const tx = { validUntil: Math.floor(Date.now() / 1000) + 360, messages: [{ address: ADMIN_WALLET, amount: "100000000" }] }; 
                     const result = await tonConnectUI.sendTransaction(tx);
                     if(result && result.boc) {
-                        await joinLobbyDirect(window.game.roomType, result.boc);
-                        closeProcessing();
+                        await window.joinLobbyDirect(window.game.roomType, result.boc);
+                        window.closeProcessing();
                     }
                 } catch(e) {
-                    closeProcessing(); 
-                    showAlert("Transacción Cancelada", "No se pudo completar el pago de inscripción.");
+                    window.closeProcessing(); 
+                    window.showAlert("Transacción Cancelada", "No se pudo completar el pago de inscripción.");
                 }
             });
         };
 
-        async function joinLobbyDirect(roomName, txHash = null) {
-            nav('lobby');
+        window.joinLobbyDirect = async (roomName, txHash = null) => {
+            window.nav('lobby');
             const privateInfo = document.getElementById('lobby-private-info');
             if (window.game.currentRoomCode) {
                 document.getElementById('lobby-room-code').innerText = window.game.currentRoomCode;
@@ -944,18 +958,18 @@
                     await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { nombre: localState.nickname, status: statusStr, score: -1 });
                 }
                 onDisconnect(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`)).remove();
-                listenToLobby(roomName);
+                window.listenToLobby(roomName);
             } catch (e) { console.error(e); }
-        }
+        };
 
         window.cancelLobby = async () => {
             const roomName = window.game.roomType || 'manga_gratis';
             await remove(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`));
             if (unsubscribeLobby) unsubscribeLobby();
-            nav('menu');
+            window.nav('menu');
         };
 
-        function listenToLobby(roomName) {
+        window.listenToLobby = (roomName) => {
             if (unsubscribeLobby) unsubscribeLobby();
             const roomRef = ref(db, `artifacts/${appId}/public/data/salas/${roomName}`);
             unsubscribeLobby = onValue(roomRef, (snap) => {
@@ -976,15 +990,15 @@
                 }
                 
                 if (data.estado === 'jugando' && window.game.mode !== 'multiplayer' && data.jugadores[playerId]) {
-                    window.game.mode = 'multiplayer'; setTimeout(() => prepGame('multiplayer', 2), 1000);
+                    window.game.mode = 'multiplayer'; setTimeout(() => window.prepGame('multiplayer', 2), 1000);
                 }
                 
-                if (data.estado === 'terminado' && window.game.mode === 'multiplayer') { showFinalMultiplayerResults(data, roomName); }
+                if (data.estado === 'terminado' && window.game.mode === 'multiplayer') { window.showFinalMultiplayerResults(data, roomName); }
             });
-        }
+        };
 
-        function showFinalMultiplayerResults(data, roomName) {
-            window.game.mode = 'career'; closeProcessing();
+        window.showFinalMultiplayerResults = (data, roomName) => {
+            window.game.mode = 'career'; window.closeProcessing();
             if (unsubscribeLobby) unsubscribeLobby();
             
             const list = Object.values(data.resultados || {}).sort((a,b) => a.posicion - b.posicion);
@@ -1009,25 +1023,25 @@
             if(myPts > 0) { 
                 if(roomName.startsWith('manga_apuesta')) localState.oroLlanero += myPts;
                 else localState.coleoCoin += myPts;
-                saveData(); 
+                window.saveData(); 
             }
             
-            updatePlayerRanking(window.game.matchScore);
+            window.updatePlayerRanking(window.game.matchScore);
             
             document.getElementById('res-title').innerText = myPts > 0 ? "¡Ganaste!" : "Fin de Competición";
             document.getElementById('res-desc').innerHTML = html;
             document.getElementById('overlay-result').classList.remove('hidden');
-        }
+        };
 
         // --- LÓGICA DE JUEGO (CORE) ---
         window.changeHorse = (dir) => { 
             localState.horseIndex = (localState.horseIndex + dir + 3) % 3; 
-            saveData();
-            updateEstabloUI(); 
+            window.saveData();
+            window.updateEstabloUI(); 
         };
-        window.prepGame = (mode, level) => { window.game.mode = mode; window.game.level = level; nav('establo'); };
+        window.prepGame = (mode, level) => { window.game.mode = mode; window.game.level = level; window.nav('establo'); };
         
-        function updateEstabloUI() {
+        window.updateEstabloUI = () => {
             const hImg = globalConfig.customHorseImgs[localState.horseIndex];
             const estHorseEmoji = document.getElementById('est-horse-emoji');
             if (estHorseEmoji) {
@@ -1037,18 +1051,18 @@
             if (estHorseName) {
                 estHorseName.innerText = `${localState.horseName} (${globalConfig.horseNames[localState.horseIndex] || "Caballo"})`;
             }
-        }
+        };
 
-        window.startGame = () => { window.game.turn = 1; window.game.matchScore = 0; nav('game'); startTurn(); };
+        window.startGame = () => { window.game.turn = 1; window.game.matchScore = 0; window.nav('game'); window.startTurn(); };
 
         window.quitGame = () => {
-            showConfirm("Abandonar Manga", "¿Seguro que deseas retirarte? Perderás tu progreso en esta partida.", async () => {
+            window.showConfirm("Abandonar Manga", "¿Seguro que deseas retirarte? Perderás tu progreso en esta partida.", async () => {
                 window.game.active = false;
                 cancelAnimationFrame(window.game.anim);
                 
                 if (window.game.mode === 'multiplayer') {
                     if (unsubscribeLobby) unsubscribeLobby(); 
-                    showProcessing("Saliendo de la sala...");
+                    window.showProcessing("Saliendo de la sala...");
                     const roomName = window.game.roomType;
                     try {
                         await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { score: window.game.matchScore });
@@ -1069,13 +1083,13 @@
                             await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`), { estado: 'terminado', resultados: resDB });
                         }
                     } catch(e) {}
-                    closeProcessing();
+                    window.closeProcessing();
                 }
-                nav('menu');
+                window.nav('menu');
             });
         };
 
-        function startTurn() {
+        window.startTurn = () => {
             window.game.active = true; window.game.horsePos = -20;
             const hImg = globalConfig.customHorseImgs[localState.horseIndex];
             const bImg = globalConfig.customBullImgs[0];
@@ -1110,24 +1124,24 @@
             btn.disabled = false;
             btn.innerText = "COLEAR";
 
-            requestAnimationFrame(gameLoop);
-        }
+            requestAnimationFrame(window.gameLoop);
+        };
 
-        function gameLoop() {
+        window.gameLoop = () => {
             if(!window.game.active) return;
             const speed = 0.5 + (HORSES_DATA[localState.horseIndex].vel) + (window.game.level * 0.1);
             window.game.horsePos += speed;
             document.getElementById('pos-horse').style.left = window.game.horsePos + '%'; 
-            if(window.game.horsePos > 85) { window.game.active = false; evaluar(true); return; }
-            window.game.anim = requestAnimationFrame(gameLoop);
-        }
+            if(window.game.horsePos > 85) { window.game.active = false; window.evaluar(true); return; }
+            window.game.anim = requestAnimationFrame(window.gameLoop);
+        };
 
         document.getElementById('btn-colear').onclick = () => {
             if(!window.game.active) return;
-            window.game.active = false; cancelAnimationFrame(window.game.anim); evaluar(false);
+            window.game.active = false; cancelAnimationFrame(window.game.anim); window.evaluar(false);
         };
 
-        function evaluar(paso) {
+        window.evaluar = (paso) => {
             document.getElementById('btn-colear').disabled = true;
             document.getElementById('btn-colear').innerText = "Ejecutando...";
 
@@ -1159,16 +1173,16 @@
             }
 
             setTimeout(() => {
-                if(window.game.turn < 4) { window.game.turn++; startTurn(); }
+                if(window.game.turn < 4) { window.game.turn++; window.startTurn(); }
                 else { 
-                    if(window.game.mode === 'career') finalizarManga(); 
-                    else if(window.game.mode === 'multiplayer') processFirebaseTurn();
+                    if(window.game.mode === 'career') window.finalizarManga(); 
+                    else if(window.game.mode === 'multiplayer') window.processFirebaseTurn();
                 }
             }, 1500);
-        }
+        };
 
-        async function processFirebaseTurn() {
-            showProcessing("Esperando a los demás coleadores...");
+        window.processFirebaseTurn = async () => {
+            window.showProcessing("Esperando a los demás coleadores...");
             const roomName = window.game.roomType;
             await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}/jugadores/${playerId}`), { score: window.game.matchScore });
             
@@ -1191,19 +1205,19 @@
                 
                 await update(ref(db, `artifacts/${appId}/public/data/salas/${roomName}`), { estado: 'terminado', resultados: resDB });
             }
-        }
+        };
 
-        async function finalizarManga() {
+        window.finalizarManga = async () => {
             localState.coleoCoin += window.game.matchScore;
-            saveData();
-            updatePlayerRanking(window.game.matchScore);
+            window.saveData();
+            window.updatePlayerRanking(window.game.matchScore);
             document.getElementById('res-title').innerText = "Copa Terminada";
             document.getElementById('res-desc').innerHTML = `Lograste ${window.game.matchScore} pts para tu Ranking y ganaste <span class="text-orange-400 font-bold">${window.game.matchScore} $ColeoCoins</span>.`;
             document.getElementById('overlay-result').classList.remove('hidden');
-        }
+        };
 
         // --- SISTEMA DE RANKING GLOBAL ---
-        async function updatePlayerRanking(puntosGanados) {
+        window.updatePlayerRanking = async (puntosGanados) => {
             if (!localState.userConnected) return;
             try {
                 const rankRef = ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`);
@@ -1211,9 +1225,9 @@
                 let ptsPrevios = snap.exists() ? snap.val().puntos : 0;
                 await set(rankRef, { nombre: localState.nickname, puntos: ptsPrevios + puntosGanados });
             } catch(e) {}
-        }
+        };
         
-        async function updateRankingInDB(puntosGanados) {
+        window.updateRankingInDB = async (puntosGanados) => {
             if (!localState.userConnected) return;
             try {
                 const rankRef = ref(db, `artifacts/${appId}/public/data/ranking/${playerId}`);
@@ -1221,9 +1235,9 @@
                 let ptsPrevios = snap.exists() ? snap.val().puntos : 0;
                 await set(rankRef, { nombre: localState.nickname, puntos: ptsPrevios + puntosGanados });
             } catch(e) {}
-        }
+        };
 
-        function syncRanking() {
+        window.syncRanking = () => {
             if (!localState.userConnected) return;
             onValue(ref(db, `artifacts/${appId}/public/data/ranking`), (snap) => {
                 const tbody = document.getElementById('ranking-body');
@@ -1236,18 +1250,18 @@
                     tbody.innerHTML += `<tr class="${isMe ? 'bg-yellow-500/10' : ''}"><td class="p-3 font-bold">${i+1}</td><td class="p-3 ${isMe ? 'text-yellow-500' : 'text-white'}">${r.nombre}</td><td class="p-3 text-right font-mono text-green-400">${r.puntos}</td></tr>`;
                 });
             });
-        }
+        };
 
         // --- PANEL DE ADMINISTRADOR ---
         window.requestAdminAccess = () => {
-            showPrompt("Modo Máster", "Clave de acceso:", (pwd) => {
-                if(pwd === "ADMIN123") nav('secret-admin');
-                else showAlert("Acceso Denegado", "Clave incorrecta.", true); 
+            window.showPrompt("Modo Máster", "Clave de acceso:", (pwd) => {
+                if(pwd === "ADMIN123") window.nav('secret-admin');
+                else window.showAlert("Acceso Denegado", "Clave incorrecta.", true); 
             }, true); 
         };
 
         window.saveAdminSettings = async () => {
-            if (!localState.userConnected) return showAlert("Error", "No conectado a la DB.");
+            if (!localState.userConnected) return window.showAlert("Error", "No conectado a la DB.");
             const newConfig = {
                 bannerUrl: document.getElementById('sec-banner').value || "",
                 mangaNames: [
@@ -1268,14 +1282,14 @@
                 customBullImgs: globalConfig.customBullImgs
             };
             try {
-                showProcessing("Sincronizando globalmente...");
+                window.showProcessing("Sincronizando globalmente...");
                 await set(ref(db, `artifacts/${appId}/public/data/config_maestra`), newConfig);
-                closeProcessing();
-                showAlert("Éxito", "Configuración y gráficos guardados para todos.");
-            } catch(e) { closeProcessing(); showAlert("Error", "No se pudo sincronizar."); }
+                window.closeProcessing();
+                window.showAlert("Éxito", "Configuración y gráficos guardados para todos.");
+            } catch(e) { window.closeProcessing(); window.showAlert("Error", "No se pudo sincronizar."); }
         };
 
-        function updateVisuals() {
+        window.updateVisuals = () => {
             document.getElementById('ui-manga-1').innerText = globalConfig.mangaNames[0] || "Toros en mi Pueblo";
             document.getElementById('ui-manga-2').innerText = globalConfig.mangaNames[1] || "Copa en Maracay";
             if(document.getElementById('ui-manga-3')) document.getElementById('ui-manga-3').innerText = globalConfig.mangaNames[2] || "Camp. Barquisimeto";
@@ -1293,15 +1307,15 @@
                 
                 document.getElementById('sec-b1').value = globalConfig.bullNames[0] || "";
             }
-            updateEstabloUI();
-        }
+            window.updateEstabloUI();
+        };
 
         window.handleFileUpload = (e, key) => { const r = new FileReader(); r.onload = ev => globalConfig[key] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
         window.handleHorseUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customHorseImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
         window.handleBullUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customBullImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
 
         window.clearMods = async () => {
-            showConfirm("Limpiar", "¿Borrar gráficos y nombres personalizados para todos los jugadores?", async () => {
+            window.showConfirm("Limpiar", "¿Borrar gráficos y nombres personalizados para todos los jugadores?", async () => {
                 await set(ref(db, `artifacts/${appId}/public/data/config_maestra`), null);
                 location.reload();
             });
@@ -1331,11 +1345,11 @@
         window.marcarPagado = async (key) => { await update(ref(db, `artifacts/${appId}/public/data/retiros_pendientes/${key}`), { estado: 'pagado' }); };
 
         // --- MODALES ---
-        function showProcessing(msg) { document.getElementById('modal-title').innerText = "Procesando"; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = ''; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
-        function closeProcessing() { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); }
-        function showAlert(t, d) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="w-full bg-[var(--tg-primary)] text-black font-bold p-3 rounded-xl cursor-pointer">Entendido</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
-        function showConfirm(t, d, cb) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold text-white cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-green-600 p-3 rounded-xl font-bold text-white cursor-pointer">Aceptar</button>`; document.getElementById('modal-ok').onclick = () => { closeModal(); cb(); }; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
-        function showPrompt(t, d, cb, isPassword = false) { 
+        window.showProcessing = (msg) => { document.getElementById('modal-title').innerText = "Procesando"; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = ''; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
+        window.closeProcessing = () => { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); };
+        window.showAlert = (t, d) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="w-full bg-[var(--tg-primary)] text-black font-bold p-3 rounded-xl cursor-pointer">Entendido</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
+        window.showConfirm = (t, d, cb) => { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerHTML = d; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold text-white cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-green-600 p-3 rounded-xl font-bold text-white cursor-pointer">Aceptar</button>`; document.getElementById('modal-ok').onclick = () => { window.closeModal(); cb(); }; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); };
+        window.showPrompt = (t, d, cb, isPassword = false) => { 
             document.getElementById('modal-title').innerText = t; 
             document.getElementById('modal-desc').innerHTML = d; 
             const inp = document.getElementById('modal-input'); 
@@ -1343,15 +1357,15 @@
             inp.value = ''; 
             inp.type = isPassword ? 'password' : 'text';
             document.getElementById('modal-buttons').innerHTML = `<button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl text-white font-bold cursor-pointer">Cancelar</button><button id="modal-ok" class="flex-1 bg-[var(--tg-primary)] text-black p-3 rounded-xl font-bold cursor-pointer">Aceptar</button>`; 
-            document.getElementById('modal-ok').onclick = () => { const v = inp.value; closeModal(); cb(v); }; 
+            document.getElementById('modal-ok').onclick = () => { const v = inp.value; window.closeModal(); cb(v); }; 
             document.getElementById('custom-modal').classList.remove('hidden'); 
             document.getElementById('custom-modal').classList.add('flex'); 
-        }
+        };
         window.closeModal = () => { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); };
-        window.closeResult = () => { document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex'); nav('menu'); };
+        window.closeResult = () => { document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex'); window.nav('menu'); };
 
-        updateHeader(); updateBalancesUI();
-        // NOTA: La navegación inicial (Reglamento o Menú) ahora se maneja en processSplashScreen()
+        window.updateHeader(); 
+        window.updateBalancesUI();
 
     </script>
 </body>
