@@ -1261,7 +1261,16 @@
         };
 
         window.saveAdminSettings = async () => {
-            if (!localState.userConnected) return window.showAlert("Error", "No conectado a la DB.");
+            // Intentar forzar conexión si no está conectado
+            if (!localState.userConnected) {
+                try {
+                    await signInAnonymously(auth);
+                    localState.userConnected = true;
+                } catch(e) {
+                    return window.showAlert("Error de Base de Datos", "No estás conectado a Firebase.<br><br><span class='text-xs text-yellow-400'>Solución obligatoria: Ve a Firebase Console > Authentication > Settings > Authorized Domains y agrega la URL de tu juego en Vercel.</span>");
+                }
+            }
+            
             const newConfig = {
                 bannerUrl: document.getElementById('sec-banner').value || "",
                 mangaNames: [
@@ -1310,9 +1319,39 @@
             window.updateEstabloUI();
         };
 
-        window.handleFileUpload = (e, key) => { const r = new FileReader(); r.onload = ev => globalConfig[key] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
-        window.handleHorseUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customHorseImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
-        window.handleBullUpload = (e, idx) => { const r = new FileReader(); r.onload = ev => globalConfig.customBullImgs[idx] = ev.target.result; r.readAsDataURL(e.target.files[0]); };
+        // --- OPTIMIZADOR DE IMÁGENES (EVITA COLAPSAR LA BASE DE DATOS) ---
+        function resizeImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_SIZE = 256; // Comprime la imagen para no saturar Firebase
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height && width > MAX_SIZE) {
+                        height *= MAX_SIZE / width;
+                        width = MAX_SIZE;
+                    } else if (height > MAX_SIZE) {
+                        width *= MAX_SIZE / height;
+                        height = MAX_SIZE;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/png'));
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        window.handleFileUpload = (e, key) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig[key] = res); };
+        window.handleHorseUpload = (e, idx) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig.customHorseImgs[idx] = res); };
+        window.handleBullUpload = (e, idx) => { if(e.target.files[0]) resizeImage(e.target.files[0], res => globalConfig.customBullImgs[idx] = res); };
 
         window.clearMods = async () => {
             window.showConfirm("Limpiar", "¿Borrar gráficos y nombres personalizados para todos los jugadores?", async () => {
