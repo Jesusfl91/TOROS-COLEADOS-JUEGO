@@ -1,99 +1,1387 @@
-import { TonClient, WalletContractV4, internal } from '@ton/ton';
-import { mnemonicToPrivateKey } from 'ton-crypto';
-import admin from 'firebase-admin';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toros Coleados: DApp Edition</title>
+    <!-- CDN Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- SDK TON Connect -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:ital,wght@0,800;1,900&display=swap');
 
-// Inicializamos Firebase Admin (Solo se inicializa una vez)
-if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY))
-    });
-}
+        :root {
+            /* Paleta Venezuela Dark + TON */
+            --tg-bg: #090e17; 
+            --tg-surface: #131c31; 
+            --tg-border: #233154; 
+            
+            --vzla-yellow: #FFCC00;
+            --vzla-blue: #00247D;
+            --vzla-red: #CF142B;
+            --ton-blue: #0098EA; /* TON Diamond Blue */
 
-const db = admin.firestore();
+            --tg-primary: var(--vzla-yellow);
+            --tg-text: #ffffff;
+            --tg-text-sec: #94a3b8;
+            
+            /* Manga (Tierra) */
+            --manga-bg: #2b1d14; 
+            --talanquera: #1a110b; 
+        }
 
-export default async function handler(req, res) {
-    // Validar que solo se acepten peticiones POST
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
-    }
+        body {
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--tg-bg);
+            color: var(--tg-text);
+            overflow: hidden;
+            touch-action: none;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    const { userId } = req.body;
-    
-    // Configuración del juego
-    const TASA_CONVERSION = 1000; // 1000 puntos = 1 TON
-    const PUNTOS_MINIMOS = 100;
+        .font-display {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+        }
 
-    try {
-        const userRef = db.collection('usuarios').doc(userId);
+        /* Utilidades UI */
+        .tg-card {
+            background-color: var(--tg-surface);
+            border: 1px solid var(--tg-border);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
 
-        // PASO 1: Transacción Atómica de Firebase para evitar Doble Gasto
-        const txResult = await db.runTransaction(async (transaction) => {
-            const doc = await transaction.get(userRef);
-            if (!doc.exists) throw new Error('Usuario no encontrado en los registros.');
+        .tg-input {
+            background-color: var(--tg-bg);
+            border: 1px solid var(--tg-border);
+            color: var(--tg-text);
+            border-radius: 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .tg-input:focus {
+            outline: none;
+            border-color: var(--ton-blue);
+            box-shadow: 0 0 0 2px rgba(0, 152, 234, 0.2);
+        }
 
-            const data = doc.data();
-            const puntosActuales = data.puntos_acumulados || 0;
-            const walletUsuario = data.wallet;
+        .tg-btn-primary {
+            background-color: var(--tg-primary);
+            color: #000000;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.1s active, filter 0.2s;
+        }
+        .tg-btn-primary:active { transform: scale(0.97); }
+        .tg-btn-primary:hover { filter: brightness(1.1); }
 
-            if (!walletUsuario) throw new Error('El usuario no tiene una wallet registrada.');
-            if (puntosActuales < PUNTOS_MINIMOS) throw new Error('No hay puntos suficientes para reclamar.');
+        .tg-btn-secondary {
+            background-color: var(--vzla-blue);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #1a3c9e;
+            transition: transform 0.1s active, background-color 0.2s;
+        }
+        .tg-btn-secondary:active { transform: scale(0.97); }
 
-            // Calcular el monto en TON a enviar
-            const montoTon = (puntosActuales / TASA_CONVERSION).toString();
+        .tg-btn-ton {
+            background-color: var(--ton-blue);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.1s active, filter 0.2s;
+            box-shadow: 0 0 15px rgba(0, 152, 234, 0.4);
+        }
+        .tg-btn-ton:active { transform: scale(0.97); }
+        .tg-btn-ton:disabled { background-color: #334155; box-shadow: none; color: #94a3b8; }
 
-            // Restamos los puntos en Firebase INMEDIATAMENTE
-            transaction.update(userRef, {
-                puntos_acumulados: 0
+        /* Botão Competição Online (Azul Transparente) */
+        .tg-btn-duelo {
+            background-color: rgba(0, 152, 234, 0.1);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid var(--ton-blue);
+            font-weight: 800;
+            transition: transform 0.1s active, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: inset 0 0 15px rgba(0, 152, 234, 0.15), 0 0 15px rgba(0, 152, 234, 0.3);
+        }
+        .tg-btn-duelo:active { transform: scale(0.97); box-shadow: inset 0 0 10px rgba(0, 152, 234, 0.1), 0 0 10px rgba(0, 152, 234, 0.2); }
+        .tg-btn-duelo:hover { background-color: rgba(0, 152, 234, 0.2); }
+
+        /* Estética de la Manga */
+        .manga-track {
+            background-color: var(--manga-bg);
+            background-image: radial-gradient(#1c110a 15%, transparent 16%), radial-gradient(#1c110a 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .talanquera {
+            background-color: var(--talanquera);
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.4) 40px, rgba(0,0,0,0.4) 45px);
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+
+        /* Animaciones */
+        @keyframes gallop { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(-2deg); } }
+        @keyframes run-bull { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px) rotate(2deg); } }
+        .anim-gallop { animation: gallop 0.4s infinite; }
+        .anim-bull { animation: run-bull 0.5s infinite; }
+        @keyframes scroll-dirt { from { background-position: 0 0, 10px 10px; } to { background-position: -40px 0, -30px 10px; } }
+        .manga-scrolling { animation: scroll-dirt 0.3s linear infinite; }
+        @keyframes campanilla-fall { 0% { transform: translateY(0) rotate(0deg); } 30% { transform: translateY(-40px) rotate(-180deg); } 60% { transform: translateY(-10px) rotate(-270deg); } 100% { transform: translateY(30px) rotate(-360deg); opacity: 0.8; filter: grayscale(40%) brightness(70%); } }
+        @keyframes costado-fall { 0% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(-45deg); } 100% { transform: translateY(30px) rotate(-90deg); opacity: 0.8; filter: grayscale(40%) brightness(70%); } }
+        @keyframes nulo-escape { 0% { transform: translateX(0); } 100% { transform: translateX(200px); opacity: 0; } }
+
+        .action-filo { animation: campanilla-fall 1s forwards; }
+        .action-costado { animation: costado-fall 0.8s forwards; }
+        .action-nulo { animation: nulo-escape 1s forwards; }
+
+        .hit-zone { position: absolute; top: 50%; transform: translateY(-50%); height: 60px; border-radius: 50px; border: 2px dashed rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--tg-border); border-radius: 10px; }
+        .custom-scrollbar-light::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar-light::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
+        
+        #ton-connect { display: flex; justify-content: center; }
+    </style>
+</head>
+<body class="h-screen w-screen flex justify-center items-center bg-[var(--tg-bg)]">
+
+    <!-- Main Container -->
+    <div id="app" class="w-full max-w-md h-full bg-[var(--tg-bg)] text-white relative overflow-hidden flex flex-col sm:border sm:border-[var(--tg-border)] sm:rounded-[2rem] shadow-2xl">
+        
+        <!-- Franja Tricolor Vzla -->
+        <div class="h-1.5 w-full flex shrink-0">
+            <div class="flex-1 bg-[var(--vzla-yellow)]"></div>
+            <div class="flex-1 bg-[var(--vzla-blue)]"></div>
+            <div class="flex-1 bg-[var(--vzla-red)]"></div>
+        </div>
+
+        <!-- Header -->
+        <header id="app-header" class="bg-[var(--tg-surface)]/90 backdrop-blur-md p-3 sm:p-4 flex justify-between items-center z-20 border-b border-[var(--tg-border)]">
+            <div class="flex flex-col ml-1">
+                <span class="text-[10px] uppercase tracking-wider text-[var(--tg-primary)] font-bold">Coleador</span>
+                <span id="ui-nickname" class="font-bold font-display truncate w-24 sm:w-32 text-base tracking-tight">Cargando...</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Botón de Bóveda Arriba -->
+                <button onclick="nav('boveda')" class="flex items-center gap-1.5 bg-green-500/10 border border-green-500/30 px-3 py-1.5 sm:py-2 rounded-xl hover:bg-green-500/20 transition active:scale-95 shadow-sm">
+                    <i class="fa-solid fa-vault text-green-400 text-sm"></i>
+                    <span id="header-puntos-boveda" class="font-bold font-display text-green-400 text-sm sm:text-base">0 pts</span>
+                </button>
+                
+                <!-- Botón de Billetera Arriba -->
+                <button onclick="openWallet()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--ton-blue)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:bg-[var(--tg-border)] transition active:scale-95 shrink-0">
+                    <i class="fa-solid fa-wallet text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Screens Container -->
+        <main class="flex-1 relative overflow-y-auto custom-scrollbar bg-[var(--tg-bg)]">
+            
+            <!-- 0. TERMS AND CONDITIONS -->
+            <section id="screen-reglamento" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-50">
+                <div class="w-full bg-[#fdf6e3] text-[#271c19] p-6 sm:p-8 rounded shadow-[0_0_30px_rgba(0,0,0,0.8)] border-4 border-[#8b5a2b] bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] relative">
+                    <h2 class="font-display font-black text-2xl text-center mb-4 text-[#5c3a21] border-b-2 border-[#8b5a2b] pb-2">Reglamento de la Manga</h2>
+                    <div class="space-y-4 text-sm font-medium leading-relaxed max-h-[50vh] overflow-y-auto pr-3 custom-scrollbar-light">
+                        <p>¡Bienvenido, Coleador! Antes de apretar la cincha y salir al coso, debe aceptar las reglas:</p>
+                        <ul class="list-disc pl-5 space-y-3">
+                            <li><b>Habilidad Técnica:</b> El resultado depende de su precisión (Power-Timing).</li>
+                            <li><b>Pagos Web3 (TON):</b> El Duelo Online se paga con criptomoneda TON de forma directa e irreversible. La Federación cobra una comisión por mantenimiento tecnológico del servidor global.</li>
+                            <li><b>Bóveda de Puntos:</b> Acumula puntos jugando y cámbialos por TON a tu billetera conectada al llegar a 5000 puntos.</li>
+                            <li><b>Conexión:</b> No nos hacemos responsables por fallas de internet. Una vez enviada la transacción a la blockchain, no hay devoluciones.</li>
+                            <li><b>Mayoría de Edad:</b> Solo se permite la entrada a mayores de 18 años. Juegue con gallardía.</li>
+                        </ul>
+                    </div>
+                    <button onclick="acceptTerms()" class="mt-6 w-full bg-[#8b5a2b] hover:bg-[#5c3a21] text-[#fdf6e3] p-4 font-bold text-lg rounded shadow-lg transition-transform active:scale-95 border-2 border-[#3e2723]">
+                        ¡Acepto, Suéltenme el Toro! 🐂
+                    </button>
+                </div>
+            </section>
+
+            <!-- 1. START MENU -->
+            <section id="screen-menu" class="relative w-full min-h-full hidden flex-col items-center pt-8 pb-10 px-5 bg-[radial-gradient(ellipse_at_top,_var(--tg-surface)_0%,_var(--tg-bg)_100%)]">
+                
+                <!-- Candado Admin (Súper Escondido) -->
+                <button onclick="requestAdminAccess()" class="absolute bottom-2 right-2 text-white opacity-5 hover:opacity-20 transition p-4 z-50 outline-none">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                </button>
+
+                <div class="text-center mb-6 mt-2">
+                    <h1 class="font-display font-black text-5xl leading-none text-white tracking-tighter mb-2">
+                        TOROS<br><span class="text-[var(--tg-primary)]">COLEADOS</span>
+                    </h1>
+                    <div class="flex justify-center gap-1.5 text-white mt-3 opacity-90 drop-shadow-md">
+                        <i class="fa-solid fa-star text-[10px]"></i>
+                        <i class="fa-solid fa-star text-[12px] -translate-y-1"></i>
+                        <i class="fa-solid fa-star text-[14px] -translate-y-2"></i>
+                        <i class="fa-solid fa-star text-[16px] -translate-y-3"></i>
+                        <i class="fa-solid fa-star text-[16px] -translate-y-3"></i>
+                        <i class="fa-solid fa-star text-[14px] -translate-y-2"></i>
+                        <i class="fa-solid fa-star text-[12px] -translate-y-1"></i>
+                        <i class="fa-solid fa-star text-[10px]"></i>
+                    </div>
+                </div>
+
+                <!-- Perfil del Coleador (Solo visual, no pide escribir cada vez) -->
+                <div id="menu-nickname-display" class="w-full tg-card p-4 mb-6 border-t-2 border-t-[var(--vzla-blue)] mt-4 flex justify-between items-center">
+                    <div>
+                        <span class="block text-[10px] text-[var(--tg-text-sec)] uppercase tracking-wider font-bold mb-0.5">Apodo del Coleador</span>
+                        <span class="font-bold text-lg text-white" id="menu-nickname-text">Cargando...</span>
+                    </div>
+                    <button onclick="toggleNicknameEdit()" class="bg-[var(--tg-bg)] border border-[var(--tg-border)] text-[var(--tg-text-sec)] w-10 h-10 rounded-full flex items-center justify-center shadow-inner hover:text-white hover:bg-[var(--tg-border)] transition active:scale-95">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </div>
+
+                <!-- Modo Edición (Oculto por defecto) -->
+                <div id="menu-nickname-edit" class="w-full tg-card p-4 mb-6 border-t-2 border-t-[var(--vzla-blue)] mt-4 hidden">
+                    <label class="block text-xs font-semibold text-[var(--tg-text-sec)] mb-2 text-center uppercase tracking-wider">Ingresa tu Apodo</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="input-nickname" placeholder="Ej. El Centauro" class="w-full p-3 tg-input text-center font-bold text-base" onkeypress="if(event.key === 'Enter') saveAndCloseNickname()">
+                        <button onclick="saveAndCloseNickname()" class="bg-[var(--tg-primary)] text-black px-4 rounded-xl font-bold active:scale-95 transition shadow-md">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="w-full mt-auto space-y-3">
+                    <button onclick="nav('career')" class="w-full tg-btn-primary p-4 flex items-center justify-center gap-3 text-lg shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                        <i class="fa-solid fa-horse-head"></i> Copa Virtual (Gratis)
+                    </button>
+                    
+                    <button onclick="nav('multiplayer')" class="w-full tg-btn-duelo p-4 flex items-center justify-center gap-3 text-lg relative overflow-hidden">
+                        <i class="fa-solid fa-users text-[var(--ton-blue)] text-xl"></i>
+                        <span class="font-black uppercase tracking-widest text-sm drop-shadow-md text-white">Competición Online</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="nav('ranking')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
+                            <i class="fa-solid fa-trophy text-[var(--tg-primary)] text-xl"></i> 
+                            <span class="font-semibold">Ranking</span>
+                        </button>
+                        <button onclick="nav('instructions')" class="bg-[var(--tg-surface)] border border-[var(--tg-border)] text-white rounded-xl p-4 text-sm flex flex-col items-center gap-2 hover:bg-[var(--tg-border)] transition active:scale-95">
+                            <i class="fa-solid fa-book-open text-[var(--vzla-blue)] text-xl"></i> 
+                            <span class="font-semibold">Instrucciones</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1.05 BOVEDA SCREEN -->
+            <section id="screen-boveda" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Mi Bóveda</h2>
+                </div>
+                
+                <div class="tg-card p-6 mb-6 text-center border-t-2 border-t-green-500 relative overflow-hidden flex flex-col items-center">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-40 bg-green-500/10 blur-3xl rounded-full"></div>
+                    
+                    <p class="text-[var(--tg-text-sec)] text-xs font-bold uppercase tracking-widest mb-2 relative z-10">Puntos Acumulados</p>
+                    <p id="boveda-puntos" class="text-7xl font-display font-black text-green-400 mb-2 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">0</p>
+                    
+                    <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] px-4 py-2 rounded-full mt-2 mb-6 relative z-10">
+                        <p class="text-white font-semibold text-sm">Equivale a: <span id="boveda-ton" class="text-[var(--ton-blue)] font-bold text-base ml-1">0.00 <i class="fa-solid fa-gem text-xs"></i> TON</span></p>
+                    </div>
+
+                    <div class="w-full bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-border)] text-left text-xs text-[var(--tg-text-sec)] mb-6 space-y-3">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-info text-[var(--ton-blue)] mt-0.5"></i> 
+                            <p><b>Tasa de cambio:</b> Juega en la Manga y gana competiciones para acumular puntos. 1000 puntos equivalen a 1 TON.</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-[var(--vzla-yellow)] mt-0.5"></i> 
+                            <p><b>Retiro mínimo:</b> Debes acumular al menos <b>5000 pts</b> para habilitar el retiro a tu billetera.</p>
+                        </div>
+                    </div>
+
+                    <button id="btn-reclamar-boveda" onclick="reclamarPuntos()" class="w-full tg-btn-ton p-4 text-lg font-bold flex items-center justify-center gap-3 relative z-10">
+                        <i class="fa-solid fa-hand-holding-dollar text-xl"></i> Solicitar Retiro a mi Wallet
+                    </button>
+                </div>
+
+                <div class="mt-auto text-center">
+                    <p class="text-[10px] text-[var(--tg-text-sec)]">El administrador validará y enviará los fondos a la dirección de tu billetera TON.</p>
+                </div>
+            </section>
+
+            <!-- 1.1 WALLET SCREEN -->
+            <section id="screen-wallet" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-8">
+                    <button onclick="nav('menu')" class="text-[var(--ton-blue)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Tu Billetera</h2>
+                </div>
+                
+                <div class="tg-card p-8 mb-6 text-center border-t-2 border-t-[var(--ton-blue)] relative overflow-hidden flex flex-col items-center">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-[var(--ton-blue)]/10 blur-3xl rounded-full"></div>
+                    
+                    <i class="fa-solid fa-wallet text-5xl text-[var(--ton-blue)] mb-4 relative z-10 drop-shadow-lg"></i>
+                    <p class="text-white font-bold text-lg mb-2 relative z-10">Billetera TON Network</p>
+                    <p class="text-xs text-[var(--tg-text-sec)] relative z-10 mb-8 px-2">Conecta tu billetera para poder pagar las inscripciones de los duelos y recibir tus ganancias.</p>
+                    
+                    <div id="ton-connect" class="relative z-10 scale-110 origin-top"></div>
+                </div>
+
+                <div class="mt-auto bg-[var(--tg-surface)] p-5 rounded-2xl border border-[var(--tg-border)] shadow-inner">
+                    <h4 class="text-[var(--vzla-yellow)] font-bold text-sm mb-2"><i class="fa-solid fa-circle-info"></i> Información de Pagos</h4>
+                    <p class="text-xs text-[var(--tg-text-sec)] leading-relaxed">
+                        Al retirar de tu Bóveda, el Juez de Mesa utilizará la dirección de la billetera conectada aquí para transferir tus ganancias reales en TON.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 1.2 INSTRUCTIONS SCREEN -->
+            <section id="screen-instructions" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Instrucciones</h2>
+                </div>
+                <div class="tg-card p-6 mb-6 text-sm text-[var(--tg-text-sec)] space-y-4">
+                    <p><strong class="text-white">Objetivo:</strong> Tienes 4 turnos por manga. Tu caballo galopará hacia el toro. Presiona <b class="text-white">"COLEAR"</b> cuando estés sobre las zonas de acierto.</p>
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div><strong class="text-green-400">Filo de Lomo (20 Pts)</strong></div>
+                        <p class="text-xs">Acierta en la zona verde estrecha del centro. El toro da una voltereta completa en el aire.</p>
+                    </div>
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-[var(--tg-primary)] shadow-[0_0_10px_var(--tg-primary)]"></div><strong class="text-[var(--tg-primary)]">Costado (10 Pts)</strong></div>
+                        <p class="text-xs">Acierta en la zona amarilla exterior. El toro cae de lado, sumando menos puntos.</p>
+                    </div>
+                    <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                        <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-[var(--vzla-red)]"></div><strong class="text-[var(--vzla-red)]">Nulo (0 Pts)</strong></div>
+                        <p class="text-xs">Se produce si presionas muy pronto, muy tarde, o si dejas pasar al toro.</p>
+                    </div>
+                </div>
+                <button onclick="nav('menu')" class="mt-auto w-full tg-btn-primary p-4 text-lg font-bold">¡Entendido!</button>
+            </section>
+
+            <!-- 1.3 INSTRUCTIONS WALLET / DUELO SCREEN -->
+            <section id="screen-instructions-ton" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('multiplayer')" class="text-[var(--ton-blue)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-xl ml-2 tracking-tight text-white">Guía de Competición</h2>
+                </div>
+                <div class="tg-card p-6 mb-6 text-sm text-[var(--tg-text-sec)] space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                    <h3 class="text-[var(--tg-primary)] font-bold text-center text-lg mb-2">🚩 ¡BIENVENIDO A LA MANGA! 🏇💨</h3>
+                    <p class="text-center text-white font-semibold mb-4 border-b border-[var(--tg-border)] pb-4">Competición de 4 Coleadores - Apuestas en TON</p>
+
+                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)]">
+                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">1. Prepara tu Billetera TON 💰</h4>
+                        <p class="text-xs space-y-2">Este juego funciona con TON. Conéctala en el Menú Principal.</p>
+                    </div>
+                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
+                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">2. Paga la Inscripción 🎫</h4>
+                        <p class="text-xs space-y-2">Al pulsar "Competición Online", aprobarás el pago desde tu billetera hacia la Federación. Entrarás a la sala de espera.</p>
+                    </div>
+                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
+                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">3. Gana Puntos en tu Bóveda 🏦</h4>
+                        <p class="text-xs space-y-2">El Pote Neto se reparte y se convierte en <b>Puntos en tu Bóveda (1 TON = 1000 pts)</b>.</p>
+                    </div>
+                    <div class="bg-[var(--tg-bg)] p-4 rounded-lg border border-[var(--tg-border)] mt-4">
+                        <h4 class="text-[var(--ton-blue)] font-bold mb-2">4. Retira tus Ganancias 💸</h4>
+                        <p class="text-xs space-y-2">Al acumular <b>5000 puntos</b>, ve a "Mi Bóveda" y solicita el retiro. El administrador enviará los TON a tu wallet registrada.</p>
+                    </div>
+                </div>
+                <button onclick="nav('multiplayer')" class="mt-auto w-full tg-btn-ton p-4 text-lg font-bold shadow-[0_0_15px_rgba(0,152,234,0.3)]">¡Entendido, al ruedo!</button>
+            </section>
+
+            <!-- 2. CAREER MODE -->
+            <section id="screen-career" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-8">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Copa Virtual</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group" onclick="prepGame('career', 1)">
+                        <div><span class="text-[var(--tg-primary)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 1</span><h3 id="ui-manga-1" class="font-bold text-lg text-white">Toros en mi Pueblo</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Toros Novillos • Básica</p></div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
+                    </div>
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-blue)]" onclick="prepGame('career', 2)">
+                        <div><span class="text-[var(--vzla-blue)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Etapa 2</span><h3 id="ui-manga-2" class="font-bold text-lg text-white">Copa en Maracay</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Toro Cebú • Media</p></div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
+                    </div>
+                    <div class="tg-card p-5 cursor-pointer hover:border-[var(--tg-primary)] transition-colors flex justify-between items-center group border-l-4 border-l-[var(--vzla-red)]" onclick="prepGame('career', 3)">
+                        <div><span class="text-[var(--vzla-red)] text-[10px] font-bold uppercase tracking-wider mb-1 block">Final</span><h3 id="ui-manga-3" class="font-bold text-lg text-white">Camp. Barquisimeto</h3><p class="text-xs text-[var(--tg-text-sec)] mt-1">Padrote Rebelde • Extrema</p></div>
+                        <div class="bg-[var(--tg-bg)] border border-[var(--tg-border)] w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-[var(--tg-primary)] group-hover:text-black transition-colors"><i class="fa-solid fa-play text-sm"></i></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MULTIPLAYER SETUP -->
+            <section id="screen-multiplayer" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Competición Online</h2>
+                </div>
+
+                <button onclick="nav('instructions-ton')" class="mb-5 w-full bg-[var(--tg-bg)] border border-[var(--ton-blue)] text-white rounded-xl p-3 text-sm flex justify-center items-center gap-2 hover:bg-[var(--tg-surface)] transition active:scale-95 shadow-inner">
+                    <i class="fa-solid fa-circle-question text-[var(--ton-blue)] text-lg"></i>
+                    <span class="font-semibold text-gray-200">Guía: ¿Cómo conectar y apostar?</span>
+                </button>
+                
+                <div class="tg-card p-6 mb-6 border-t-2 border-t-[var(--ton-blue)]">
+                    <h3 class="font-bold text-lg text-center mb-5 text-white">Bolsa de Recompensas</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3">
+                            <span class="text-[var(--tg-text-sec)]">Entrada p/p:</span>
+                            <span class="font-semibold text-white"><span id="mp-fee">0.1</span> <i class="fa-solid fa-gem text-[var(--ton-blue)] text-xs"></i> TON</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-[var(--tg-border)] pb-3 text-[var(--vzla-red)]">
+                            <span>Comisión Juez (<span id="mp-com-perc">10</span>%):</span>
+                            <span>-<span id="mp-com-val">0.04</span> TON</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="font-bold text-green-400 uppercase tracking-wide text-xs">Pote a Repartir:</span>
+                            <span class="font-bold text-green-400 text-xl"><span id="mp-pool">0.36</span> <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-[var(--tg-primary)]">1ro</span><span id="mp-1st" class="text-white font-bold">252 pts</span></div>
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-gray-300">2do</span><span id="mp-2nd" class="text-white font-bold">72 pts</span></div>
+                            <div class="bg-[var(--tg-bg)] p-2 rounded border border-[var(--tg-border)]"><span class="block font-bold text-orange-400">3ro</span><span id="mp-3rd" class="text-white font-bold">36 pts</span></div>
+                        </div>
+                        <p class="text-[10px] text-center text-[var(--tg-text-sec)] mt-2">Los premios se abonarán como Puntos en tu Bóveda.</p>
+                    </div>
+                </div>
+
+                <button id="btn-pay-ton" onclick="initiateTONPayment()" class="mt-auto w-full tg-btn-ton p-4 text-lg flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(0,152,234,0.3)]">
+                    <i class="fa-solid fa-wallet"></i> Pagar y Buscar Partida
+                </button>
+            </section>
+
+            <!-- 3.5 MATCHMAKING LOBBY -->
+            <section id="screen-lobby" class="relative w-full min-h-full hidden flex-col justify-center items-center py-10 px-5 bg-[var(--tg-bg)] z-30">
+                <button onclick="cancelLobby()" class="absolute top-4 left-4 z-50 text-[var(--vzla-red)] hover:text-white font-bold text-xs tracking-widest uppercase transition-all p-2.5 bg-[var(--tg-bg)] rounded-xl border border-[var(--vzla-red)]/30 shadow-md active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Salir de la Sala
+                </button>
+
+                <div class="w-full tg-card p-6 border-[var(--ton-blue)]/30 shadow-[0_0_30px_rgba(0,152,234,0.1)] mt-10">
+                    <div class="text-center mb-6">
+                        <div class="inline-block p-3 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full mb-3 animate-pulse">
+                            <i class="fa-solid fa-satellite-dish text-[var(--ton-blue)] text-xl"></i>
+                        </div>
+                        <h2 class="font-display text-xl text-white tracking-tight">Sala de Espera</h2>
+                        <p class="text-xs text-[var(--tg-text-sec)] mt-1">Esperando oponentes con pago validado...</p>
+                    </div>
+                    
+                    <div id="lobby-slots" class="space-y-3 text-sm mb-6"></div>
+
+                    <div class="bg-[var(--tg-bg)] rounded-xl p-4 text-center border border-[var(--tg-border)]">
+                        <p class="text-[var(--tg-text-sec)] text-[10px] mb-1 uppercase tracking-widest font-semibold">Coleadores Listos</p>
+                        <div class="flex justify-center items-baseline gap-1">
+                            <span id="lobby-count" class="text-4xl font-display font-bold text-[var(--ton-blue)]">1</span>
+                            <span class="text-[var(--tg-text-sec)] text-sm">/ 4</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ESTABLO Y CORRAL (PRE-MATCH) -->
+            <section id="screen-establo" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5 z-10">
+                <div class="flex items-center mb-6">
+                    <button onclick="navigateBackFromEstablo()" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Preparación</h2>
+                </div>
+                
+                <div class="tg-card p-6 my-auto border-t-2 border-t-[var(--tg-primary)]">
+                    <div class="flex justify-between items-center mb-6 border-b border-[var(--tg-border)] pb-6">
+                        <button onclick="changeHorse(-1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-left text-sm text-[var(--tg-primary)]"></i></button>
+                        <div class="text-center flex flex-col items-center px-2">
+                            <div id="est-horse-emoji" class="text-6xl mb-2 drop-shadow-md"></div>
+                            <h4 id="est-horse-name" class="font-bold text-white text-lg tracking-tight">Criollo Llanero</h4>
+                        </div>
+                        <button onclick="changeHorse(1)" class="w-10 h-10 bg-[var(--tg-bg)] border border-[var(--tg-border)] rounded-full flex items-center justify-center hover:bg-[var(--tg-border)] transition active:scale-95"><i class="fa-solid fa-chevron-right text-sm text-[var(--tg-primary)]"></i></button>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-[10px] font-semibold text-[var(--tg-text-sec)] mb-2 uppercase tracking-wider text-center">Bautiza a tu montura</label>
+                        <input type="text" id="input-horsename" placeholder="Ej. Marlboro" class="w-full p-3 tg-input text-center font-semibold text-base" onchange="saveHorseName()">
+                    </div>
+
+                    <div class="space-y-4 text-xs font-semibold">
+                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Fuerza</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-fue" class="h-full bg-[var(--vzla-red)] transition-all duration-500 w-[50%]"></div></div><span id="est-val-fue" class="w-4 text-right text-white">5</span></div>
+                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Veloc.</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-vel" class="h-full bg-[var(--vzla-blue)] transition-all duration-500 w-[70%]"></div></div><span id="est-val-vel" class="w-4 text-right text-white">7</span></div>
+                        <div class="flex items-center gap-3"><span class="w-16 text-[var(--tg-text-sec)] uppercase tracking-wider">Estabil.</span><div class="flex-1 h-2 bg-[var(--tg-bg)] rounded-full overflow-hidden border border-[var(--tg-border)]"><div id="est-bar-est" class="h-full bg-green-500 transition-all duration-500 w-[90%]"></div></div><span id="est-val-est" class="w-4 text-right text-white">9</span></div>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="mt-6 w-full tg-btn-primary p-4 text-lg flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                    A la Manga <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <!-- 5. SECRET ADMIN PANEL (PUERTA TRASERA TON) -->
+            <section id="screen-secret-admin" class="relative w-full min-h-full hidden flex-col pt-8 pb-16 px-5 z-[60]">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight text-[var(--tg-primary)]">Modo Máster</h2>
+                </div>
+                
+                <div class="space-y-5">
+                    
+                    <!-- NUEVA SECCIÓN DE RETIROS PENDIENTES -->
+                    <div class="tg-card p-5 border-t-4 border-t-green-500">
+                        <h3 class="font-semibold text-sm text-green-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer mr-1"></i> Retiros Pendientes</h3>
+                        <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)] mb-3 text-[10px] text-[var(--tg-text-sec)]">
+                            Los jugadores que soliciten canjear sus 5000 puntos aparecerán aquí para que les transfieras los TON desde tu billetera a la de ellos manualmente.
+                        </div>
+                        <div id="admin-retiros-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                            <p class="text-xs text-[var(--tg-text-sec)] text-center">Cargando retiros...</p>
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 border-t-4 border-t-[var(--ton-blue)]">
+                        <h3 class="font-semibold text-sm text-[var(--ton-blue)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-gem mr-1"></i> Configuración Economía</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Precio de Entrada (TON):</label>
+                                <input type="number" step="0.01" id="sec-ton-fee" class="w-full p-3 tg-input" placeholder="0.1">
+                            </div>
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">% Comisión Tuya de cada Competición:</label>
+                                <input type="number" id="sec-com" min="0" max="100" class="w-full p-3 tg-input">
+                            </div>
+                            <div class="flex items-center justify-between bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <span class="text-xs font-semibold">Inscripciones Abiertas:</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                  <input type="checkbox" id="sec-ton-open" class="sr-only peer" checked>
+                                  <div class="w-11 h-6 bg-[#334155] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--ton-blue)]"></div>
+                                </label>
+                            </div>
+                            <button onclick="saveTonConfig()" class="w-full mt-2 bg-[var(--ton-blue)] hover:bg-[#007cbd] text-white p-3 rounded-xl font-bold transition active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(0,152,234,0.3)]">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Actualizar Servidor
+                            </button>
+                        </div>
+                        <button onclick="calculateCorteDeCaja()" class="w-full mt-4 bg-[var(--vzla-blue)] hover:bg-[#0033a0] text-white p-3 rounded-xl font-bold transition active:scale-95 flex items-center justify-center gap-2 border border-[#1a3c9e]">
+                            <i class="fa-solid fa-cash-register"></i> Ver Ganancias de Hoy
+                        </button>
+                    </div>
+
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-yellow)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-map-location mr-1"></i> Torneos</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="sec-m1" class="w-full p-3 tg-input" placeholder="Manga 1">
+                            <input type="text" id="sec-m2" class="w-full p-3 tg-input" placeholder="Manga 2">
+                            <input type="text" id="sec-m3" class="w-full p-3 tg-input" placeholder="Manga 3">
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 border-[var(--vzla-red)]/30">
+                        <h3 class="font-semibold text-sm text-red-500 mb-3 uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> Seguridad</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Contraseña Maestra:</label>
+                                <input type="text" id="sec-pwd" class="w-full p-3 tg-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs mb-1 text-[var(--tg-text-sec)]">Palabra de Recuperación:</label>
+                                <input type="text" id="sec-rec" class="w-full p-3 tg-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveAdminSettings()" class="w-full tg-btn-primary p-4 text-lg mt-4">Guardar Locals</button>
+                    <button onclick="nav('menu')" class="w-full tg-btn-secondary p-4 text-lg mt-2">Cerrar Panel</button>
+                </div>
+            </section>
+
+            <!-- 6. RANKING SCREEN -->
+            <section id="screen-ranking" class="relative w-full min-h-full hidden flex-col pt-8 pb-10 px-5">
+                <div class="flex items-center mb-6">
+                    <button onclick="nav('menu')" class="text-[var(--tg-primary)] p-2 rounded-full hover:bg-[var(--tg-surface)] transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-display text-2xl ml-2 tracking-tight">Top Coleadores</h2>
+                </div>
+                
+                <div class="tg-card overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-[var(--tg-bg)] text-[var(--tg-text-sec)] border-b border-[var(--tg-border)]">
+                            <tr>
+                                <th class="p-3 text-center w-12">#</th>
+                                <th class="p-3">Nombre</th>
+                                <th class="p-3 text-right">Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body" class="divide-y divide-[var(--tg-border)]"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 7. GAME SCREEN (LA MANGA) -->
+            <section id="screen-game" class="absolute inset-0 hidden flex flex-col bg-gradient-to-b from-[#1a110b] to-[var(--tg-bg)]">
+                <div class="h-16 bg-[var(--tg-surface)]/90 backdrop-blur-md border-b border-[var(--tg-border)] p-3 flex items-center justify-between z-10">
+                    <p id="locutor-text" class="text-xs font-semibold text-[var(--tg-primary)] italic text-center mx-2 line-clamp-2">"¡Atención, se abre el toril!"</p>
+                    <div class="text-right flex flex-col items-end">
+                        <span class="text-[10px] text-[var(--tg-text-sec)] font-semibold uppercase">Turno <span id="hud-turn" class="text-white">1/4</span></span>
+                        <span class="font-bold text-sm text-green-400"><span id="hud-score">0</span> Pts</span>
+                    </div>
+                </div>
+
+                <div class="flex-1 relative flex flex-col justify-between overflow-hidden">
+                    <div class="h-6 talanquera w-full relative z-0 opacity-80"></div> 
+                    <div id="manga-bg" class="flex-1 manga-track relative overflow-hidden">
+                        <div id="zone-costado" class="hit-zone border-[var(--tg-primary)]/40 bg-[var(--tg-primary)]/10" title="Costado"></div>
+                        <div id="zone-filo" class="hit-zone border-green-500/60 bg-green-500/20 z-0" title="Filo de Lomo"></div>
+                        <div id="game-entities" class="absolute inset-0 w-full h-full">
+                            <div id="pos-bull" class="absolute top-[52%] left-[55%] transform -translate-y-1/2 z-10"><div id="ent-bull" class="text-5xl anim-bull drop-shadow-lg flex items-center justify-center"></div></div>
+                            <div id="pos-horse" class="absolute top-1/2 left-[-20%] transform -translate-y-1/2 z-20"><div id="ent-horse" class="text-6xl anim-gallop drop-shadow-lg flex items-center justify-center"></div></div>
+                        </div>
+                        <div id="dust" class="absolute top-[60%] left-[55%] transform -translate-x-1/2 translate-y-4 w-32 h-12 bg-white/10 blur-xl rounded-full animate-pulse hidden z-0"></div>
+                    </div>
+                    <div class="h-8 talanquera w-full relative z-0 flex items-center justify-center opacity-80"></div> 
+                </div>
+
+                <div class="h-32 bg-[var(--tg-surface)] border-t border-[var(--tg-border)] p-5 flex flex-col justify-center items-center gap-3 relative z-10">
+                    <button id="btn-colear" class="w-full tg-btn-primary py-4 font-display font-black text-xl tracking-wide shadow-[0_0_15px_rgba(255,204,0,0.3)]">COLEAR</button>
+                </div>
+            </section>
+
+            <!-- 8. OVERLAYS -->
+            <div id="overlay-result" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-50 backdrop-blur-md">
+                <div class="w-full tg-card p-6 text-center border-t-4 border-t-[var(--tg-primary)] shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+                    <h2 id="res-title" class="font-display font-black text-3xl mb-2 text-white">Misión</h2>
+                    <p id="res-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Calculando...</p>
+                    <div id="res-mp-details" class="hidden mb-6 text-left bg-[var(--tg-bg)] rounded-xl p-4 border border-[var(--tg-border)] text-sm"></div>
+                    <button id="btn-result-action" onclick="closeResult()" class="w-full tg-btn-primary p-4 text-base">Continuar</button>
+                </div>
+            </div>
+
+            <!-- 9. CUSTOM MODAL -->
+            <div id="custom-modal" class="absolute inset-0 bg-[var(--tg-bg)]/80 hidden flex-col items-center justify-center p-5 z-[100] backdrop-blur-md">
+                <div class="tg-card w-full p-6 text-center shadow-2xl border-t-4 border-t-[var(--vzla-blue)]">
+                    <h2 id="modal-title" class="font-bold text-xl text-white mb-2">Atención</h2>
+                    <p id="modal-desc" class="text-[var(--tg-text-sec)] mb-6 text-sm">Contenido</p>
+                    <input type="text" id="modal-input" class="w-full p-3 tg-input text-center font-semibold mb-6 hidden">
+                    <div id="modal-buttons" class="flex gap-3 justify-center w-full"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Módulo Principal JS: Firebase y TON Connect -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, remove, get, onDisconnect, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // --- CREDENCIALES FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmvlnMlk1xC4sTHXfOvCfPVPFQzfVHgSY",
+            authDomain: "toros-coleados-pro.firebaseapp.com",
+            databaseURL: "https://toros-coleados-pro-default-rtdb.firebaseio.com", 
+            projectId: "toros-coleados-pro",
+            storageBucket: "toros-coleados-pro.firebasestorage.app",
+            messagingSenderId: "563546037351",
+            appId: "1:563546037351:web:6903515e92f03f14a388c2"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- INICIALIZACIÓN OFICIAL TELEGRAM ---
+        const tg = window.Telegram?.WebApp || null;
+        let tgUser = tg?.initDataUnsafe?.user || null;
+        if(tg) { tg.ready(); tg.expand(); }
+
+        let playerId = tgUser ? tgUser.id.toString() : localStorage.getItem('tc_pid');
+        if (!playerId) { playerId = crypto.randomUUID(); localStorage.setItem('tc_pid', playerId); }
+
+        // --- INICIALIZACIÓN TON CONNECT ---
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        });
+        
+        // BILLETERA ADMINISTRATIVA
+        const ADMIN_WALLET = "UQDQG0-IgjUsyQpbLbZLt32fwg2JBFVb5IVr7UcuiSFTlSsr";
+
+        // --- GLOBAL CONFIG (FIREBASE) ---
+        let globalTonConfig = { precio_entrada: 0.1, inscripciones_abiertas: true };
+        onValue(ref(db, 'configuracion'), (snapshot) => {
+            if(snapshot.exists()) {
+                globalTonConfig = snapshot.val();
+                updateMpSetup(); 
+                const btnPay = document.getElementById('btn-pay-ton');
+                if(btnPay) {
+                    if(!globalTonConfig.inscripciones_abiertas) {
+                        btnPay.innerHTML = '<i class="fa-solid fa-lock"></i> Inscripciones Cerradas';
+                        btnPay.disabled = true;
+                    } else {
+                        btnPay.innerHTML = '<i class="fa-solid fa-wallet"></i> Pagar y Buscar Partida';
+                        btnPay.disabled = false;
+                    }
+                }
+            }
+        });
+
+        // --- GAME DATA ---
+        const HORSES = [
+            { id: 'criollo', name: 'Criollo Llanero', emoji: '🐎', fuerza: 5, velocidad: 7, estabilidad: 9 },
+            { id: 'milla', name: 'Cuarto de Milla', emoji: '🏇', fuerza: 8, velocidad: 9, estabilidad: 6 },
+            { id: 'pinto', name: 'Pinto Americano', emoji: '🐴', fuerza: 7, velocidad: 8, estabilidad: 8 }
+        ];
+        const BULLS = [
+            { id: 'novillo', name: 'Novillo', emoji: '🐄', bravura: 4, peso: 350 },
+            { id: 'cebu', name: 'Toro Cebú', emoji: '🐂', bravura: 7, peso: 500 },
+            { id: 'padrote', name: 'Padrote Rebelde', emoji: '🐃', bravura: 9, peso: 650 }
+        ];
+
+        let state = {
+            nickname: tgUser ? tgUser.first_name : (localStorage.getItem('tc_nickname') || 'Coleador'),
+            horseIndex: parseInt(localStorage.getItem('tc_horse')) || 0,
+            horseName: localStorage.getItem('tc_horseName') || '',
+            customBgImg: localStorage.getItem('tc_mod_bg') || null,
+            puntosBoveda: parseInt(localStorage.getItem('tc_puntosBoveda')) || 0, // BÓVEDA
+            mangaNames: JSON.parse(localStorage.getItem('tc_mangaNames')) || ["Toros en mi Pueblo", "Copa en Maracay", "Campeonato Barquisimeto"],
+            horseNames: JSON.parse(localStorage.getItem('tc_horseNames')) || ["Criollo Llanero", "Cuarto de Milla", "Pinto Americano"],
+            admin: { fee: parseInt(localStorage.getItem('tc_fee')) || 100, com: parseInt(localStorage.getItem('tc_com')) || 10, password: localStorage.getItem('tc_admin_pwd') || 'ADMIN123', recovery: localStorage.getItem('tc_admin_rec') || 'COLEO' },
+            ranking: JSON.parse(localStorage.getItem('tc_ranking')) || [{ nombre: 'El Centauro', puntos: 1500 }]
+        };
+
+        window.game = { active: false, mode: 'career', level: 1, horsePos: -20, horseSpeed: 0.5, animFrame: null, mpData: null, currentTurn: 1, maxTurns: 4, matchScore: 0, filoCount: 0, zones: {} };
+        let lobbyListener = null;
+
+        const phrases = {
+            start: ["¡Atención, se abre el toril!", "¡Salió el toro, apriete coleador!", "¡Cuidado en la manga!"],
+            filo: ["¡Filo de Lomo perfecto!", "¡Qué ejecución impecable!", "¡Limpiecito ese filo!"],
+            costado: ["¡Cayó de costado!", "¡Recortó el toro sumando!", "¡Buena caída, suma puntos!"],
+            nulo: ["¡Nulo, se le fue!", "¡Pasó de largo el jinete!", "¡Falló en la zona!"]
+        };
+
+        function init() {
+            HORSES[0].name = state.horseNames[0]; HORSES[1].name = state.horseNames[1]; HORSES[2].name = state.horseNames[2];
+            document.getElementById('input-nickname').value = state.nickname;
+            
+            updateHeader(); renderRanking(); updateBovedaUI();
+            
+            if(localStorage.getItem('reglamentoAceptado') !== 'true') {
+                document.getElementById('app-header').classList.add('hidden'); nav('reglamento');
+            } else { document.getElementById('app-header').classList.remove('hidden'); nav('menu'); }
+        }
+
+        function acceptTerms() { localStorage.setItem('reglamentoAceptado', 'true'); document.getElementById('app-header').classList.remove('hidden'); nav('menu'); }
+
+        function saveData() {
+            localStorage.setItem('tc_nickname', state.nickname);
+            localStorage.setItem('tc_horse', state.horseIndex);
+            localStorage.setItem('tc_horseName', state.horseName);
+            localStorage.setItem('tc_puntosBoveda', state.puntosBoveda); 
+            localStorage.setItem('tc_fee', state.admin.fee);
+            localStorage.setItem('tc_com', state.admin.com);
+            localStorage.setItem('tc_admin_pwd', state.admin.password);
+            localStorage.setItem('tc_admin_rec', state.admin.recovery);
+            localStorage.setItem('tc_ranking', JSON.stringify(state.ranking));
+            updateHeader(); updateBovedaUI();
+        }
+
+        function updateHeader() { 
+            document.getElementById('ui-nickname').innerText = state.nickname; 
+            if(document.getElementById('menu-nickname-text')) {
+                document.getElementById('menu-nickname-text').innerText = state.nickname;
+            }
+        }
+        
+        function saveNickname() { const val = document.getElementById('input-nickname').value.trim(); if(val) { state.nickname = val; saveData(); } }
+        function saveHorseName() { state.horseName = document.getElementById('input-horsename').value.trim(); saveData(); }
+
+        window.toggleNicknameEdit = function() {
+            document.getElementById('menu-nickname-display').classList.add('hidden');
+            document.getElementById('menu-nickname-edit').classList.remove('hidden');
+            document.getElementById('input-nickname').value = state.nickname;
+            document.getElementById('input-nickname').focus();
+        };
+
+        window.saveAndCloseNickname = function() {
+            saveNickname();
+            document.getElementById('menu-nickname-edit').classList.add('hidden');
+            document.getElementById('menu-nickname-display').classList.remove('hidden');
+        };
+
+        function updateBovedaUI() {
+            if(document.getElementById('header-puntos-boveda')) document.getElementById('header-puntos-boveda').innerText = state.puntosBoveda + ' pts';
+            if(document.getElementById('boveda-puntos')) document.getElementById('boveda-puntos').innerText = state.puntosBoveda;
+            if(document.getElementById('boveda-ton')) document.getElementById('boveda-ton').innerHTML = (state.puntosBoveda / 1000).toFixed(2) + ' <i class="fa-solid fa-gem text-xs"></i> TON';
+        }
+
+        function nav(screenId) {
+            document.querySelectorAll('main > section').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+            const targetScreen = document.getElementById('screen-' + screenId);
+            targetScreen.classList.remove('hidden'); targetScreen.classList.add('flex');
+            document.querySelector('main').scrollTop = 0;
+            if(screenId === 'multiplayer') updateMpSetup();
+            if(screenId === 'ranking') renderRanking();
+            if(screenId === 'menu' || screenId === 'boveda') updateBovedaUI();
+        }
+
+        function updateMpSetup() {
+            const fee = globalTonConfig.precio_entrada || 0.1;
+            const total = fee * 4;
+            const comisionDev = total * (state.admin.com / 100);
+            const poteNeto = total - comisionDev;
+            
+            if(document.getElementById('mp-fee')) document.getElementById('mp-fee').innerText = fee;
+            if(document.getElementById('mp-com-perc')) document.getElementById('mp-com-perc').innerText = state.admin.com;
+            if(document.getElementById('mp-com-val')) document.getElementById('mp-com-val').innerText = comisionDev.toFixed(2);
+            if(document.getElementById('mp-pool')) document.getElementById('mp-pool').innerText = poteNeto.toFixed(2); 
+
+            // Mostrar el equivalente en puntos en la UI (1 TON = 1000 pts)
+            if(document.getElementById('mp-1st')) document.getElementById('mp-1st').innerText = Math.floor(poteNeto * 0.70 * 1000) + ' pts';
+            if(document.getElementById('mp-2nd')) document.getElementById('mp-2nd').innerText = Math.floor(poteNeto * 0.20 * 1000) + ' pts';
+            if(document.getElementById('mp-3rd')) document.getElementById('mp-3rd').innerText = Math.floor(poteNeto * 0.10 * 1000) + ' pts';
+        }
+
+        function prepGame(mode, level) { window.game.mode = mode; window.game.level = level; updateEstabloUI(); nav('establo'); }
+
+        function updateEstabloUI() {
+            const horse = HORSES[state.horseIndex];
+            document.getElementById('est-horse-emoji').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            document.getElementById('est-horse-name').innerText = horse.name;
+            document.getElementById('input-horsename').value = state.horseName;
+            document.getElementById('est-bar-fue').style.width = (horse.fuerza * 10) + '%'; document.getElementById('est-val-fue').innerText = horse.fuerza;
+            document.getElementById('est-bar-vel').style.width = (horse.velocidad * 10) + '%'; document.getElementById('est-val-vel').innerText = horse.velocidad;
+            document.getElementById('est-bar-est').style.width = (horse.estabilidad * 10) + '%'; document.getElementById('est-val-est').innerText = horse.estabilidad;
+        }
+
+        function changeHorse(dir) {
+            state.horseIndex += dir;
+            if(state.horseIndex < 0) state.horseIndex = HORSES.length - 1;
+            if(state.horseIndex >= HORSES.length) state.horseIndex = 0;
+            saveData(); updateEstabloUI();
+        }
+
+        window.navigateBackFromEstablo = function() {
+            nav(window.game.mode === 'career' ? 'career' : 'multiplayer');
+        }
+
+        // ====== TON PAYMENT Y MATCHMAKING ======
+
+        async function initiateTONPayment() {
+            if(!globalTonConfig.inscripciones_abiertas) {
+                showCustomAlert("Inscripciones Cerradas", "El administrador ha cerrado las competiciones temporalmente.");
+                return;
+            }
+
+            if (!tonConnectUI.connected) {
+                showCustomAlert("Billetera no conectada", "Por favor, conecta tu billetera TON en el menú principal antes de jugar.");
+                return;
+            }
+
+            const fee = globalTonConfig.precio_entrada || 0.1;
+
+            showCustomConfirm(
+                "Contrato TON", 
+                `Se enviará <b>${fee} TON</b> a la Federación para validar tu inscripción a la competición.<br><br><span class="text-xs text-gray-500">Asegúrate de confirmar en tu app de billetera.</span>`, 
+                async () => {
+                    showProcessing("Aprobando transacción en blockchain...<br><i class='fa-solid fa-gem fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
+                    
+                    try {
+                        const nanoTon = Math.floor(fee * 1000000000); 
+                        const transaction = {
+                            validUntil: Math.floor(Date.now() / 1000) + 360,
+                            messages: [{ address: ADMIN_WALLET, amount: nanoTon.toString() }]
+                        };
+
+                        const result = await tonConnectUI.sendTransaction(transaction);
+                        
+                        if (result && result.boc) {
+                            closeProcessing();
+                            joinLobby(result.boc); 
+                        } else { throw new Error("Transacción no devolvió BOC"); }
+                    } catch (e) {
+                        closeProcessing();
+                        console.error(e);
+                        showCustomAlert("Transacción Cancelada", "El pago fue cancelado o rechazado por tu billetera.");
+                    }
+                }
+            );
+        }
+
+        async function joinLobby(txHash) {
+            showProcessing("Buscando sala disponible...");
+            const roomRef = ref(db, 'salas/manga_principal');
+            
+            try {
+                const snapshot = await get(roomRef);
+                const roomData = snapshot.val();
+
+                if (!roomData || roomData.estado === 'terminado') {
+                    await set(roomRef, {
+                        estado: 'esperando', pote_acumulado: globalTonConfig.precio_entrada,
+                        jugadores: { [playerId]: { nombre: state.nickname, status: 'PAGADO', score: -1, hash: txHash } }
+                    });
+                } else {
+                    let count = Object.keys(roomData.jugadores || {}).length;
+                    if(count >= 4) {
+                        closeProcessing();
+                        showCustomAlert("Manga Llena", "Están corriendo en este momento. Tu pago está validado, entra en unos segundos.");
+                        return;
+                    }
+                    await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), { nombre: state.nickname, status: 'PAGADO', score: -1, hash: txHash });
+                    await update(roomRef, { pote_acumulado: roomData.pote_acumulado + globalTonConfig.precio_entrada });
+                }
+                
+                onDisconnect(ref(db, `salas/manga_principal/jugadores/${playerId}`)).remove();
+                closeProcessing();
+                openLobby();
+
+            } catch (error) { console.error(error); closeProcessing(); showCustomAlert("Error", "Error de conexión con Firebase."); }
+        }
+
+        function openLobby() {
+            nav('lobby');
+            const roomRef = ref(db, 'salas/manga_principal');
+
+            lobbyListener = onValue(roomRef, (snapshot) => {
+                const data = snapshot.val();
+                if(!data) return;
+
+                const playersList = Object.values(data.jugadores || {});
+                renderLobby(playersList);
+
+                if(data.estado === 'esperando' && playersList.length === 4) {
+                    const pKeys = Object.keys(data.jugadores);
+                    if(pKeys[0] === playerId) update(roomRef, { estado: 'jugando' });
+                }
+
+                if(data.estado === 'jugando' && window.game.mode !== 'multiplayer-active') {
+                    window.game.mode = 'multiplayer-active'; 
+                    window.game.mpData = { dbPlayers: data.jugadores, myPote: data.pote_acumulado };
+                    setTimeout(() => prepGame('multiplayer', 2), 1000); 
+                }
+
+                if(data.estado === 'terminado' && window.game.mode === 'multiplayer-waiting') {
+                    showFinalMultiplayerResults(data);
+                }
+            });
+        }
+
+        async function cancelLobby() {
+            showProcessing("Saliendo de la sala...");
+            try {
+                // Intentamos borrar al jugador de Firebase
+                if(db && playerId) {
+                    await remove(ref(db, `salas/manga_principal/jugadores/${playerId}`));
+                }
+            } catch(e) {
+                console.error("Error al salir de DB:", e);
+            } finally {
+                // PASE LO QUE PASE, te devuelve al menú y resetea el modo
+                window.game.mode = 'career'; 
+                if(lobbyListener) lobbyListener(); 
+                closeProcessing(); 
+                nav('menu');
+            }
+        }
+
+        function renderLobby(players) {
+            const container = document.getElementById('lobby-slots');
+            container.innerHTML = '';
+            for(let i = 0; i < 4; i++) {
+                const p = players[i];
+                if(p) {
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                            <span class="font-semibold text-white"><i class="fa-solid fa-user text-[var(--ton-blue)] mr-2 text-xs"></i>${p.nombre}</span>
+                            <span class="text-green-400 text-[10px] uppercase font-bold"><i class="fa-solid fa-check"></i> ${p.status}</span>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[var(--tg-surface)] p-3 rounded-lg border border-[var(--tg-border)] border-dashed">
+                            <span class="text-[var(--tg-text-sec)]"><i class="fa-solid fa-clock text-xs mr-2"></i>Vacío</span>
+                            <i class="fa-solid fa-circle-notch fa-spin text-gray-600 text-xs"></i>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('lobby-count').innerText = players.length;
+        }
+
+        // ====== LÓGICA DE BÓVEDA Y RETIROS ======
+
+        window.reclamarPuntos = function() {
+            if (!tonConnectUI.connected) {
+                showCustomAlert("Billetera No Conectada", "Debes conectar tu billetera en el menú para que sepamos a dónde enviar los TON.");
+                nav('wallet');
+                return;
+            }
+
+            if (state.puntosBoveda < 5000) {
+                showCustomAlert("Puntos Insuficientes", "Necesitas acumular al menos 5000 puntos para solicitar un retiro. ¡Sigue jugando y ganando competiciones!");
+                return;
+            }
+
+            const tonRetiro = (state.puntosBoveda / 1000).toFixed(2);
+            const userWallet = tonConnectUI.account.address || tonConnectUI.account.publicKey; 
+
+            showCustomConfirm(
+                "Confirmar Retiro", 
+                `Vas a canjear <b>${state.puntosBoveda} puntos</b> por <b>${tonRetiro} TON</b>.<br><br><span class="text-xs text-[var(--tg-text-sec)]">La solicitud se enviará a la Federación. El Juez la revisará y enviará los fondos a la billetera conectada.</span>`, 
+                async () => {
+                    showProcessing("Enviando solicitud al servidor...<br><i class='fa-solid fa-paper-plane fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
+                    
+                    try {
+                        // Guardar la solicitud en Firebase para el Admin
+                        await push(ref(db, 'retiros_pendientes'), {
+                            playerId: playerId,
+                            nombre: state.nickname,
+                            wallet: userWallet,
+                            puntos: state.puntosBoveda,
+                            ton: tonRetiro,
+                            fecha: Date.now(),
+                            estado: 'pendiente'
+                        });
+
+                        // Descontar puntos y guardar localmente
+                        state.puntosBoveda = 0;
+                        saveData();
+                        closeProcessing();
+                        
+                        showCustomAlert("¡Solicitud Enviada! ✅", `Tu petición de <b>${tonRetiro} TON</b> fue enviada con éxito. Podrás ver los fondos en tu billetera pronto.`);
+                    } catch (error) {
+                        console.error(error);
+                        closeProcessing();
+                        showCustomAlert("Error", "Ocurrió un error de red al enviar la solicitud.");
+                    }
+                }
+            );
+        }
+
+        // ====== LÓGICA DE JUEGO (CORE) ======
+
+        function startGame() { window.game.currentTurn = 1; window.game.matchScore = 0; window.game.filoCount = 0; startTurn(); }
+
+        function startTurn() {
+            window.game.active = true; window.game.horsePos = -20;
+            const horse = HORSES[state.horseIndex]; const bull = BULLS[window.game.level - 1];
+
+            window.game.horseSpeed = (window.game.level * 0.3) + (horse.velocidad * 0.1); 
+            let filoSize = Math.max(1.5, 3 + (horse.fuerza * 0.5) - (bull.bravura * 0.4)); 
+            let costadoSize = Math.max(filoSize + 1, 6 + (horse.estabilidad * 0.5) - (bull.peso / 100)); 
+
+            window.game.zones = { fMin: 45 - filoSize, fMax: 45 + filoSize, cMin: 45 - costadoSize, cMax: 45 + costadoSize };
+
+            document.getElementById('zone-filo').style.left = window.game.zones.fMin + '%'; document.getElementById('zone-filo').style.width = (filoSize * 2) + '%';
+            document.getElementById('zone-costado').style.left = window.game.zones.cMin + '%'; document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
+
+            document.getElementById('ent-horse').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            document.getElementById('ent-bull').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${bull.emoji}</div>`;
+            
+            document.getElementById('hud-turn').innerText = `${window.game.currentTurn}/${window.game.maxTurns}`;
+            document.getElementById('hud-score').innerText = window.game.matchScore;
+            
+            const btn = document.getElementById('btn-colear'); btn.disabled = false; btn.innerText = "COLEAR";
+            document.getElementById('pos-horse').style.transition = 'none'; document.getElementById('pos-horse').style.left = '-20%';
+            document.getElementById('pos-bull').style.transition = 'none'; document.getElementById('pos-bull').style.left = '55%'; 
+            
+            document.getElementById('ent-horse').className = 'text-6xl anim-gallop drop-shadow-lg flex items-center justify-center';
+            document.getElementById('ent-bull').className = 'text-5xl anim-bull drop-shadow-lg flex items-center justify-center';
+            document.getElementById('dust').classList.add('hidden');
+
+            setLocutor(phrases.start[Math.floor(Math.random() * phrases.start.length)]);
+            if(window.game.currentTurn === 1) nav('game');
+            setTimeout(() => { if(window.game.active) gameLoop(); }, 500);
+        }
+
+        function gameLoop() {
+            if(!window.game.active) return;
+            window.game.horsePos += window.game.horseSpeed; document.getElementById('pos-horse').style.left = window.game.horsePos + '%';
+            if(window.game.horsePos > 80) { window.game.active = false; evaluarColeada(true); return; }
+            window.game.animFrame = requestAnimationFrame(gameLoop);
+        }
+
+        document.getElementById('btn-colear').addEventListener('click', () => {
+            if(!window.game.active) return; window.game.active = false; cancelAnimationFrame(window.game.animFrame); evaluarColeada(false);
+        });
+
+        function evaluarColeada(pasoDeLargo) {
+            document.getElementById('btn-colear').disabled = true; document.getElementById('btn-colear').innerText = "Ejecutando...";
+            let score = 0, resType = 'nulo', p = window.game.horsePos;
+            if(!pasoDeLargo) {
+                if(p >= window.game.zones.fMin && p <= window.game.zones.fMax) { score = 20; resType = 'filo'; } 
+                else if (p >= window.game.zones.cMin && p <= window.game.zones.cMax) { score = 10; resType = 'costado'; }
+            }
+            setTimeout(() => executeResult(resType, score), 100);
+        }
+
+        function executeResult(type, score) {
+            const bull = document.getElementById('ent-bull');
+            const posHorse = document.getElementById('pos-horse'); const posBull = document.getElementById('pos-bull');
+            document.getElementById('manga-bg').classList.remove('manga-scrolling');
+            bull.classList.remove('anim-bull'); bull.classList.add('action-' + type);
+            posHorse.style.transition = 'left 1.5s ease-out'; posHorse.style.left = '120%';
+
+            if(type === 'filo' || type === 'costado') { document.getElementById('dust').classList.remove('hidden'); setTimeout(() => document.getElementById('dust').classList.add('hidden'), 1000); } 
+            else { posBull.style.transition = 'left 1.2s ease-in'; posBull.style.left = '120%'; }
+
+            setLocutor(phrases[type][Math.floor(Math.random() * phrases[type].length)]);
+
+            setTimeout(() => {
+                window.game.matchScore += score; if(type === 'filo') window.game.filoCount++;
+                if (window.game.currentTurn < window.game.maxTurns) showTurnResult(type, score);
+                else { if(window.game.mode === 'career') showCareerResult(); else processFirebaseTurn(); }
+            }, 1500);
+        }
+
+        function setLocutor(txt) { document.getElementById('locutor-text').innerText = `"${txt}"`; }
+
+        function showTurnResult(type, score) {
+            document.getElementById('res-title').innerText = score > 0 ? "Buen Movimiento" : "Fallaste";
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${score>0?'text-white':'text-[var(--vzla-red)]'}`;
+            document.getElementById('res-desc').innerHTML = `Lograste <b>${type.toUpperCase()}</b> (+${score} Pts).<br><br><span class="text-xs text-[var(--tg-text-sec)] uppercase tracking-widest">Suma: <span class="text-white text-base">${window.game.matchScore} Pts</span></span>`;
+            document.getElementById('res-mp-details').classList.add('hidden');
+            const btn = document.getElementById('btn-result-action'); btn.innerText = "Siguiente Turno"; btn.onclick = () => {
+                document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex');
+                window.game.currentTurn++; startTurn();
+            };
+            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        function showCareerResult() {
+            updatePlayerRanking(window.game.matchScore);
+            
+            state.puntosBoveda += window.game.matchScore;
+            saveData();
+
+            let clasifica = (window.game.filoCount >= 3 && window.game.level < 3), campeon = (window.game.filoCount >= 3 && window.game.level === 3);
+            document.getElementById('res-title').innerText = clasifica ? "Clasificado" : (campeon ? "¡Campeón!" : "Manga Terminada");
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${campeon ? 'text-[var(--tg-primary)]' : (clasifica ? 'text-white' : 'text-[var(--vzla-red)]')}`;
+            document.getElementById('res-desc').innerHTML = `Total: <b class="text-white">${window.game.matchScore} Pts</b> guardados en tu Bóveda.<br>Filos: <b class="text-white">${window.game.filoCount}</b>.<br><br><span class="text-xs ${clasifica || campeon ? 'text-green-400' : 'text-[var(--tg-text-sec)]'}">${campeon ? 'Has dominado el circuito.' : (clasifica ? 'Avanzas al siguiente nivel.' : 'Necesitas 3 Filos para pasar.')}</span>`;
+            document.getElementById('res-mp-details').classList.add('hidden');
+            const btn = document.getElementById('btn-result-action');
+            if(clasifica) { btn.innerText = "Siguiente Etapa"; btn.onclick = () => { document.getElementById('overlay-result').classList.add('hidden'); prepGame('career', window.game.level + 1); }; } 
+            else { btn.innerText = "Finalizar"; btn.onclick = closeResult; }
+            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        async function processFirebaseTurn() {
+            window.game.mode = 'multiplayer-waiting';
+            showProcessing("Sincronizando con los Jueces...<br><i class='fa-solid fa-gem fa-bounce mt-4 text-[var(--ton-blue)] text-3xl'></i>");
+            
+            await update(ref(db, `salas/manga_principal/jugadores/${playerId}`), { score: window.game.matchScore });
+            const snapshot = await get(ref(db, 'salas/manga_principal/jugadores'));
+            const players = snapshot.val();
+            let allFinished = true;
+            for(let key in players) { if(players[key].score < 0) allFinished = false; }
+
+            if(allFinished) {
+                const playersList = Object.keys(players).map(k => ({ id: k, nombre: players[k].nombre, score: players[k].score }));
+                let sorted = playersList.sort((a,b) => b.score === a.score ? Math.random() - 0.5 : b.score - a.score);
+                
+                const totalFee = globalTonConfig.precio_entrada * 4;
+                const comisionDev = totalFee * (state.admin.com / 100);
+                const poteNeto = totalFee - comisionDev;
+
+                const premios = [(poteNeto * 0.70).toFixed(2), (poteNeto * 0.20).toFixed(2), (poteNeto * 0.10).toFixed(2), 0];
+
+                const historialRecord = {
+                    timestamp: Date.now(), fecha: new Date().toLocaleString(),
+                    economia: { total_inscripciones: totalFee, comision_desarrollador: comisionDev, pote_repartido: poteNeto },
+                    jugadores: {}
+                };
+
+                let resultadosDB = {};
+                sorted.forEach((p, idx) => {
+                    historialRecord.jugadores[p.id] = { nombre: p.nombre, score: p.score, premio: premios[idx], posicion: idx + 1 };
+                    resultadosDB[p.id] = { ...p, premio: premios[idx], posicion: idx + 1 };
+                });
+
+                await push(ref(db, 'historial_pagos'), historialRecord);
+                await update(ref(db, 'salas/manga_principal'), { estado: 'terminado', resultados: resultadosDB });
+            }
+        }
+
+        function showFinalMultiplayerResults(data) {
+            closeProcessing(); window.game.mode = 'career'; 
+            const resultados = data.resultados || {};
+            const playersList = Object.values(resultados).sort((a, b) => a.posicion - b.posicion);
+            
+            let prizePoints = 0;
+            let isUserWinner = false;
+            
+            let html = `<div class="font-bold text-center mb-3 text-[var(--tg-text-sec)] text-xs">REPARTO OFICIAL</div>`;
+            
+            playersList.forEach((p) => {
+                let isMe = (p.id === playerId);
+                let ptsGanados = 0;
+                
+                if(isMe && p.premio > 0) {
+                    // CONVERTIMOS EL PREMIO TON EN PUNTOS PARA LA BÓVEDA
+                    ptsGanados = Math.floor(parseFloat(p.premio) * 1000); 
+                    prizePoints = ptsGanados;
+                    state.puntosBoveda += ptsGanados; 
+                    isUserWinner = true;
+                }
+                
+                let badge = p.posicion === 1 ? '<i class="fa-solid fa-trophy text-[var(--tg-primary)]"></i>' : `${p.posicion}.`;
+                let styleRow = isMe ? 'text-white font-bold bg-[var(--tg-primary)]/10 px-2 rounded' : 'text-gray-400';
+
+                html += `
+                    <div class="flex justify-between items-center text-xs py-2 my-1 border-b border-[var(--tg-border)] last:border-0 ${styleRow}">
+                        <span>${badge} ${p.nombre} (${p.score}pts)</span>
+                        <span class="${p.premio > 0 ? 'text-green-400 font-bold' : ''}">${p.premio > 0 ? '+'+Math.floor(p.premio * 1000)+' Pts' : '0'}</span>
+                    </div>
+                `;
             });
 
-            return { walletUsuario, montoTon, puntosDeducidos: puntosActuales };
-        });
+            updatePlayerRanking(window.game.matchScore);
+            state.puntosBoveda += window.game.matchScore; // También suma los puntos normales del turno
+            saveData();
 
-        // PASO 2: Inicializar cliente TON
-        const client = new TonClient({
-            endpoint: 'https://toncenter.com/api/v2/jsonRPC',
-            apiKey: process.env.TONCENTER_API_KEY
-        });
+            document.getElementById('res-title').innerText = isUserWinner ? "¡Cobraste Premio!" : "Manga Terminada";
+            document.getElementById('res-title').className = `font-display font-black text-3xl mb-1 ${isUserWinner ? 'text-green-400' : 'text-[var(--vzla-red)]'}`;
+            document.getElementById('res-desc').innerHTML = isUserWinner ? `Lograste entrar en el cuadro de cobro de la Manga.` : "No lograste sumar para llevarte un premio.";
+            
+            document.getElementById('res-mp-details').innerHTML = html; document.getElementById('res-mp-details').classList.remove('hidden');
 
-        // Obtener la Semilla desde la Variable de Entorno
-        const mnemonic = process.env.SEMILLA_MANGA;
-        if (!mnemonic) throw new Error('Error interno: Billetera de la manga no configurada.');
+            const btn = document.getElementById('btn-result-action');
+            if(isUserWinner) {
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Entendido (+${prizePoints} Pts a Bóveda)`;
+                btn.className = "w-full tg-btn-primary p-4";
+                btn.onclick = () => { closeResult(); };
+            } else {
+                btn.innerText = "Salir al Menú";
+                btn.className = "w-full tg-btn-secondary p-4";
+                btn.onclick = closeResult;
+            }
+            document.getElementById('overlay-result').classList.remove('hidden'); document.getElementById('overlay-result').classList.add('flex');
+        }
+
+        function closeResult() {
+            document.getElementById('overlay-result').classList.add('hidden'); document.getElementById('overlay-result').classList.remove('flex');
+            if(lobbyListener) lobbyListener(); nav('menu');
+        }
+
+        function openWallet() { nav('wallet'); }
+
+        // --- FUNCIONES GLOBALES / ADMIN ---
+        window.nav = nav; window.saveNickname = saveNickname; window.saveHorseName = saveHorseName; window.prepGame = prepGame; window.changeHorse = changeHorse; window.startGame = startGame;
+        window.initiateTONPayment = initiateTONPayment; window.closeResult = closeResult; window.acceptTerms = acceptTerms; window.cancelLobby = cancelLobby; window.openWallet = openWallet;
         
-        // Generar llaves y abrir el contrato V4
-        const keyPair = await mnemonicToPrivateKey(mnemonic.split(' '));
-        const walletManga = WalletContractV4.create({ workchain: 0, publicKey: keyPair.publicKey });
-        const contract = client.open(walletManga);
+        // ADMIN PANEL: CARGAR RETIROS
+        function loadAdminRetiros() {
+            const retirosRef = ref(db, 'retiros_pendientes');
+            onValue(retirosRef, (snapshot) => {
+                const list = document.getElementById('admin-retiros-list');
+                if (!list) return;
+                list.innerHTML = '';
+                if (!snapshot.exists()) {
+                    list.innerHTML = '<p class="text-xs text-[var(--tg-text-sec)] text-center">No hay retiros pendientes.</p>';
+                    return;
+                }
+                const data = snapshot.val();
+                let hasPending = false;
+                Object.keys(data).forEach(key => {
+                    const r = data[key];
+                    if (r.estado === 'pendiente') {
+                        hasPending = true;
+                        list.innerHTML += `
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)] text-xs relative">
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-bold text-white">${r.nombre}</span>
+                                    <span class="text-green-400 font-bold">${r.ton} TON</span>
+                                </div>
+                                <p class="text-[var(--tg-text-sec)] mb-2 font-mono text-[10px] break-all">${r.wallet}</p>
+                                <div class="flex gap-2 mt-2">
+                                    <button onclick="navigator.clipboard.writeText('${r.wallet}');" class="bg-[var(--tg-surface)] text-white px-2 py-2 rounded border border-[var(--tg-border)] flex-1 active:scale-95 transition"><i class="fa-solid fa-copy"></i> Copiar Wallet</button>
+                                    <button onclick="marcarRetiroPagado('${key}')" class="bg-green-600 hover:bg-green-700 text-white px-2 py-2 rounded flex-1 active:scale-95 transition"><i class="fa-solid fa-check"></i> Marcar Pagado</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                if (!hasPending) list.innerHTML = '<p class="text-xs text-[var(--tg-text-sec)] text-center">No hay retiros pendientes.</p>';
+            });
+        }
 
-        // Verificar el secuenciador actual
-        const seqno = await contract.getSeqno();
+        window.marcarRetiroPagado = function(key) {
+            showCustomConfirm("Confirmar Pago", "¿Ya enviaste los TON desde tu wallet a la wallet del jugador?", async () => {
+                showProcessing("Actualizando estado en Firebase...");
+                try {
+                    await update(ref(db, `retiros_pendientes/${key}`), { estado: 'pagado', fecha_pago: Date.now() });
+                    closeProcessing();
+                    showCustomAlert("¡Listo!", "El retiro se marcó como pagado exitosamente.");
+                } catch (error) {
+                    closeProcessing();
+                    showCustomAlert("Error", "No se pudo actualizar. Verifica tu conexión.");
+                }
+            });
+        };
 
-        // Enviar la transferencia de TON
-        await contract.sendTransfer({
-            seqno,
-            secretKey: keyPair.secretKey,
-            messages: [
-                internal({
-                    to: txResult.walletUsuario,
-                    value: txResult.montoTon,
-                    body: 'Pago de Coleada - Recompensa del Juego',
-                    bounce: false,
-                })
-            ]
-        });
+        window.calculateCorteDeCaja = async function() {
+            showProcessing("Calculando ganancias... <br><i class='fa-solid fa-circle-notch fa-spin mt-4 text-[var(--tg-primary)] text-2xl'></i>");
+            try {
+                const snapshot = await get(ref(db, 'historial_pagos'));
+                const records = snapshot.val();
+                let gananciasHoy = 0; let gananciasTotales = 0;
+                if (records) {
+                    const now = new Date();
+                    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+                    Object.values(records).forEach(record => {
+                        const comision = record.economia?.comision_desarrollador || 0;
+                        gananciasTotales += comision;
+                        if (record.timestamp >= startOfDay) gananciasHoy += comision;
+                    });
+                }
+                closeProcessing();
+                showCustomAlert("Corte de Caja (Comisiones Tuya)", `<div class="text-left space-y-3 mt-4 bg-[var(--tg-bg)] p-4 rounded-xl border border-[var(--tg-border)]"><div class="flex justify-between border-b border-[var(--tg-border)] pb-3"><span class="text-[var(--tg-text-sec)] text-sm font-semibold">Ganancias de Hoy:</span><span class="font-bold text-green-400 text-lg">+${gananciasHoy.toFixed(2)} <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span></div><div class="flex justify-between pt-1"><span class="text-[var(--tg-text-sec)] text-sm font-semibold">Total Histórico:</span><span class="font-bold text-white text-lg">+${gananciasTotales.toFixed(2)} <i class="fa-solid fa-gem text-[var(--ton-blue)] text-sm"></i></span></div></div>`);
+            } catch (error) { console.error(error); closeProcessing(); showCustomAlert("Error", "No se pudo acceder a la base de datos."); }
+        };
 
-        // Respuesta exitosa
-        return res.status(200).json({ 
-            success: true, 
-            message: 'Pago enviado con éxito', 
-            tonEnviado: txResult.montoTon 
-        });
+        window.saveTonConfig = async function() {
+            const newFee = parseFloat(document.getElementById('sec-ton-fee').value);
+            const isOpen = document.getElementById('sec-ton-open').checked;
+            showProcessing("Actualizando Servidor...");
+            try {
+                await update(ref(db, 'configuracion'), { precio_entrada: newFee, inscripciones_abiertas: isOpen });
+                state.admin.com = document.getElementById('sec-com').value;
+                saveData();
+                closeProcessing();
+                showCustomAlert("Completado", "Configuración actualizada en tiempo real.");
+            } catch (e) { console.error(e); closeProcessing(); showCustomAlert("Error", "No tienes permisos en Firebase."); }
+        };
 
-    } catch (error) {
-        console.error('Error procesando el pago en el cajero:', error);
-        
-        return res.status(500).json({ 
-            error: 'Error en el cajero, contacta al Juez de Mesa.',
-            details: error.message
-        });
-    }
-}
+        window.requestAdminAccess = function() {
+            showLoginPrompt((pwd) => {
+                if (pwd === state.admin.password) openSecretAdmin(); else showCustomAlert("Error", "Contraseña incorrecta.");
+            }, () => {
+                showCustomPrompt("Recuperación", `Palabra secreta:`, (ans) => {
+                    if(ans.trim().toUpperCase() === state.admin.recovery.toUpperCase()) { state.admin.password = "ADMIN123"; saveData(); showCustomAlert("Restablecida", "La clave vuelve a ser <b>ADMIN123</b>."); } else showCustomAlert("Error", "Palabra incorrecta.");
+                });
+            });
+        };
+
+        function openSecretAdmin() {
+            document.getElementById('sec-ton-fee').value = globalTonConfig.precio_entrada;
+            document.getElementById('sec-ton-open').checked = globalTonConfig.inscripciones_abiertas;
+            document.getElementById('sec-com').value = state.admin.com;
+            loadAdminRetiros();
+            nav('secret-admin');
+        }
+
+        // Utilidades de UI (Modales)
+        function showProcessing(msg) { document.getElementById('modal-title').innerText = "Procesando"; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = ''; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); }
+        function closeProcessing() { document.getElementById('custom-modal').classList.add('hidden'); document.getElementById('custom-modal').classList.remove('flex'); }
+        function showCustomAlert(title, msg, onConfirm) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-ok" class="w-full tg-btn-primary p-3">Aceptar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-ok').onclick = () => { closeProcessing(); if(onConfirm) onConfirm(); }; }
+        function showCustomConfirm(title, msg, onConfirm, onCancel) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; document.getElementById('modal-input').classList.add('hidden'); document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Confirmar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); if(onCancel) onCancel(); }; document.getElementById('modal-btn-yes').onclick = () => { closeProcessing(); if(onConfirm) onConfirm(); }; }
+        function showCustomPrompt(title, msg, onConfirm) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-desc').innerHTML = msg; const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'text'; document.getElementById('modal-buttons').innerHTML = `<button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Cancelar</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Aceptar</button>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); }; document.getElementById('modal-btn-yes').onclick = () => { const val = inputEl.value; closeProcessing(); if(onConfirm) onConfirm(val); }; }
+        function showLoginPrompt(onConfirm, onRecover) { document.getElementById('modal-title').innerText = "Modo Master"; document.getElementById('modal-desc').innerHTML = "Clave requerida (Escondido en esquina inf-der):"; const inputEl = document.getElementById('modal-input'); inputEl.value = ''; inputEl.classList.remove('hidden'); inputEl.type = 'password'; document.getElementById('modal-buttons').innerHTML = `<div class="flex flex-col w-full gap-3"><div class="flex gap-3"><button id="modal-btn-cancel" class="flex-1 tg-btn-secondary p-3">Atrás</button><button id="modal-btn-yes" class="flex-1 tg-btn-primary p-3">Entrar</button></div><button id="modal-btn-recover" class="text-xs text-[var(--tg-primary)] mt-2 font-semibold">¿Olvidaste tu contraseña?</button></div>`; document.getElementById('custom-modal').classList.remove('hidden'); document.getElementById('custom-modal').classList.add('flex'); document.getElementById('modal-btn-cancel').onclick = () => { closeProcessing(); }; document.getElementById('modal-btn-yes').onclick = () => { const val = inputEl.value; closeProcessing(); if(onConfirm) onConfirm(val); }; document.getElementById('modal-btn-recover').onclick = () => { closeProcessing(); if(onRecover) onRecover(); }; }
+
+        function renderRanking() {
+            state.ranking.sort((a,b) => b.puntos - a.puntos);
+            const tbody = document.getElementById('ranking-body'); tbody.innerHTML = '';
+            state.ranking.forEach((r, idx) => { tbody.innerHTML += `<tr><td class="p-3 text-center font-bold ${idx===0?'text-[var(--tg-primary)]':''}">${idx+1}</td><td class="p-3 font-semibold">${r.nombre === state.nickname ? `<span class="text-[var(--tg-primary)]">${r.nombre}</span>` : r.nombre}</td><td class="p-3 text-right text-[var(--tg-text-sec)]">${r.puntos}</td></tr>`; });
+        }
+        function updatePlayerRanking(pts) { let found = state.ranking.find(r => r.nombre === state.nickname); if(found) found.puntos += pts; else state.ranking.push({ nombre: state.nickname, puntos: pts }); saveData(); }
+
+        init();
+    </script>
+</body>
+</html>
