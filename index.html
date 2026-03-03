@@ -575,6 +575,47 @@
                         </div>
                     </div>
 
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[var(--vzla-red)] mb-3 uppercase tracking-wider"><i class="fa-solid fa-horse mr-1"></i> Caballos</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="sec-h1" class="w-full p-3 tg-input" placeholder="Caballo 1">
+                            <input type="text" id="sec-h2" class="w-full p-3 tg-input" placeholder="Caballo 2">
+                            <input type="text" id="sec-h3" class="w-full p-3 tg-input" placeholder="Caballo 3">
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5">
+                        <h3 class="font-semibold text-sm text-[#8b5a2b] mb-3 uppercase tracking-wider"><i class="fa-solid fa-hippo mr-1"></i> Toros</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="sec-b1" class="w-full p-3 tg-input" placeholder="Toro 1">
+                            <input type="text" id="sec-b2" class="w-full p-3 tg-input" placeholder="Toro 2">
+                            <input type="text" id="sec-b3" class="w-full p-3 tg-input" placeholder="Toro 3">
+                        </div>
+                    </div>
+
+                    <div class="tg-card p-5 border-[var(--vzla-blue)]/30">
+                        <h3 class="font-semibold text-sm text-purple-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-palette mr-1"></i> Mods Gráficos</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Suelo (Arena):</label>
+                                <input type="file" accept="image/png, image/jpeg" onchange="handleFileUpload(event, 'customBgImg')" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Caballo 1 (PNG Transparente):</label>
+                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 0)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Caballo 2 (PNG Transparente):</label>
+                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 1)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                            <div class="bg-[var(--tg-bg)] p-3 rounded-lg border border-[var(--tg-border)]">
+                                <label class="block mb-2 font-semibold text-gray-300">Caballo 3 (PNG Transparente):</label>
+                                <input type="file" accept="image/png" onchange="handleHorseUpload(event, 2)" class="w-full text-[var(--tg-text-sec)] file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[var(--tg-border)] file:text-white">
+                            </div>
+                        </div>
+                        <button onclick="clearMods()" class="mt-4 w-full py-2 rounded-lg text-xs font-semibold text-[var(--vzla-red)] bg-[var(--vzla-red)]/10 hover:bg-[var(--vzla-red)]/20 transition">Limpiar Gráficos</button>
+                    </div>
+
                     <div class="tg-card p-5 border-[var(--vzla-red)]/30">
                         <h3 class="font-semibold text-sm text-red-500 mb-3 uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> Seguridad</h3>
                         <div class="space-y-3">
@@ -738,9 +779,11 @@
             horseIndex: parseInt(localStorage.getItem('tc_horse')) || 0,
             horseName: localStorage.getItem('tc_horseName') || '',
             customBgImg: localStorage.getItem('tc_mod_bg') || null,
+            customHorseImgs: JSON.parse(localStorage.getItem('tc_mod_horses')) || [null, null, null],
             puntosBoveda: parseInt(localStorage.getItem('tc_puntosBoveda')) || 0, // BÓVEDA
             mangaNames: JSON.parse(localStorage.getItem('tc_mangaNames')) || ["Toros en mi Pueblo", "Copa en Maracay", "Campeonato Barquisimeto"],
             horseNames: JSON.parse(localStorage.getItem('tc_horseNames')) || ["Criollo Llanero", "Cuarto de Milla", "Pinto Americano"],
+            bullNames: JSON.parse(localStorage.getItem('tc_bullNames')) || ["Novillo", "Toro Cebú", "Padrote Rebelde"],
             admin: { fee: parseInt(localStorage.getItem('tc_fee')) || 100, com: parseInt(localStorage.getItem('tc_com')) || 10, password: localStorage.getItem('tc_admin_pwd') || 'ADMIN123', recovery: localStorage.getItem('tc_admin_rec') || 'COLEO' },
             ranking: JSON.parse(localStorage.getItem('tc_ranking')) || [{ nombre: 'El Centauro', puntos: 1500 }]
         };
@@ -757,6 +800,7 @@
 
         function init() {
             HORSES[0].name = state.horseNames[0]; HORSES[1].name = state.horseNames[1]; HORSES[2].name = state.horseNames[2];
+            BULLS[0].name = state.bullNames[0]; BULLS[1].name = state.bullNames[1]; BULLS[2].name = state.bullNames[2];
             document.getElementById('input-nickname').value = state.nickname;
             
             updateHeader(); renderRanking(); updateBovedaUI();
@@ -777,7 +821,12 @@
             localStorage.setItem('tc_com', state.admin.com);
             localStorage.setItem('tc_admin_pwd', state.admin.password);
             localStorage.setItem('tc_admin_rec', state.admin.recovery);
+            localStorage.setItem('tc_mangaNames', JSON.stringify(state.mangaNames));
+            localStorage.setItem('tc_horseNames', JSON.stringify(state.horseNames));
+            localStorage.setItem('tc_bullNames', JSON.stringify(state.bullNames));
             localStorage.setItem('tc_ranking', JSON.stringify(state.ranking));
+            if(state.customBgImg) localStorage.setItem('tc_mod_bg', state.customBgImg); else localStorage.removeItem('tc_mod_bg');
+            localStorage.setItem('tc_mod_horses', JSON.stringify(state.customHorseImgs));
             updateHeader(); updateBovedaUI();
         }
 
@@ -841,7 +890,14 @@
 
         function updateEstabloUI() {
             const horse = HORSES[state.horseIndex];
-            document.getElementById('est-horse-emoji').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            const customImg = state.customHorseImgs[state.horseIndex];
+            
+            if (customImg) {
+                document.getElementById('est-horse-emoji').innerHTML = `<img src="${customImg}" style="transform: scaleX(-1); width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));">`;
+            } else {
+                document.getElementById('est-horse-emoji').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            }
+            
             document.getElementById('est-horse-name').innerText = horse.name;
             document.getElementById('input-horsename').value = state.horseName;
             document.getElementById('est-bar-fue').style.width = (horse.fuerza * 10) + '%'; document.getElementById('est-val-fue').innerText = horse.fuerza;
@@ -1071,9 +1127,19 @@
             document.getElementById('zone-filo').style.left = window.game.zones.fMin + '%'; document.getElementById('zone-filo').style.width = (filoSize * 2) + '%';
             document.getElementById('zone-costado').style.left = window.game.zones.cMin + '%'; document.getElementById('zone-costado').style.width = (costadoSize * 2) + '%';
 
-            document.getElementById('ent-horse').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            const customHorseImg = state.customHorseImgs[state.horseIndex];
+            if (customHorseImg) {
+                document.getElementById('ent-horse').innerHTML = `<img src="${customHorseImg}" style="transform: scaleX(-1); width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));">`;
+            } else {
+                document.getElementById('ent-horse').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${horse.emoji}</div>`;
+            }
+            
             document.getElementById('ent-bull').innerHTML = `<div style="transform: scaleX(-1); display: inline-block;">${bull.emoji}</div>`;
             
+            const bgElement = document.getElementById('manga-bg');
+            if (state.customBgImg) { bgElement.style.backgroundImage = `url(${state.customBgImg})`; bgElement.style.backgroundSize = 'cover'; bgElement.classList.remove('manga-track'); } 
+            else { bgElement.style.backgroundImage = ''; bgElement.classList.add('manga-track'); }
+
             document.getElementById('hud-turn').innerText = `${window.game.currentTurn}/${window.game.maxTurns}`;
             document.getElementById('hud-score').innerText = window.game.matchScore;
             
@@ -1358,10 +1424,47 @@
             });
         };
 
+        window.saveAdminSettings = function() {
+            state.admin.password = document.getElementById('sec-pwd').value || "ADMIN123";
+            state.admin.recovery = document.getElementById('sec-rec').value || "COLEO";
+            state.mangaNames[0] = document.getElementById('sec-m1').value || "Toros en mi Pueblo";
+            state.mangaNames[1] = document.getElementById('sec-m2').value || "Copa en Maracay";
+            state.mangaNames[2] = document.getElementById('sec-m3').value || "Camp. Barquisimeto";
+            state.horseNames[0] = document.getElementById('sec-h1').value || "Criollo Llanero";
+            state.horseNames[1] = document.getElementById('sec-h2').value || "Cuarto de Milla";
+            state.horseNames[2] = document.getElementById('sec-h3').value || "Pinto Americano";
+            state.bullNames[0] = document.getElementById('sec-b1').value || "Novillo";
+            state.bullNames[1] = document.getElementById('sec-b2').value || "Toro Cebú";
+            state.bullNames[2] = document.getElementById('sec-b3').value || "Padrote Rebelde";
+            saveData(); init(); nav('menu'); showCustomAlert("Guardado", "Configuraciones aplicadas.");
+        };
+
+        window.handleFileUpload = function(event, stateKey) {
+            const file = event.target.files[0]; if(!file) return; const reader = new FileReader();
+            reader.onload = function(e) { state[stateKey] = e.target.result; }; reader.readAsDataURL(file);
+        };
+
+        window.handleHorseUpload = function(event, index) {
+            const file = event.target.files[0]; if(!file) return; const reader = new FileReader();
+            reader.onload = function(e) { state.customHorseImgs[index] = e.target.result; }; reader.readAsDataURL(file);
+        };
+
+        window.clearMods = function() {
+            showCustomConfirm("Limpiar Gráficos", "¿Borrar mods visuales?", () => {
+                state.customBgImg = null; 
+                state.customHorseImgs = [null, null, null];
+                saveData(); showCustomAlert("Listo", "Gráficos restaurados.", () => { init(); nav('menu'); });
+            });
+        };
+
         function openSecretAdmin() {
             document.getElementById('sec-ton-fee').value = globalTonConfig.precio_entrada;
             document.getElementById('sec-ton-open').checked = globalTonConfig.inscripciones_abiertas;
             document.getElementById('sec-com').value = state.admin.com;
+            document.getElementById('sec-m1').value = state.mangaNames[0]; document.getElementById('sec-m2').value = state.mangaNames[1]; document.getElementById('sec-m3').value = state.mangaNames[2];
+            document.getElementById('sec-h1').value = state.horseNames[0]; document.getElementById('sec-h2').value = state.horseNames[1]; document.getElementById('sec-h3').value = state.horseNames[2];
+            document.getElementById('sec-b1').value = state.bullNames[0]; document.getElementById('sec-b2').value = state.bullNames[1]; document.getElementById('sec-b3').value = state.bullNames[2];
+            document.getElementById('sec-pwd').value = state.admin.password; document.getElementById('sec-rec').value = state.admin.recovery;
             loadAdminRetiros();
             nav('secret-admin');
         }
